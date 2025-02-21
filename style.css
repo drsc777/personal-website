@@ -1,0 +1,245 @@
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 20px;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+main {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+nav {
+    margin-bottom: 30px;
+    display: flex;
+    gap: 15px;
+}
+
+nav a {
+    text-decoration: none;
+    color: var(--text-color);
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 2px solid var(--border-color);
+    transition: all 0.3s ease;
+    font-size: 14px;
+    background-color: var(--bg-color);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+nav a:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    background-color: var(--link-color);
+    color: white;
+    border-color: var(--link-color);
+}
+
+/* Navigation link style for current page */
+nav a.active {
+    background-color: var(--link-color);
+    color: white;
+    border-color: var(--link-color);
+}
+
+.social-links {
+    margin: 20px 0;
+}
+
+.social-links a {
+    margin-right: 15px;
+    text-decoration: none;
+    color: #0366d6;
+}
+
+.project {
+    margin-bottom: 30px;
+    padding: 20px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+}
+
+.project h3 {
+    margin-top: 0;
+}
+
+footer {
+    margin-top: 50px;
+    text-align: center;
+    color: #666;
+}
+
+.project-links {
+    margin-top: 10px;
+    position: relative;
+    display: inline-block;
+}
+
+.project-links a {
+    position: relative;
+    display: inline-block;
+    margin: 5px 10px;
+    padding: 5px 10px;
+    text-decoration: none;
+    color: var(--link-color);
+    border: 1px solid var(--link-color);
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.project-links a:hover {
+    background-color: #0366d6;
+    color: white;
+}
+
+/* Preview image tooltip style */
+.preview-tooltip {
+    position: absolute;
+    display: none;
+    width: 120px;
+    height: 80px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: #000;
+    border: 1px solid #e1e4e8;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 100;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 5px;
+    margin-bottom: 5px;
+}
+
+/* Special style for scam website preview */
+.preview-tooltip.scam-preview {
+    background-size: cover;
+    padding: 0;  /* Remove padding to fill container */
+    background-color: #000;  /* Black background for theme */
+}
+
+.project-links a:hover .preview-tooltip {
+    display: block;
+}
+
+/* Dark mode related styles */
+:root {
+    --bg-color: #ffffff;
+    --text-color: #333333;
+    --border-color: #e1e4e8;
+    --link-color: #0366d6;
+}
+
+[data-theme="dark"] {
+    --bg-color: #1a1a1a;
+    --text-color: #ffffff;
+    --border-color: #2d2d2d;
+    --link-color: #58a6ff;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: all 0.3s ease;
+}
+
+.project {
+    border-color: var(--border-color);
+}
+
+.project-links a {
+    color: var(--link-color);
+    border-color: var(--link-color);
+}
+
+/* Theme switch button style */
+.theme-switch {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    background-color: var(--bg-color);
+    border: 2px solid var(--border-color);
+    color: var(--text-color);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    font-size: 14px;
+    z-index: 1000;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.theme-switch:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Course card styles */
+.course {
+    margin-bottom: 40px;
+    padding: 25px;
+    background-color: var(--bg-color);
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
+}
+
+.course:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.course h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: var(--link-color);
+    font-size: 1.4em;
+}
+
+.course-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.course-list li {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.course-list li:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.course-list li strong {
+    display: block;
+    color: var(--text-color);
+    margin-bottom: 5px;
+}
+
+.course-list li p {
+    color: var(--text-color);
+    opacity: 0.7;
+    margin: 5px 0 0 0;
+    font-size: 0.9em;
+}
+
+/* Dark mode specific shadows */
+[data-theme="dark"] .course {
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] .course:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+} 

@@ -4,57 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Personal Homepage</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 20px;
-            max-width: 800px;
-            margin: 0 auto;
+    <link rel="stylesheet" href="style.css">
+    <script>
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            
+            // 保存主题偏好
+            localStorage.setItem('theme', newTheme);
+            
+            // 更新按钮文本
+            updateThemeButton();
         }
 
-        nav {
-            margin-bottom: 30px;
+        function updateThemeButton() {
+            const button = document.querySelector('.theme-switch');
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            button.innerHTML = currentTheme === 'dark' 
+                ? '☀️ Light Mode' 
+                : '🌙 Dark Mode';
         }
 
-        nav a {
-            margin-right: 20px;
-            text-decoration: none;
-            color: #333;
-        }
-
-        .social-links {
-            margin: 20px 0;
-        }
-
-        .social-links a {
-            margin-right: 15px;
-            text-decoration: none;
-            color: #0366d6;
-        }
-
-        .project {
-            margin-bottom: 30px;
-            padding: 20px;
-            border: 1px solid #e1e4e8;
-            border-radius: 6px;
-        }
-
-        .project h3 {
-            margin-top: 0;
-        }
-
-        footer {
-            margin-top: 50px;
-            text-align: center;
-            color: #666;
-        }
-    </style>
+        // 页面加载时设置主题
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeButton();
+        });
+    </script>
 </head>
 <body>
+    <button class="theme-switch" onclick="toggleTheme()">🌙 Dark Mode</button>
     <nav>
-        <a href="index.html">Home</a>
+        <a href="index.html" class="active">Home</a>
         <a href="coursework.html">Coursework</a>
     </nav>
 
@@ -76,6 +60,16 @@
         <div class="project">
             <h3>Web dev & IOS dev</h3>
             <p>Ongoing development projects focusing on web development and iOS application development.</p>
+            <div class="project-links">
+                <a href="cookie_game/index.html" target="_blank">
+                    Cookie Clicker Game
+                    <div class="preview-tooltip" style="background-image: url('images/cookiegame.png');"></div>
+                </a>
+                <a href="scam_website/index.html" target="_blank">
+                    Fake Scam Website
+                    <div class="preview-tooltip scam-preview" style="background-image: url('images/scamwebsite.png');"></div>
+                </a>
+            </div>
         </div>
 
         <div class="project">
