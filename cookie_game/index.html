@@ -139,7 +139,6 @@
         </h1>
         <div 
             class="cookie-wrapper"
-            ontouchstart="handleTouch(event)"
         >
             <img 
                 class="cookie-image" 
@@ -228,18 +227,20 @@
             }, 100);
         }
 
-        // 修改点击和触摸事件处理
+        // 修改事件监听
         const cookieWrapper = document.querySelector('.cookie-wrapper');
         
-        // 只使用一个点击事件处理器
-        cookieWrapper.addEventListener('click', function(event) {
-            addOneToCounter(event);
-            playClickAnimation(event);
-        });
-
-        // 触摸事件处理
+        // 移动设备使用触摸事件
         cookieWrapper.addEventListener('touchstart', function(event) {
             event.preventDefault(); // 防止触发点击事件
+            addOneToCounter(event);
+            playClickAnimation(event);
+        }, { passive: false });
+
+        // 桌面设备使用点击事件
+        cookieWrapper.addEventListener('click', function(event) {
+            // 如果是触摸设备触发的点击，忽略它
+            if (event.pointerType === 'touch') return;
             addOneToCounter(event);
             playClickAnimation(event);
         });
