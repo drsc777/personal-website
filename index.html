@@ -126,12 +126,26 @@
             }
         }
 
+        // 添加密码加密函数
+        async function encryptPassword(password) {
+            // 使用更简单的 SHA-512 实现
+            const encoder = new TextEncoder();
+            const data = encoder.encode(password);
+            const hashBuffer = await crypto.subtle.digest('SHA-512', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            return hashHex;
+        }
+
         async function checkPassword() {
             const password = document.getElementById('password').value;
             const messageArea = document.getElementById('messageArea');
             
-            if (password === '1234567890') {
-                try {
+            try {
+                const encryptedPassword = await encryptPassword(password);
+                console.log('Encrypted password:', encryptedPassword); // 用于调试
+                
+                if (encryptedPassword === 'ce05d02a952d716a9c38dddc375d7518ee166a2f991637f7a8bfd4076d465b9c8c24d44e55022a01c0a886f1b52937ef8bf2d3f92923b702264774ba05a92882') {
                     const { ref, get } = window.firebaseRefs;
                     const db = window.firebaseDatabase;
                     const snapshot = await get(ref(db, 'messages'));
@@ -154,28 +168,29 @@
                     ).join('');
                     messageArea.style.display = 'block';
                     document.getElementById('clearAllBtn').style.display = 'block';
-                } catch (error) {
-                    alert('Error loading messages: ' + error.message);
+                } else {
+                    alert('Incorrect password');
                 }
-            } else {
-                alert('Incorrect password');
+            } catch (error) {
+                console.error('Error checking password:', error);
+                alert('Error checking password');
             }
         }
 
         async function deleteMessage(messageId) {
             const password = document.getElementById('password').value;
-            if (password !== '1234567890') {
-                alert('Please enter the password again to delete messages');
-                return;
-            }
             
             try {
-                const { ref, remove } = window.firebaseRefs;
-                const db = window.firebaseDatabase;
-                await remove(ref(db, 'messages/' + messageId));
-                await checkPassword(); // Refresh the message display
+                const encryptedPassword = await encryptPassword(password);
+                if (encryptedPassword === 'ce05d02a952d716a9c38dddc375d7518ee166a2f991637f7a8bfd4076d465b9c8c24d44e55022a01c0a886f1b52937ef8bf2d3f92923b702264774ba05a92882') {
+                    const { ref, remove } = window.firebaseRefs;
+                    const db = window.firebaseDatabase;
+                    await remove(ref(db, 'messages/' + messageId));
+                    await checkPassword();
+                }
             } catch (error) {
-                alert('Error deleting message: ' + error.message);
+                console.error('Error:', error);
+                alert('Error deleting message');
             }
         }
 
@@ -185,20 +200,18 @@
 
         async function clearAllMessages() {
             const password = document.getElementById('password').value;
-            if (password !== '1234567890') {
-                alert('Please enter the password again to clear all messages');
-                return;
-            }
             
-            if (confirm('Are you sure you want to delete all messages? This cannot be undone.')) {
-                try {
+            try {
+                const encryptedPassword = await encryptPassword(password);
+                if (encryptedPassword === 'ce05d02a952d716a9c38dddc375d7518ee166a2f991637f7a8bfd4076d465b9c8c24d44e55022a01c0a886f1b52937ef8bf2d3f92923b702264774ba05a92882') {
                     const { ref, remove } = window.firebaseRefs;
                     const db = window.firebaseDatabase;
                     await remove(ref(db, 'messages'));
-                    await checkPassword(); // Refresh the message display
-                } catch (error) {
-                    alert('Error clearing messages: ' + error.message);
+                    await checkPassword();
                 }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error clearing messages');
             }
         }
 
@@ -274,7 +287,10 @@
     <!-- 修改密码对话框 -->
     <div id="messageDialog" class="message-dialog" style="display: none;">
         <div class="dialog-content">
-            <input type="password" id="password" placeholder="Enter password">
+            <input type="password" 
+                   id="password" 
+                   placeholder="Enter password"
+                   onkeyup="if(event.key === 'Enter') checkPassword()">
             <button onclick="checkPassword()">View Messages</button>
             <div id="messageArea" class="message-area" style="display: none;"></div>
             <button id="clearAllBtn" class="clear-all-btn" onclick="clearAllMessages()" style="display: none;">Clear All Messages</button>
