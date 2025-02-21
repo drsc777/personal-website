@@ -140,7 +140,6 @@
         <div 
             class="cookie-wrapper"
             ontouchstart="handleTouch(event)"
-            onclick="addOneToCounter(event)"
         >
             <img 
                 class="cookie-image" 
@@ -229,21 +228,21 @@
             }, 100);
         }
 
-        // 优化点击和触摸事件处理
+        // 修改点击和触摸事件处理
         const cookieWrapper = document.querySelector('.cookie-wrapper');
         
+        // 只使用一个点击事件处理器
         cookieWrapper.addEventListener('click', function(event) {
-            playSound();
             addOneToCounter(event);
             playClickAnimation(event);
-        }, { passive: true });
+        });
 
+        // 触摸事件处理
         cookieWrapper.addEventListener('touchstart', function(event) {
-            event.preventDefault();
-            playSound();
+            event.preventDefault(); // 防止触发点击事件
             addOneToCounter(event);
             playClickAnimation(event);
-        }, { passive: false });
+        });
     </script>
     <script src="script.js"></script>
 </body>
