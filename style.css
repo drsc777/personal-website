@@ -12,6 +12,9 @@ body {
 main {
     max-width: 800px;
     margin: 0 auto;
+    padding: 0;
+    box-sizing: border-box;
+    width: 100%;
 }
 
 nav {
@@ -62,6 +65,8 @@ nav a.active {
     padding: 20px;
     border: 1px solid var(--border-color);
     border-radius: 6px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .project h3 {
@@ -251,14 +256,17 @@ body {
     border: 1px solid var(--border-color);
     border-radius: 6px;
     background-color: var(--bg-color);
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .message-form {
     width: 100%;
-    margin: 0;  /* 移除外边距 */
-    padding: 0; /* 移除内边距 */
-    background: none; /* 移除背景 */
-    box-shadow: none; /* 移除阴影 */
+    margin: 0;
+    padding: 0;
+    background: none;
+    box-shadow: none;
+    box-sizing: border-box;
 }
 
 .message-form h2 {
@@ -319,7 +327,8 @@ body {
     opacity: 0.7;
 }
 
-.message-form input[type="text"] {
+.message-form input[type="text"],
+.message-form textarea {
     width: 100%;
     padding: 12px;
     border: 2px solid var(--border-color);
