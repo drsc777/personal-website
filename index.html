@@ -169,7 +169,7 @@
             document.getElementById('messageDialog').style.display = 'flex';
         }
 
-        function clearAllMessages() {
+        async function clearAllMessages() {
             const password = document.getElementById('password').value;
             if (password !== '1234567890') {
                 alert('Please enter the password again to clear all messages');
@@ -177,8 +177,14 @@
             }
             
             if (confirm('Are you sure you want to delete all messages? This cannot be undone.')) {
-                window.firebaseRefs.remove(window.firebaseDatabase, 'messages').then(() => checkPassword()) // Refresh the message display
-                    .catch(error => alert('Error clearing messages: ' + error.message));
+                try {
+                    const { ref, remove } = window.firebaseRefs;
+                    const db = window.firebaseDatabase;
+                    await remove(ref(db, 'messages'));
+                    await checkPassword(); // Refresh the message display
+                } catch (error) {
+                    alert('Error clearing messages: ' + error.message);
+                }
             }
         }
 

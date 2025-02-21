@@ -2,16 +2,20 @@
 let counter = 0;  // Current cookie count
 let clicks = [];  // Array to store click timestamps
 let totalClicks = 0;  // Total clicks since start
+let bestCPS = localStorage.getItem('bestCPS') || 0;
+
+// Initialize best CPS display
+document.getElementById('bestCPS').textContent = bestCPS;
 
 // Function that runs when cookie is clicked
-function addOneToCounter() {
+function addOneToCounter(event) {
     counter++;
     totalClicks++;
     document.getElementById("counter").textContent = counter;
     document.getElementById("totalClicks").textContent = totalClicks;
     
-    // Record click time for CPS calculation
-    clicks.push(Date.now());
+    const now = Date.now();
+    clicks.push(now);
     updateClicksPerSecond();
     
     // Add click effect
@@ -19,13 +23,24 @@ function addOneToCounter() {
 }
 
 function updateClicksPerSecond() {
-    // Keep only clicks from the last second
     const now = Date.now();
-    clicks = clicks.filter(click => now - click <= 1000);
-    
-    // Calculate CPS
+    clicks = clicks.filter(time => now - time < 1000);
     const cps = clicks.length;
     document.getElementById("clicksPerSecond").textContent = cps;
+    
+    // 更新最快点击速度记录
+    if (cps > bestCPS) {
+        bestCPS = cps;
+        localStorage.setItem('bestCPS', bestCPS);
+        document.getElementById('bestCPS').textContent = bestCPS;
+    }
+}
+
+function handleTouch(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    addOneToCounter(event);
+    return false;
 }
 
 function createClickEffect(event) {
@@ -63,5 +78,5 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-// Update CPS every 100ms
+// 每秒更新点击速度
 setInterval(updateClicksPerSecond, 100);

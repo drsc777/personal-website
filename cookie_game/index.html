@@ -53,7 +53,7 @@
         <div 
             class="cookie-wrapper"
             ontouchstart="handleTouch(event)"
-            onclick="addOneToCounter()"
+            onclick="addOneToCounter(event)"
         >
             <img 
                 class="cookie-image" 
@@ -69,7 +69,7 @@
         </div>
     </div>
     <script>
-        // Prevent all zoom gestures
+        // 只保留防缩放相关的代码
         window.addEventListener('wheel', function(e) {
             if (e.ctrlKey) {
                 e.preventDefault();
@@ -82,18 +82,6 @@
             }
         }, false);
 
-        // Prevent double tap zoom
-        let lastTapTime = 0;
-        document.addEventListener('touchend', function(e) {
-            const currentTime = new Date().getTime();
-            const tapInterval = currentTime - lastTapTime;
-            if (tapInterval < 500 && tapInterval > 0) {
-                e.preventDefault();
-            }
-            lastTapTime = currentTime;
-        }, false);
-
-        // Prevent pinch zoom
         document.addEventListener('gesturestart', function(e) {
             e.preventDefault();
         });
@@ -106,7 +94,6 @@
             e.preventDefault();
         });
 
-        // Prevent touch events from propagating
         document.addEventListener('touchstart', function(e) {
             if (e.touches.length > 1) {
                 e.preventDefault();
@@ -119,36 +106,9 @@
             }
         }, { passive: false });
 
-        // Handle cookie clicks
-        function handleTouch(event) {
-            event.preventDefault();
-            event.stopPropagation();
-            addOneToCounter();
-            return false;
-        }
-
-        // Disable context menu
         document.addEventListener('contextmenu', function(e) {
             e.preventDefault();
         }, false);
-
-        // 添加最快点击速度记录
-        let bestCPS = localStorage.getItem('bestCPS') || 0;
-        document.getElementById('bestCPS').textContent = bestCPS;
-
-        function updateClicksPerSecond() {
-            const now = Date.now();
-            clicks = clicks.filter(time => now - time < 1000);
-            const cps = clicks.length;
-            document.getElementById('clicksPerSecond').textContent = cps;
-            
-            // 更新最快点击速度记录
-            if (cps > bestCPS) {
-                bestCPS = cps;
-                localStorage.setItem('bestCPS', bestCPS);
-                document.getElementById('bestCPS').textContent = bestCPS;
-            }
-        }
     </script>
     <script src="script.js"></script>
 </body>
