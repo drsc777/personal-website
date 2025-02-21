@@ -461,4 +461,31 @@ body {
 [data-theme="dark"] .clear-all-btn:hover {
     background-color: #ff4d5e;
     color: white;
+}
+
+/* Visitor counter styles */
+.visitor-counter {
+    text-align: center;
+    margin-bottom: 15px;
+    padding: 6px 12px;
+    background-color: var(--bg-color);
+    border-radius: 8px;
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.04);
+    display: inline-block;
+}
+
+.visitor-counter p {
+    margin: 0;
+    color: var(--text-color);
+    font-size: 0.85em;
+    opacity: 0.8;
+}
+
+#visitorCount {
+    font-weight: bold;
+    color: var(--link-color);
+}
+
+[data-theme="dark"] .visitor-counter {
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.15);
 } 

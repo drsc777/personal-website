@@ -8,7 +8,7 @@
     <script type="module">
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, push, remove, get, child } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, push, remove, get, child, set, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
         // Your web app's Firebase configuration
         const firebaseConfig = {
@@ -36,6 +36,19 @@
             window.firebaseDatabase = database;
             window.firebaseRefs = { ref, push, remove, get, child };
             console.log('Firebase setup complete');
+
+            // 更新访问计数
+            const visitsRef = ref(database, 'visits');
+            
+            // 获取当前访问数并更新显示
+            get(visitsRef).then((snapshot) => {
+                const visits = snapshot.val() || 0;
+                document.getElementById('visitorCount').textContent = visits;
+                
+                // 增加访问计数
+                set(visitsRef, increment(1));
+            });
+
         } catch (error) {
             console.error('Error initializing Firebase:', error);
         }
@@ -251,6 +264,9 @@
     </main>
 
     <footer>
+        <div class="visitor-counter">
+            <p>Views: <span id="visitorCount">0</span></p>
+        </div>
         <p>Copyright <span class="secret-entry" onclick="showMessageDialog()">©</span> 2024 Abby Li</p>
     </footer>
 
