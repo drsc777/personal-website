@@ -33,6 +33,90 @@
             document.documentElement.setAttribute('data-theme', savedTheme);
             updateThemeButton();
         });
+
+        // Message system
+        function submitMessage() {
+            const content = document.getElementById('newMessage').value;
+            const author = document.getElementById('authorName').value || 'Anonymous';
+            
+            if (!content) {
+                alert('Please write a message');
+                return;
+            }
+
+            const messages = JSON.parse(localStorage.getItem('messages') || '[]');
+            messages.push({
+                content: content,
+                author: author,
+                date: new Date().toISOString()
+            });
+            localStorage.setItem('messages', JSON.stringify(messages));
+            
+            document.getElementById('newMessage').value = '';
+            document.getElementById('authorName').value = '';
+            alert('Message sent successfully!');
+        }
+
+        function showMessageDialog() {
+            document.getElementById('messageDialog').style.display = 'flex';
+        }
+
+        function checkPassword() {
+            const password = document.getElementById('password').value;
+            const messageArea = document.getElementById('messageArea');
+            const messages = JSON.parse(localStorage.getItem('messages') || '[]');
+            
+            if (password === 'abbyissmart1234567890') {
+                messageArea.innerHTML = messages.map((msg, index) => 
+                    `<div class="message">
+                        <p class="message-content">${msg.content}</p>
+                        <p class="message-info">
+                            <span class="message-author">From: ${msg.author}</span>
+                            <span class="message-date">${new Date(msg.date).toLocaleString()}</span>
+                        </p>
+                        <button class="delete-btn" onclick="deleteMessage(${index})">Delete</button>
+                    </div>`
+                ).join('');
+                messageArea.style.display = 'block';
+                document.getElementById('clearAllBtn').style.display = 'block';
+            } else {
+                alert('Incorrect password');
+            }
+        }
+
+        function deleteMessage(index) {
+            const password = document.getElementById('password').value;
+            if (password !== 'abbyissmart1234567890') {
+                alert('Please enter the password again to delete messages');
+                return;
+            }
+            
+            const messages = JSON.parse(localStorage.getItem('messages') || '[]');
+            messages.splice(index, 1);
+            localStorage.setItem('messages', JSON.stringify(messages));
+            checkPassword(); // Refresh the message display
+        }
+
+        function clearAllMessages() {
+            const password = document.getElementById('password').value;
+            if (password !== 'abbyissmart1234567890') {
+                alert('Please enter the password again to clear all messages');
+                return;
+            }
+            
+            if (confirm('Are you sure you want to delete all messages? This cannot be undone.')) {
+                localStorage.setItem('messages', '[]');
+                checkPassword(); // Refresh the message display
+            }
+        }
+
+        // 点击对话框外部关闭对话框
+        document.addEventListener('click', function(event) {
+            const dialog = document.getElementById('messageDialog');
+            if (event.target === dialog) {
+                dialog.style.display = 'none';
+            }
+        });
     </script>
 </head>
 <body>
@@ -76,10 +160,30 @@
             <h3>Micromouse & PCB</h3>
             <p>Hardware projects including microrobot design and printed circuit board fabrication.</p>
         </div>
+
+        <!-- Add message section -->
+        <section class="message-section">
+            <h2>Leave a Message</h2>
+            <div class="message-form">
+                <input type="text" id="authorName" placeholder="Your name (optional)">
+                <textarea id="newMessage" placeholder="Write your message here..."></textarea>
+                <button onclick="submitMessage()">Send Message</button>
+            </div>
+        </section>
     </main>
 
     <footer>
-        <p>Copyright © 2024 Abby Li</p>
+        <p>Copyright <span class="secret-entry" onclick="showMessageDialog()">©</span> 2024 Abby Li</p>
     </footer>
+
+    <!-- 修改密码对话框 -->
+    <div id="messageDialog" class="message-dialog" style="display: none;">
+        <div class="dialog-content">
+            <input type="password" id="password" placeholder="Enter password">
+            <button onclick="checkPassword()">View Messages</button>
+            <div id="messageArea" class="message-area" style="display: none;"></div>
+            <button id="clearAllBtn" class="clear-all-btn" onclick="clearAllMessages()" style="display: none;">Clear All Messages</button>
+        </div>
+    </div>
 </body>
 </html> 

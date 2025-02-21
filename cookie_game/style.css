@@ -24,9 +24,21 @@ h1 {
     font-weight: bold;
 }
 
-.cookie-image {
-    width: 200px;
+.cookie-wrapper {
+    display: inline-block;
     cursor: pointer;
+    touch-action: none;
+    -webkit-touch-callout: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.cookie-image {
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    width: 200px;
     transition: transform 0.1s;
 }
 

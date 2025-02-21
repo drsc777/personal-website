@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messages</title>
+    <link rel="stylesheet" href="style.css">
+    <script>
+        // Theme management
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeButton();
+        }
+
+        function updateThemeButton() {
+            const button = document.querySelector('.theme-switch');
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            button.innerHTML = currentTheme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
+        }
+
+        // Message system
+        function checkPassword() {
+            const password = document.getElementById('password').value;
+            const messageArea = document.getElementById('messageArea');
+            const messages = JSON.parse(localStorage.getItem('messages') || '[]');
+            
+            if (password === 'your-secret-password') {
+                messageArea.innerHTML = messages.map(msg => 
+                    `<div class="message">
+                        <p class="message-content">${msg.content}</p>
+                        <p class="message-info">
+                            <span class="message-author">From: ${msg.author}</span>
+                            <span class="message-date">${new Date(msg.date).toLocaleString()}</span>
+                        </p>
+                    </div>`
+                ).join('');
+                document.getElementById('messageArea').style.display = 'block';
+            } else {
+                alert('Incorrect password');
+            }
+        }
+
+        function submitMessage() {
+            const content = document.getElementById('newMessage').value;
+            const author = document.getElementById('authorName').value || 'Anonymous';
+            
+            if (!content) {
+                alert('Please write a message');
+                return;
+            }
+
+            const messages = JSON.parse(localStorage.getItem('messages') || '[]');
+            messages.push({
+                content: content,
+                author: author,
+                date: new Date().toISOString()
+            });
+            localStorage.setItem('messages', JSON.stringify(messages));
+            
+            document.getElementById('newMessage').value = '';
+            document.getElementById('authorName').value = '';
+            alert('Message sent successfully!');
+        }
+
+        // Initialize theme on load
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeButton();
+        });
+    </script>
+</head>
+<body>
+    <button class="theme-switch" onclick="toggleTheme()">🌙 Dark Mode</button>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="coursework.html">Coursework</a>
+        <a href="messages.html" class="active">Messages</a>
+    </nav>
+
+    <main>
+        <h1>Messages</h1>
+        
+        <!-- Public message form -->
+        <div class="message-form">
+            <h2>Leave a Message</h2>
+            <input type="text" id="authorName" placeholder="Your name (optional)">
+            <textarea id="newMessage" placeholder="Write your message here..."></textarea>
+            <button onclick="submitMessage()">Send Message</button>
+        </div>
+
+        <!-- Admin section -->
+        <div class="admin-section">
+            <h2>View Messages</h2>
+            <div class="password-section">
+                <input type="password" id="password" placeholder="Enter password">
+                <button onclick="checkPassword()">View Messages</button>
+            </div>
+            <div id="messageArea" class="message-area" style="display: none;"></div>
+        </div>
+    </main>
+
+    <footer>
+        <p>Copyright © 2024 Abby Li</p>
+    </footer>
+</body>
+</html> 

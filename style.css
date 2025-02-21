@@ -242,4 +242,270 @@ body {
 
 [data-theme="dark"] .course:hover {
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Message system styles */
+.password-section {
+    margin: 20px 0;
+    text-align: center;
+}
+
+.password-section input {
+    padding: 8px 16px;
+    border: 2px solid var(--border-color);
+    border-radius: 20px;
+    margin-right: 10px;
+    font-size: 14px;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+.password-section button,
+.message-form button {
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 2px solid var(--border-color);
+    background-color: var(--link-color);
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.message-area {
+    margin: 20px 0;
+}
+
+.message {
+    background-color: var(--bg-color);
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.message-content {
+    margin: 0 0 10px 0;
+    color: var(--text-color);
+}
+
+.message-date {
+    margin: 0;
+    font-size: 0.8em;
+    color: var(--text-color);
+    opacity: 0.7;
+}
+
+.message-form {
+    background-color: var(--bg-color);
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 40px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.message-form h2 {
+    margin-top: 0;
+    color: var(--text-color);
+    margin-bottom: 20px;
+}
+
+.message-form input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    margin-bottom: 15px;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-size: 14px;
+}
+
+.admin-section {
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 2px solid var(--border-color);
+}
+
+.admin-section h2 {
+    color: var(--text-color);
+    margin-bottom: 20px;
+}
+
+.message-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9em;
+    color: var(--text-color);
+    opacity: 0.7;
+}
+
+.message-author {
+    font-weight: bold;
+}
+
+/* Message section styles */
+.message-section {
+    margin-top: 60px;
+    padding-top: 40px;
+    border-top: 2px solid var(--border-color);
+}
+
+.message-section h2 {
+    color: var(--text-color);
+    margin-bottom: 20px;
+}
+
+.message-form {
+    background-color: var(--bg-color);
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.message-form input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    margin-bottom: 15px;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-size: 14px;
+}
+
+.message-form textarea {
+    width: 100%;
+    height: 120px;
+    padding: 12px;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    margin-bottom: 15px;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-size: 14px;
+    resize: vertical;
+}
+
+.message-form button {
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 2px solid var(--border-color);
+    background-color: var(--link-color);
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.message-form button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.message-note {
+    margin-top: 15px;
+    font-size: 0.9em;
+    color: var(--text-color);
+    opacity: 0.7;
+    text-align: center;
+}
+
+[data-theme="dark"] .message-form {
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Secret message entry */
+.secret-entry {
+    cursor: pointer;
+    user-select: none;
+}
+
+/* Message dialog styles */
+.message-dialog {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 1001;
+}
+
+.dialog-content {
+    background-color: var(--bg-color);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.dialog-content input[type="password"] {
+    width: 100%;
+    padding: 8px 12px;
+    margin-bottom: 10px;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+.message-area {
+    margin-top: 20px;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+/* Message deletion styles */
+.delete-btn {
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid #dc3545;
+    background-color: transparent;
+    color: #dc3545;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+.delete-btn:hover {
+    background-color: #dc3545;
+    color: white;
+}
+
+.clear-all-btn {
+    width: 100%;
+    padding: 8px 16px;
+    margin-top: 20px;
+    border-radius: 8px;
+    border: 2px solid #dc3545;
+    background-color: transparent;
+    color: #dc3545;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.clear-all-btn:hover {
+    background-color: #dc3545;
+    color: white;
+}
+
+[data-theme="dark"] .delete-btn,
+[data-theme="dark"] .clear-all-btn {
+    border-color: #ff4d5e;
+    color: #ff4d5e;
+}
+
+[data-theme="dark"] .delete-btn:hover,
+[data-theme="dark"] .clear-all-btn:hover {
+    background-color: #ff4d5e;
+    color: white;
 } 
