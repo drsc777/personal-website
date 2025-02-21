@@ -66,7 +66,7 @@
             const messageArea = document.getElementById('messageArea');
             const messages = JSON.parse(localStorage.getItem('messages') || '[]');
             
-            if (password === 'abbyissmart1234567890') {
+            if (password === '1234567890') {
                 messageArea.innerHTML = messages.map((msg, index) => 
                     `<div class="message">
                         <p class="message-content">${msg.content}</p>
@@ -86,7 +86,7 @@
 
         function deleteMessage(index) {
             const password = document.getElementById('password').value;
-            if (password !== 'abbyissmart1234567890') {
+            if (password !== '1234567890') {
                 alert('Please enter the password again to delete messages');
                 return;
             }
@@ -99,7 +99,7 @@
 
         function clearAllMessages() {
             const password = document.getElementById('password').value;
-            if (password !== 'abbyissmart1234567890') {
+            if (password !== '1234567890') {
                 alert('Please enter the password again to clear all messages');
                 return;
             }
