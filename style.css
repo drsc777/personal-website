@@ -244,6 +244,29 @@ body {
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
+/* Message section styles */
+.message-section {
+    margin-top: 60px;
+    padding: 20px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background-color: var(--bg-color);
+}
+
+.message-form {
+    width: 100%;
+    margin: 0;  /* 移除外边距 */
+    padding: 0; /* 移除内边距 */
+    background: none; /* 移除背景 */
+    box-shadow: none; /* 移除阴影 */
+}
+
+.message-form h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: var(--text-color);
+}
+
 /* Message system styles */
 .password-section {
     margin: 20px 0;
@@ -296,22 +319,6 @@ body {
     opacity: 0.7;
 }
 
-.message-form {
-    width: 100%;
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 25px;
-    background-color: var(--bg-color);
-    border-radius: 12px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-}
-
-.message-form h2 {
-    margin-top: 0;
-    color: var(--text-color);
-    margin-bottom: 20px;
-}
-
 .message-form input[type="text"] {
     width: 100%;
     padding: 12px;
@@ -338,17 +345,6 @@ body {
     resize: vertical;
     font-family: inherit;
     box-sizing: border-box;
-}
-
-.message-form button {
-    padding: 8px 16px;
-    border-radius: 20px;
-    border: 2px solid var(--border-color);
-    background-color: var(--link-color);
-    color: white;
-    cursor: pointer;
-    font-size: 14px;
-    transition: all 0.3s ease;
 }
 
 .message-form button:hover {
