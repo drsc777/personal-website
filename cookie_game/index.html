@@ -22,7 +22,8 @@
             -webkit-text-size-adjust: 100%;
             overscroll-behavior: none;
             overflow: hidden;
-            position: fixed;
+            margin: 0;
+            padding: 0;
             width: 100%;
             height: 100%;
         }
@@ -34,8 +35,8 @@
             transform: translate(-50%, -50%);
             width: 100%;
             max-width: 600px;
-            touch-action: manipulation;
-            -webkit-tap-highlight-color: transparent;
+            padding: 20px;
+            box-sizing: border-box;
         }
 
         .cookie-wrapper {
@@ -64,6 +65,7 @@
         <div class="stats">
             <p>Clicks per second: <span id="clicksPerSecond">0</span></p>
             <p>Total clicks: <span id="totalClicks">0</span></p>
+            <p>Best CPS record: <span id="bestCPS">0</span></p>
         </div>
     </div>
     <script>
@@ -129,6 +131,24 @@
         document.addEventListener('contextmenu', function(e) {
             e.preventDefault();
         }, false);
+
+        // 添加最快点击速度记录
+        let bestCPS = localStorage.getItem('bestCPS') || 0;
+        document.getElementById('bestCPS').textContent = bestCPS;
+
+        function updateClicksPerSecond() {
+            const now = Date.now();
+            clicks = clicks.filter(time => now - time < 1000);
+            const cps = clicks.length;
+            document.getElementById('clicksPerSecond').textContent = cps;
+            
+            // 更新最快点击速度记录
+            if (cps > bestCPS) {
+                bestCPS = cps;
+                localStorage.setItem('bestCPS', bestCPS);
+                document.getElementById('bestCPS').textContent = bestCPS;
+            }
+        }
     </script>
     <script src="script.js"></script>
 </body>

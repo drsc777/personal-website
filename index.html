@@ -5,6 +5,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Personal Homepage</title>
     <link rel="stylesheet" href="style.css">
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, push, remove, get, child } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBnyUJvCCDZ2txRai9akUjIkH0-qVnrwys",
+            authDomain: "abby-li-website.firebaseapp.com",
+            databaseURL: "https://abby-li-website-default-rtdb.firebaseio.com",
+            projectId: "abby-li-website",
+            storageBucket: "abby-li-website.firebastorage.app",
+            messagingSenderId: "109684047786",
+            appId: "1:109684047786:web:2dabbb1c8279ef4c9675d3",
+            measurementId: "G-BK78DY09CP"
+        };
+
+        try {
+            console.log('Initializing Firebase...');
+            // Initialize Firebase
+            const app = initializeApp(firebaseConfig);
+            console.log('Firebase app initialized:', app);
+            
+            const database = getDatabase(app);
+            console.log('Database initialized:', database);
+
+            // 将 Firebase 实例添加到 window 对象，以便其他函数可以访问
+            window.firebaseApp = app;
+            window.firebaseDatabase = database;
+            window.firebaseRefs = { ref, push, remove, get, child };
+            console.log('Firebase setup complete');
+        } catch (error) {
+            console.error('Error initializing Firebase:', error);
+        }
+    </script>
     <script>
         function toggleTheme() {
             const html = document.documentElement;
@@ -35,7 +70,8 @@
         });
 
         // Message system
-        function submitMessage() {
+        async function submitMessage() {
+            console.log('Submit message function called');
             const content = document.getElementById('newMessage').value;
             const author = document.getElementById('authorName').value || 'Anonymous';
             
@@ -44,57 +80,93 @@
                 return;
             }
 
-            const messages = JSON.parse(localStorage.getItem('messages') || '[]');
-            messages.push({
-                content: content,
-                author: author,
-                date: new Date().toISOString()
-            });
-            localStorage.setItem('messages', JSON.stringify(messages));
-            
-            document.getElementById('newMessage').value = '';
-            document.getElementById('authorName').value = '';
-            alert('Message sent successfully!');
+            try {
+                console.log('Getting Firebase references...');
+                const { ref, push } = window.firebaseRefs;
+                const db = window.firebaseDatabase;
+                
+                if (!db) {
+                    throw new Error('Database not initialized');
+                }
+                
+                console.log('Creating message reference...');
+                const messagesRef = ref(db, 'messages');
+                console.log('Message reference created:', messagesRef);
+                
+                const messageData = {
+                    content: content,
+                    author: author,
+                    date: new Date().toISOString()
+                };
+                console.log('Sending message:', messageData);
+                
+                const result = await push(messagesRef, messageData);
+                console.log('Message sent successfully, result:', result);
+                
+                document.getElementById('newMessage').value = '';
+                document.getElementById('authorName').value = '';
+                alert('Message sent successfully!');
+            } catch (error) {
+                console.error('Error in submitMessage:', error);
+                alert('Error sending message: ' + error.message);
+            }
         }
 
-        function showMessageDialog() {
-            document.getElementById('messageDialog').style.display = 'flex';
-        }
-
-        function checkPassword() {
+        async function checkPassword() {
             const password = document.getElementById('password').value;
             const messageArea = document.getElementById('messageArea');
-            const messages = JSON.parse(localStorage.getItem('messages') || '[]');
             
             if (password === '1234567890') {
-                messageArea.innerHTML = messages.map((msg, index) => 
-                    `<div class="message">
-                        <p class="message-content">${msg.content}</p>
-                        <p class="message-info">
-                            <span class="message-author">From: ${msg.author}</span>
-                            <span class="message-date">${new Date(msg.date).toLocaleString()}</span>
-                        </p>
-                        <button class="delete-btn" onclick="deleteMessage(${index})">Delete</button>
-                    </div>`
-                ).join('');
-                messageArea.style.display = 'block';
-                document.getElementById('clearAllBtn').style.display = 'block';
+                try {
+                    const { ref, get } = window.firebaseRefs;
+                    const db = window.firebaseDatabase;
+                    const snapshot = await get(ref(db, 'messages'));
+                    const messages = snapshot.val() || {};
+                    
+                    const messageArray = Object.entries(messages).map(([key, msg]) => ({
+                        id: key,
+                        ...msg
+                    }));
+                    
+                    messageArea.innerHTML = messageArray.map(msg => 
+                        `<div class="message">
+                            <p class="message-content">${msg.content}</p>
+                            <p class="message-info">
+                                <span class="message-author">From: ${msg.author}</span>
+                                <span class="message-date">${new Date(msg.date).toLocaleString()}</span>
+                            </p>
+                            <button class="delete-btn" onclick="deleteMessage('${msg.id}')">Delete</button>
+                        </div>`
+                    ).join('');
+                    messageArea.style.display = 'block';
+                    document.getElementById('clearAllBtn').style.display = 'block';
+                } catch (error) {
+                    alert('Error loading messages: ' + error.message);
+                }
             } else {
                 alert('Incorrect password');
             }
         }
 
-        function deleteMessage(index) {
+        async function deleteMessage(messageId) {
             const password = document.getElementById('password').value;
             if (password !== '1234567890') {
                 alert('Please enter the password again to delete messages');
                 return;
             }
             
-            const messages = JSON.parse(localStorage.getItem('messages') || '[]');
-            messages.splice(index, 1);
-            localStorage.setItem('messages', JSON.stringify(messages));
-            checkPassword(); // Refresh the message display
+            try {
+                const { ref, remove } = window.firebaseRefs;
+                const db = window.firebaseDatabase;
+                await remove(ref(db, 'messages/' + messageId));
+                await checkPassword(); // Refresh the message display
+            } catch (error) {
+                alert('Error deleting message: ' + error.message);
+            }
+        }
+
+        function showMessageDialog() {
+            document.getElementById('messageDialog').style.display = 'flex';
         }
 
         function clearAllMessages() {
@@ -105,8 +177,8 @@
             }
             
             if (confirm('Are you sure you want to delete all messages? This cannot be undone.')) {
-                localStorage.setItem('messages', '[]');
-                checkPassword(); // Refresh the message display
+                window.firebaseRefs.remove(window.firebaseDatabase, 'messages').then(() => checkPassword()) // Refresh the message display
+                    .catch(error => alert('Error clearing messages: ' + error.message));
             }
         }
 
