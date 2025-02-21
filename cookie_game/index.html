@@ -14,11 +14,11 @@
             -moz-user-select: none;
             -ms-user-select: none;
             user-select: none;
-            touch-action: manipulation;
+            touch-action: none;
         }
 
         html, body {
-            touch-action: manipulation;
+            touch-action: none;
             -webkit-text-size-adjust: 100%;
             overscroll-behavior: none;
             overflow: hidden;
@@ -26,6 +26,7 @@
             padding: 0;
             width: 100%;
             height: 100%;
+            position: fixed;
         }
 
         .game-container {
@@ -37,13 +38,61 @@
             max-width: 600px;
             padding: 20px;
             box-sizing: border-box;
+            touch-action: none;
         }
 
         .cookie-wrapper {
-            touch-action: manipulation;
+            touch-action: none;
             -webkit-tap-highlight-color: transparent;
         }
+
+        .cookie-image {
+            touch-action: none;
+            pointer-events: none;
+            -webkit-touch-callout: none;
+            width: 200px;
+            transition: transform 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .cookie-image.clicked {
+            transform: scale(1.1);
+        }
     </style>
+    <script>
+        // 使用 Web Audio API 来处理音效
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        const audioContext = new AudioContext();
+        let audioBuffer = null;
+
+        // 创建增益节点来控制音量
+        const gainNode = audioContext.createGain();
+        gainNode.connect(audioContext.destination);
+        gainNode.gain.value = 0.3; // 设置音量为 30%
+
+        // 加载音效
+        fetch('click.mp3')
+            .then(response => response.arrayBuffer())
+            .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
+            .then(buffer => {
+                audioBuffer = buffer;
+            })
+            .catch(e => console.log('Error loading sound:', e));
+
+        function playSound() {
+            if (!audioBuffer) return;
+            
+            const source = audioContext.createBufferSource();
+            source.buffer = audioBuffer;
+            source.connect(gainNode); // 连接到增益节点而不是直接连接到destination
+            source.start(0);
+        }
+
+        // 用户首次交互时恢复音频上下文
+        document.addEventListener('click', function initAudio() {
+            audioContext.resume();
+            document.removeEventListener('click', initAudio);
+        }, { once: true });
+    </script>
 </head>
 <body>
     <div class="game-container">
@@ -69,19 +118,31 @@
         </div>
     </div>
     <script>
-        // 只保留防缩放相关的代码
-        window.addEventListener('wheel', function(e) {
-            if (e.ctrlKey) {
+        // 防止所有缩放手势
+        document.addEventListener('touchmove', function(e) {
+            if (e.touches.length > 1) {
                 e.preventDefault();
             }
         }, { passive: false });
 
-        window.addEventListener('keydown', function(e) {
-            if (e.ctrlKey && (e.key === '+' || e.key === '-' || e.key === '=')) {
+        document.addEventListener('touchstart', function(e) {
+            if (e.touches.length > 1) {
                 e.preventDefault();
             }
-        }, false);
+        }, { passive: false });
 
+        // 防止双击缩放
+        let lastTap = 0;
+        document.addEventListener('touchend', function(e) {
+            const currentTime = new Date().getTime();
+            const tapLength = currentTime - lastTap;
+            if (tapLength < 500 && tapLength > 0) {
+                e.preventDefault();
+            }
+            lastTap = currentTime;
+        });
+
+        // 防止手势缩放
         document.addEventListener('gesturestart', function(e) {
             e.preventDefault();
         });
@@ -94,21 +155,57 @@
             e.preventDefault();
         });
 
-        document.addEventListener('touchstart', function(e) {
-            if (e.touches.length > 1) {
+        // 防止鼠标滚轮缩放
+        window.addEventListener('wheel', function(e) {
+            if (e.ctrlKey) {
                 e.preventDefault();
             }
         }, { passive: false });
 
-        document.addEventListener('touchmove', function(e) {
-            if (e.touches.length > 1) {
+        // 防止键盘快捷键缩放
+        window.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && (e.key === '+' || e.key === '-' || e.key === '=')) {
                 e.preventDefault();
             }
-        }, { passive: false });
+        }, false);
 
+        // 禁用右键菜单
         document.addEventListener('contextmenu', function(e) {
             e.preventDefault();
         }, false);
+
+        // 禁用选择
+        document.addEventListener('selectstart', function(e) {
+            e.preventDefault();
+        }, false);
+
+        // 修改点击音效和动画处理
+        function playClickAnimation(event) {
+            playSound();
+            
+            const cookie = document.querySelector('.cookie-image');
+            cookie.classList.add('clicked');
+            
+            setTimeout(() => {
+                cookie.classList.remove('clicked');
+            }, 100);
+        }
+
+        // 优化点击和触摸事件处理
+        const cookieWrapper = document.querySelector('.cookie-wrapper');
+        
+        cookieWrapper.addEventListener('click', function(event) {
+            playSound();
+            addOneToCounter(event);
+            playClickAnimation(event);
+        }, { passive: true });
+
+        cookieWrapper.addEventListener('touchstart', function(event) {
+            event.preventDefault();
+            playSound();
+            addOneToCounter(event);
+            playClickAnimation(event);
+        }, { passive: false });
     </script>
     <script src="script.js"></script>
 </body>

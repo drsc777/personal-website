@@ -2,7 +2,7 @@
 let counter = 0;  // Current cookie count
 let clicks = [];  // Array to store click timestamps
 let totalClicks = 0;  // Total clicks since start
-let bestCPS = localStorage.getItem('bestCPS') || 0;
+let bestCPS = 0;  // 直接初始化为0，不从localStorage读取
 
 // Initialize best CPS display
 document.getElementById('bestCPS').textContent = bestCPS;
@@ -28,10 +28,9 @@ function updateClicksPerSecond() {
     const cps = clicks.length;
     document.getElementById("clicksPerSecond").textContent = cps;
     
-    // 更新最快点击速度记录
+    // 更新最快点击速度记录，但不保存到localStorage
     if (cps > bestCPS) {
         bestCPS = cps;
-        localStorage.setItem('bestCPS', bestCPS);
         document.getElementById('bestCPS').textContent = bestCPS;
     }
 }
@@ -54,6 +53,7 @@ function createClickEffect(event) {
     effect.style.pointerEvents = 'none';
     effect.style.userSelect = 'none';
     effect.style.animation = 'fadeUp 0.5s ease-out';
+    effect.style.zIndex = '1000';
     
     document.body.appendChild(effect);
     
