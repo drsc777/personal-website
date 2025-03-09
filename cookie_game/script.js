@@ -2,7 +2,7 @@
 let counter = 0;  // Current cookie count
 let clicks = [];  // Array to store click timestamps
 let totalClicks = 0;  // Total clicks since start
-let bestCPS = 0;  // 直接初始化为0，不从localStorage读取
+let bestCPS = 0;  // Initialize to 0, not storing in localStorage
 
 // Initialize best CPS display
 document.getElementById('bestCPS').textContent = bestCPS;
@@ -28,7 +28,7 @@ function updateClicksPerSecond() {
     const cps = clicks.length;
     document.getElementById("clicksPerSecond").textContent = cps;
     
-    // 更新最快点击速度记录，但不保存到localStorage
+    // Update best CPS record, but don't save to localStorage
     if (cps > bestCPS) {
         bestCPS = cps;
         document.getElementById('bestCPS').textContent = bestCPS;
@@ -78,5 +78,5 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-// 每秒更新点击速度
+// Update CPS every 100ms
 setInterval(updateClicksPerSecond, 100);

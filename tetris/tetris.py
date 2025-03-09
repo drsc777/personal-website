@@ -1,13 +1,13 @@
 import pygame
 import random
 
-# 初始化 Pygame
+# Initialize Pygame
 pygame.init()
 
-# 简化颜色定义：黑、白、灰
+# Simplified color definition: Black, White, Gray
 COLORS = [(0, 0, 0), (255, 255, 255), (128, 128, 128)]
 
-# 方块形状定义
+# Block shape definitions
 SHAPES = [
     [[1, 5, 9, 13], [4, 5, 6, 7]],  # I
     [[4, 5, 9, 10], [2, 6, 5, 9]],  # Z
@@ -18,7 +18,7 @@ SHAPES = [
     [[1, 2, 5, 6]]  # O
 ]
 
-# 游戏设置
+# Game settings
 WINDOW_WIDTH = 500
 WINDOW_HEIGHT = 500
 BLOCK_SIZE = 20
@@ -30,22 +30,22 @@ NEXT_BLOCK_TOP = 60
 NEXT_BLOCK_SIZE = 80
 FPS = 30
 
-# 在游戏设置部分添加游戏状态
+# Game states
 GAME_STATES = ["menu", "start", "gameover"]
 
-# 按键重复设置
+# Key repeat settings
 KEY_REPEAT_DELAY = 200
 KEY_REPEAT_INTERVAL = 50
 pygame.key.set_repeat(KEY_REPEAT_DELAY, KEY_REPEAT_INTERVAL)
 
-# 创建游戏窗口
+# Create game window
 screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 pygame.display.set_caption("Tetris")
 clock = pygame.time.Clock()
 pygame.mixer.music.load("Tetris/tetris_theme.mp3")
 pygame.mixer.music.play(-1)
 
-# 添加字体定义
+# Add font definition
 font = pygame.font.SysFont('Arial', 25, True)
 
 class Game:
@@ -53,7 +53,7 @@ class Game:
         self.field = [[0 for _ in range(FIELD_WIDTH)] for _ in range(FIELD_HEIGHT)]
         self.score = self.lines = 0
         self.level = 1
-        self.state = "menu"  # 初始状态改为菜单
+        self.state = "menu"  # Initial state set to menu
         self.figure = self.next = None
         self.new_figure()
         
@@ -70,17 +70,17 @@ class Game:
     def freeze(self):
         try:
             for i, j in self.figure.get_coords():
-                if 0 <= i < FIELD_HEIGHT and 0 <= j < FIELD_WIDTH:  # 添加边界检查
-                    self.field[i][j] = 1  # 使用白色(1)作为方块颜色
+                if 0 <= i < FIELD_HEIGHT and 0 <= j < FIELD_WIDTH:  # Add boundary check
+                    self.field[i][j] = 1  # Use white (1) as block color
             
             lines = 0
             for i in range(FIELD_HEIGHT):
-                if all(self.field[i]):  # 检查一行是否已满
+                if all(self.field[i]):  # Check if a row is fully filled
                     lines += 1
-                    # 从当前行开始，每一行都复制上一行的内容
+                    # From the current row, each row copies the content of the row above
                     for i1 in range(i, 0, -1):
                         self.field[i1] = self.field[i1-1][:]
-                    self.field[0] = [0] * FIELD_WIDTH  # 顶部添加新的空行
+                    self.field[0] = [0] * FIELD_WIDTH  # Add new empty row at top
             
             self.score += lines ** 2
             self.lines += lines
@@ -95,14 +95,14 @@ class Game:
         except Exception as e:
             print(f"Error in freeze: {e}")
 
-    # 添加逆时针旋转方法
+    # Add counterclockwise rotation method
     def rotate_counterclockwise(self):
         old_rotation = self.figure.rotation
         self.figure.rotation = (self.figure.rotation - 1) % len(SHAPES[self.figure.type])
         if self.intersects():
             self.figure.rotation = old_rotation
 
-    # 添加快速下落方法
+    # Add quick drop method
     def drop_down(self):
         while not self.intersects():
             self.figure.y += 1
@@ -123,12 +123,12 @@ class Figure:
     def rotate(self):
         self.rotation = (self.rotation + 1) % len(SHAPES[self.type])
 
-# 创建游戏实例
+# Create game instance
 game = Game()
 paused = False
 counter = 0
 
-# 在主循环前添加绘制菜单的函数
+# Draw menu function
 def draw_menu():
     title = font.render("TETRIS", True, COLORS[1])
     controls = [
@@ -151,7 +151,7 @@ def draw_menu():
         rect = control.get_rect(center=(WINDOW_WIDTH//2, 200 + i*30))
         screen.blit(control, rect)
 
-# 修改主循环
+# Main game loop
 while True:
     counter = (counter + 1) % 100000
     if game.state == "start" and not paused:
@@ -161,7 +161,7 @@ while True:
                 game.figure.y -= 1
                 game.freeze()
 
-    # 事件处理
+    # Event handling
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -192,27 +192,27 @@ while True:
                 if event.key == pygame.K_k:
                     game.rotate_counterclockwise()
 
-    # 绘制游戏界面
+    # Draw game interface
     screen.fill(COLORS[0])
     
     if game.state == "menu":
         draw_menu()
     else:
-        # 绘制左右边框区域（灰色）
+        # Draw left and right border areas (gray)
         pygame.draw.rect(screen, COLORS[2], [0, 0, GAME_AREA_LEFT-10, WINDOW_HEIGHT])
         pygame.draw.rect(screen, COLORS[2], [GAME_AREA_LEFT+FIELD_WIDTH*BLOCK_SIZE+10, 0, 
                         WINDOW_WIDTH-(GAME_AREA_LEFT+FIELD_WIDTH*BLOCK_SIZE+10), WINDOW_HEIGHT])
         
-        # 绘制游戏区域和预览区域（黑色背景）
+        # Draw game area and preview area (black background)
         pygame.draw.rect(screen, COLORS[0], [NEXT_BLOCK_LEFT, NEXT_BLOCK_TOP, NEXT_BLOCK_SIZE, NEXT_BLOCK_SIZE])
         
-        # 绘制边框（白色）
+        # Draw borders (white)
         pygame.draw.rect(screen, COLORS[1], 
                         [GAME_AREA_LEFT-2, 58, FIELD_WIDTH*BLOCK_SIZE+4, FIELD_HEIGHT*BLOCK_SIZE+4], 2)
         pygame.draw.rect(screen, COLORS[1], [NEXT_BLOCK_LEFT, NEXT_BLOCK_TOP, NEXT_BLOCK_SIZE, NEXT_BLOCK_SIZE], 2)
         screen.blit(font.render("Next:", True, COLORS[1]), [NEXT_BLOCK_LEFT, NEXT_BLOCK_TOP-30])
 
-        # 绘制已固定的方块
+        # Draw fixed blocks
         for i in range(FIELD_HEIGHT):
             for j in range(FIELD_WIDTH):
                 if game.field[i][j] > 0:
@@ -220,16 +220,16 @@ while True:
                                    [j*BLOCK_SIZE+GAME_AREA_LEFT, i*BLOCK_SIZE+60,
                                     BLOCK_SIZE-1, BLOCK_SIZE-1])
 
-        # 绘制当前方块和预览
+        # Draw current block and preview
         if game.figure:
-            # 绘制当前方块
+            # Draw current block
             for i, j in game.figure.get_coords():
                 if i >= 0:
                     pygame.draw.rect(screen, COLORS[2],
                                    [j*BLOCK_SIZE+GAME_AREA_LEFT, i*BLOCK_SIZE+60,
                                     BLOCK_SIZE-1, BLOCK_SIZE-1])
             
-            # 绘制预览方块（在右上角）
+            # Draw preview block (in top-right corner)
             for i, j in game.next.get_coords():
                 if i >= 0:
                     pygame.draw.rect(screen, COLORS[2],
@@ -237,7 +237,7 @@ while True:
                                     (i)*BLOCK_SIZE+NEXT_BLOCK_TOP+10,
                                     BLOCK_SIZE-1, BLOCK_SIZE-1])
 
-        # 绘制分数和等级（移到左侧区域）
+        # Draw score and level (moved to left side area)
         screen.blit(font.render(f"Score:", True, COLORS[1]), [20, 100])
         screen.blit(font.render(f"{game.score}", True, COLORS[1]), [20, 130])
         screen.blit(font.render(f"Level:", True, COLORS[1]), [20, 180])

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abby's Website - Projects</title>
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@300;400&display=swap" rel="stylesheet">
+    <script src="scripts.js"></script>
+</head>
+<body>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="projects.html" class="active">Projects</a>
+        <a href="coursework.html">Coursework</a>
+        <button class="theme-switch" onclick="toggleTheme()">🌙 Dark Mode</button>
+    </nav>
+
+    <main class="retro-terminal">
+        <div class="terminal-header">
+            <div class="terminal-title">Abby:~/Projects$ ls -la</div>
+        </div>
+        
+        <div class="construction-banner">
+            This page is currently under construction!
+        </div>
+
+        <h1>Projects</h1>
+
+        <div class="projects-grid">
+            <div class="project-card">
+                <h3>> Fishing-Themed Pomodoro iOS App</h3>
+                <p class="project-tech">Swift, UIKit, Core Data</p>
+                <p class="prompt">A relaxing productivity app that combines the Pomodoro technique with a fishing game. Complete focus sessions to catch different types of fish and build your collection.</p>
+                <div class="project-links">
+                    <a href="#" class="btn">View Project</a>
+                    <a href="https://github.com/abby" class="btn">Source Code</a>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <h3>> Embedded AI Assistant Device</h3>
+                <p class="project-tech">C++, Raspberry Pi, TensorFlow Lite</p>
+                <p class="prompt">A custom-built voice assistant using a Raspberry Pi with offline speech recognition and a minimalist interface. Features include timer functionality, weather updates, and basic Q&A.</p>
+                <div class="project-links">
+                    <a href="#" class="btn">View Project</a>
+                    <a href="https://github.com/abby" class="btn">Source Code</a>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <h3>> Mini PC Development</h3>
+                <p class="project-tech">PCB Design, Verilog, C</p>
+                <p class="prompt">Designing and building a miniature computer from scratch, including custom PCB design, programming an FPGA, and writing a simple operating system. Currently in the prototyping phase.</p>
+                <div class="project-links">
+                    <a href="#" class="btn">View Project</a>
+                    <a href="https://github.com/abby" class="btn">Source Code</a>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <h3>> Personal Website Development</h3>
+                <p class="project-tech">HTML, CSS, JavaScript, Firebase</p>
+                <p class="prompt">This website! Built from scratch with a focus on clean design and responsive layout. Features include dark mode, visitor counter, and a hidden message system.</p>
+                <div class="project-links">
+                    <a href="#" class="btn">View Project</a>
+                    <a href="https://github.com/abby" class="btn">Source Code</a>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <h3>> Cookie Clicker Game</h3>
+                <p class="project-tech">JavaScript, HTML Canvas, CSS</p>
+                <p class="prompt">An addictive clicker game where you bake cookies by clicking and purchasing upgrades. Features include multiple types of upgrades, achievements, and saving progress.</p>
+                <div class="project-links">
+                    <a href="cookie_game/index.html" class="btn">Play Game</a>
+                    <a href="https://github.com/abby" class="btn">Source Code</a>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <h3>> Scam Website Detection</h3>
+                <p class="project-tech">Python, Machine Learning, Web Scraping</p>
+                <p class="prompt">A tool that analyzes websites to detect potential scams using natural language processing and machine learning. Features include URL analysis, content evaluation, and risk scoring.</p>
+                <div class="project-links">
+                    <a href="scam_website/index.html" class="btn">Demo</a>
+                    <a href="https://github.com/abby" class="btn">Source Code</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="visitor-counter">
+            <p>Views: <span id="visitorCount">0</span></p>
+        </div>
+        <p>Copyright <span class="secret-entry" onclick="showMessageDialog()">©</span> 2024 Abby Li <span class="cursor-blink">_</span></p>
+    </footer>
+
+    <div id="messageDialog" class="message-dialog" style="display: none;">
+        <div class="dialog-content">
+            <div class="terminal-header">
+                <div class="terminal-title">sudo view_messages</div>
+            </div>
+            <input type="password" 
+                   id="password" 
+                   placeholder="Password:"
+                   onkeyup="if(event.key === 'Enter') checkPassword()">
+            <button onclick="checkPassword()">Authenticate</button>
+            <div id="messageArea" class="message-area" style="display: none;"></div>
+            <button id="clearAllBtn" class="clear-all-btn" onclick="clearAllMessages()" style="display: none;">rm -rf messages/*</button>
+        </div>
+    </div>
+</body>
+</html> 

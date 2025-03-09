@@ -1,11 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Abby's Website</title>
     <link rel="icon" type="image/png" href="images/favicon.png">
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@300;400&display=swap" rel="stylesheet">
+    <meta name="theme-color" content="#f0f0f0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <script src="scripts.js"></script>
     <script type="module">
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -225,55 +231,57 @@
     </script>
 </head>
 <body>
-    <button class="theme-switch" onclick="toggleTheme()">🌙 Dark Mode</button>
     <nav>
         <a href="index.html" class="active">Home</a>
+        <a href="projects.html">Projects</a>
         <a href="coursework.html">Coursework</a>
+        <button class="theme-switch" onclick="toggleTheme()">🌙 Dark Mode</button>
     </nav>
 
     <main>
+        <div class="terminal-header">
+            <div class="terminal-title">Abby:~$ whoami</div>
+        </div>
+
+        <section class="hero-section">
         <h1>Abby Li</h1>
 
         <div class="social-links">
-            <a href="https://www.linkedin.com/in/abby-li-70538416b/" target="_blank">LinkedIn</a>
-            <a href="https://github.com/drsc777" target="_blank">GitHub</a>
-            <a href="mailto:yl7@berkeley.edu">Email</a>
+                <a href="https://www.linkedin.com/in/abby-li-70538416b/" target="_blank">LinkedIn</a>
+                <a href="https://github.com/drsc777" target="_blank">GitHub</a>
+                <a href="mailto:yl7@berkeley.edu">Email</a>
         </div>
+        </section>
 
+        <section class="about-section">
         <h2>About Me</h2>
-        <p>I am a sophomore studying Electrical Engineering and Computer Science (EECS) at UC Berkeley.</p>
-        <p>As an EECS major student, I am particularly interested in Robotics, ASIC Design, and Machine Learning.</p>
+            <p class="prompt">I am a sophomore studying Electrical Engineering and Computer Science (EECS) at UC Berkeley.</p>
+            <p class="prompt">I am interested in Robotics, ASIC Design, and Machine Learning.</p>
+            <p class="prompt">I also enjoy running with my dog, playing rhythm games, and exploring new technologies.</p>
+        </section>
 
-        <h2>Projects</h2>
-        
-        <div class="project">
-            <h3>Web dev & IOS dev</h3>
-            <p>Ongoing development projects focusing on web development and iOS application development.</p>
-            <div class="project-links">
-                <a href="cookie_game/index.html" target="_blank">
-                    Cookie Clicker Game
-                    <div class="preview-tooltip" style="background-image: url('images/cookiegame.png');"></div>
-                </a>
-                <a href="scam_website/index.html" target="_blank">
-                    Fake Scam Website
-                    <div class="preview-tooltip scam-preview" style="background-image: url('images/scamwebsite.png');"></div>
-                </a>
-            </div>
+        <section class="projects-preview">
+            <h2>Current Projects</h2>
+            
+            <p class="prompt">> Fishing-Themed Pomodoro iOS App</p>
+            <p class="prompt">Interactive productivity app with fishing game elements using Swift, UIKit, and Core Data.</p>
+            
+            <p class="prompt">> Embedded AI Assistant Device</p>
+            <p class="prompt">Custom Raspberry Pi voice assistant with offline speech recognition and natural language processing.</p>
+            
+            <div class="view-more">
+                <a href="projects.html" class="view-more-link">cd ./projects</a>
         </div>
+        </section>
 
-        <div class="project">
-            <h3>Micromouse & PCB</h3>
-            <p>Hardware projects including microrobot design and printed circuit board fabrication.</p>
-        </div>
-
-        <!-- Add message section -->
+        <!-- Message section -->
         <section class="message-section">
             <h2>Leave a Message</h2>
             <div class="message-form">
-                <input type="text" id="authorName" placeholder="Your name (optional)">
-                <textarea id="newMessage" placeholder="Write your message here..."></textarea>
+                <input type="text" id="authorName" placeholder="your_name@terminal:~$">
+                <textarea id="newMessage" placeholder="Type your message here..."></textarea>
                 <button onclick="submitMessage()">Send Message</button>
-            </div>
+        </div>
         </section>
     </main>
 
@@ -281,19 +289,22 @@
         <div class="visitor-counter">
             <p>Views: <span id="visitorCount">0</span></p>
         </div>
-        <p>Copyright <span class="secret-entry" onclick="showMessageDialog()">©</span> 2024 Abby Li</p>
+        <p>Copyright <span class="secret-entry" onclick="showMessageDialog()">©</span> 2024 Abby Li <span class="cursor-blink">_</span></p>
     </footer>
 
     <!-- 修改密码对话框 -->
     <div id="messageDialog" class="message-dialog" style="display: none;">
         <div class="dialog-content">
+            <div class="terminal-header">
+                <div class="terminal-title">sudo view_messages</div>
+            </div>
             <input type="password" 
                    id="password" 
-                   placeholder="Enter password"
+                   placeholder="Password:"
                    onkeyup="if(event.key === 'Enter') checkPassword()">
-            <button onclick="checkPassword()">View Messages</button>
+            <button onclick="checkPassword()">Authenticate</button>
             <div id="messageArea" class="message-area" style="display: none;"></div>
-            <button id="clearAllBtn" class="clear-all-btn" onclick="clearAllMessages()" style="display: none;">Clear All Messages</button>
+            <button id="clearAllBtn" class="clear-all-btn" onclick="clearAllMessages()" style="display: none;">rm -rf messages/*</button>
         </div>
     </div>
 </body>
