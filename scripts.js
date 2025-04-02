@@ -281,51 +281,132 @@ function loadHabitData() {
     });
 }
 
-// Log habit
+// Log habit with modal interface
 function logHabit(habit) {
-    const today = formatDate(new Date(), 'yyyy-MM-dd');
+    // Create modal overlay
+    const modal = document.createElement('div');
+    modal.className = 'habit-modal';
     
-    // Get current habit data
-    const habitData = JSON.parse(localStorage.getItem(`habit_${habit}`)) || {
-        days: {},
-        streak: 0,
-        longestStreak: 0,
-        totalCount: 0,
-        totalMinutes: 0
-    };
+    // Format date for display
+    const today = new Date();
+    const dateValue = formatDate(today, 'yyyy-MM-dd');
     
-    // Prompt user to input duration
-    const minutes = parseInt(prompt(`Enter ${getHabitName(habit)} duration (minutes):`, "30"));
-    if (isNaN(minutes) || minutes <= 0) return;
+    // Create modal content
+    modal.innerHTML = `
+        <div class="habit-modal-content">
+            <div class="habit-modal-header">
+                <h3>${getHabitName(habit)}</h3>
+                <button class="habit-modal-close">esc</button>
+            </div>
+            <div class="habit-modal-body">
+                <div class="habit-modal-row">
+                    <label>Date:</label>
+                    <input type="date" id="habit-date" value="${dateValue}">
+                </div>
+                <div class="habit-modal-row">
+                    <label>Minutes:</label>
+                    <input type="number" id="habit-minutes" value="30" min="1">
+                </div>
+                <div class="habit-modal-row">
+                    <label>Journal entry:</label>
+                    <textarea id="habit-journal" placeholder="Write about your ${getHabitName(habit).toLowerCase()} session..."></textarea>
+                </div>
+                <button class="habit-modal-save">Save</button>
+            </div>
+        </div>
+    `;
     
-    // Update today's record
-    habitData.days[today] = {
-        minutes: minutes,
-        timestamp: new Date().toISOString()
-    };
+    // Add modal to the page
+    document.body.appendChild(modal);
     
-    // Calculate streak
-    updateStreaks(habitData);
+    // Focus on minutes input
+    setTimeout(() => document.getElementById('habit-minutes').focus(), 100);
     
-    // Update total data
-    habitData.totalCount = Object.keys(habitData.days).length;
-    habitData.totalMinutes += minutes;
+    // Add event listeners
+    const closeBtn = modal.querySelector('.habit-modal-close');
+    closeBtn.addEventListener('click', () => {
+        document.body.removeChild(modal);
+    });
     
-    // Save to localStorage
-    localStorage.setItem(`habit_${habit}`, JSON.stringify(habitData));
+    // Close when clicking outside
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            document.body.removeChild(modal);
+        }
+    });
     
-    // Update UI
-    updateHabitStats(habit, habitData);
+    // Handle save button
+    const saveBtn = modal.querySelector('.habit-modal-save');
+    saveBtn.addEventListener('click', () => {
+        const dateInput = document.getElementById('habit-date');
+        const minutesInput = document.getElementById('habit-minutes');
+        const journalInput = document.getElementById('habit-journal');
+        
+        const date = dateInput.value;
+        const minutes = parseInt(minutesInput.value);
+        const journal = journalInput.value.trim();
+        
+        if (isNaN(minutes) || minutes <= 0) {
+            alert('Please enter a valid number of minutes');
+            return;
+        }
+        
+        // Get current habit data
+        const habitData = JSON.parse(localStorage.getItem(`habit_${habit}`)) || {
+            days: {},
+            streak: 0,
+            longestStreak: 0,
+            totalCount: 0,
+            totalMinutes: 0
+        };
+        
+        // Check if this date already exists
+        if (habitData.days[date]) {
+            // Subtract previous minutes
+            habitData.totalMinutes -= habitData.days[date].minutes;
+        }
+        
+        // Update record for selected date
+        habitData.days[date] = {
+            minutes: minutes,
+            timestamp: new Date().toISOString(),
+            journal: journal
+        };
+        
+        // Calculate streak
+        updateStreaks(habitData);
+        
+        // Update total data
+        habitData.totalCount = Object.keys(habitData.days).length;
+        habitData.totalMinutes += minutes;
+        
+        // Save to localStorage
+        localStorage.setItem(`habit_${habit}`, JSON.stringify(habitData));
+        
+        // Update UI
+        updateHabitStats(habit, habitData);
+        
+        // Update heatmap
+        const level = getActivityLevel(minutes);
+        const dayEl = document.querySelector(`.habit-day[data-date="${date}"][data-habit="${habit}"]`);
+        if (dayEl) {
+            dayEl.className = `habit-day level-${level}`;
+        }
+        
+        // Close modal
+        document.body.removeChild(modal);
+    });
     
-    // Update heatmap
-    const level = getActivityLevel(minutes);
-    const dayEl = document.querySelector(`.habit-day[data-date="${today}"][data-habit="${habit}"]`);
-    if (dayEl) {
-        dayEl.className = `habit-day level-${level}`;
-    }
+    // Handle keyboard events
+    document.addEventListener('keydown', function escHandler(e) {
+        if (e.key === 'Escape') {
+            document.body.removeChild(modal);
+            document.removeEventListener('keydown', escHandler);
+        }
+    });
 }
 
-// Toggle habit day status
+// Toggle habit day status using modal interface
 function toggleHabitDay(dayEl) {
     const habit = dayEl.dataset.habit;
     const date = dayEl.dataset.date;
@@ -339,35 +420,130 @@ function toggleHabitDay(dayEl) {
         totalMinutes: 0
     };
     
-    // If the date exists, delete it; otherwise add it
+    // If the date already exists, delete it
     if (habitData.days[date]) {
-        habitData.totalMinutes -= habitData.days[date].minutes;
-        delete habitData.days[date];
-        dayEl.className = 'habit-day level-0';
-    } else {
-        const minutes = parseInt(prompt(`Enter ${getHabitName(habit)} duration (minutes):`, "30"));
-        if (isNaN(minutes) || minutes <= 0) return;
-        
-        habitData.days[date] = {
-            minutes: minutes,
-            timestamp: new Date().toISOString()
-        };
-        
-        habitData.totalMinutes += minutes;
-        
-        const level = getActivityLevel(minutes);
-        dayEl.className = `habit-day level-${level}`;
+        if (confirm(`Remove ${getHabitName(habit)} entry for ${formatDate(new Date(date))}?`)) {
+            habitData.totalMinutes -= habitData.days[date].minutes;
+            delete habitData.days[date];
+            dayEl.className = 'habit-day level-0';
+            
+            // Update statistics
+            habitData.totalCount = Object.keys(habitData.days).length;
+            updateStreaks(habitData);
+            
+            // Save to localStorage
+            localStorage.setItem(`habit_${habit}`, JSON.stringify(habitData));
+            
+            // Update UI
+            updateHabitStats(habit, habitData);
+        }
+        return;
     }
     
-    // Update statistics
-    habitData.totalCount = Object.keys(habitData.days).length;
-    updateStreaks(habitData);
+    // Otherwise show the logging modal with the selected date
+    // Create modal overlay
+    const modal = document.createElement('div');
+    modal.className = 'habit-modal';
     
-    // Save to localStorage
-    localStorage.setItem(`habit_${habit}`, JSON.stringify(habitData));
+    // Parse date for the modal
+    const selectedDate = new Date(date);
+    const formattedDate = formatDate(selectedDate, 'MMM dd, yyyy');
     
-    // Update UI
-    updateHabitStats(habit, habitData);
+    // Create modal content
+    modal.innerHTML = `
+        <div class="habit-modal-content">
+            <div class="habit-modal-header">
+                <h3>${getHabitName(habit)}</h3>
+                <button class="habit-modal-close">esc</button>
+            </div>
+            <div class="habit-modal-body">
+                <div class="habit-modal-row">
+                    <label>Date:</label>
+                    <input type="date" id="habit-date" value="${date}" readonly>
+                </div>
+                <div class="habit-modal-row">
+                    <label>Minutes:</label>
+                    <input type="number" id="habit-minutes" value="30" min="1">
+                </div>
+                <div class="habit-modal-row">
+                    <label>Journal entry:</label>
+                    <textarea id="habit-journal" placeholder="Write about your ${getHabitName(habit).toLowerCase()} session..."></textarea>
+                </div>
+                <button class="habit-modal-save">Save</button>
+            </div>
+        </div>
+    `;
+    
+    // Add modal to the page
+    document.body.appendChild(modal);
+    
+    // Focus on minutes input
+    setTimeout(() => document.getElementById('habit-minutes').focus(), 100);
+    
+    // Add event listeners
+    const closeBtn = modal.querySelector('.habit-modal-close');
+    closeBtn.addEventListener('click', () => {
+        document.body.removeChild(modal);
+    });
+    
+    // Close when clicking outside
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            document.body.removeChild(modal);
+        }
+    });
+    
+    // Handle save button
+    const saveBtn = modal.querySelector('.habit-modal-save');
+    saveBtn.addEventListener('click', () => {
+        const dateInput = document.getElementById('habit-date');
+        const minutesInput = document.getElementById('habit-minutes');
+        const journalInput = document.getElementById('habit-journal');
+        
+        const entryDate = dateInput.value;
+        const minutes = parseInt(minutesInput.value);
+        const journal = journalInput.value.trim();
+        
+        if (isNaN(minutes) || minutes <= 0) {
+            alert('Please enter a valid number of minutes');
+            return;
+        }
+        
+        // Update record for selected date
+        habitData.days[entryDate] = {
+            minutes: minutes,
+            timestamp: new Date().toISOString(),
+            journal: journal
+        };
+        
+        // Update total data
+        habitData.totalCount = Object.keys(habitData.days).length;
+        habitData.totalMinutes += minutes;
+        
+        // Calculate streak
+        updateStreaks(habitData);
+        
+        // Save to localStorage
+        localStorage.setItem(`habit_${habit}`, JSON.stringify(habitData));
+        
+        // Update UI
+        updateHabitStats(habit, habitData);
+        
+        // Update heatmap
+        const level = getActivityLevel(minutes);
+        dayEl.className = `habit-day level-${level}`;
+        
+        // Close modal
+        document.body.removeChild(modal);
+    });
+    
+    // Handle keyboard events
+    document.addEventListener('keydown', function escHandler(e) {
+        if (e.key === 'Escape') {
+            document.body.removeChild(modal);
+            document.removeEventListener('keydown', escHandler);
+        }
+    });
 }
 
 // Update habit statistics

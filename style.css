@@ -1183,4 +1183,151 @@ body:not(:has(nav a.active[href="projects.html"])) .construction-banner {
         width: 16px;
         height: 16px;
     }
+}
+
+/* Habit modal styles */
+.habit-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.habit-modal-content {
+    width: 90%;
+    max-width: 450px;
+    background-color: var(--bg-color);
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    font-family: 'Inconsolata', 'Monaco', monospace;
+}
+
+.habit-modal-header {
+    background-color: var(--terminal-bg);
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.habit-modal-header h3 {
+    margin: 0;
+    color: var(--terminal-text);
+    font-size: 20px;
+    font-weight: normal;
+}
+
+.habit-modal-header h3::before {
+    content: "";
+}
+
+.habit-modal-close {
+    background-color: transparent;
+    border: 1px solid var(--terminal-text);
+    border-radius: 4px;
+    color: var(--terminal-text);
+    padding: 3px 8px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+
+.habit-modal-close:hover {
+    background-color: var(--terminal-text);
+    color: var(--terminal-bg);
+}
+
+.habit-modal-body {
+    padding: 20px;
+}
+
+.habit-modal-row {
+    margin-bottom: 15px;
+}
+
+.habit-modal-row label {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--text-color);
+    font-size: 16px;
+}
+
+.habit-modal-row input[type="date"],
+.habit-modal-row input[type="number"] {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background-color: var(--terminal-bg);
+    color: var(--terminal-text);
+    font-family: inherit;
+    font-size: 16px;
+}
+
+.habit-modal-row textarea {
+    width: 100%;
+    height: 100px;
+    padding: 8px 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background-color: var(--terminal-bg);
+    color: var(--terminal-text);
+    font-family: inherit;
+    font-size: 16px;
+    resize: vertical;
+}
+
+.habit-modal-save {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-top: 10px;
+    font-family: inherit;
+}
+
+.habit-modal-save:hover {
+    background-color: var(--button-hover-bg);
+}
+
+/* Dark theme adjustments for habit modal */
+[data-theme="dark"] .habit-modal-content {
+    background-color: #1c1c1c;
+}
+
+[data-theme="dark"] .habit-modal-header {
+    background-color: #333;
+}
+
+[data-theme="dark"] .habit-modal-row input,
+[data-theme="dark"] .habit-modal-row textarea {
+    background-color: #333;
+    color: #ddd;
+    border-color: #444;
+}
+
+/* Mobile adjustments for habit modal */
+@media (max-width: 480px) {
+    .habit-modal-content {
+        width: 95%;
+    }
+    
+    .habit-modal-body {
+        padding: 15px;
+    }
 } 
