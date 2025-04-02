@@ -31,11 +31,11 @@
         <section class="heatmaps-section">
             <h2>Activity Tracking</h2>
             
-            <!-- GitHub contribution heatmap -->
+            <!-- GitHub contribution heatmap with advanced features -->
             <div class="heatmap-container">
                 <h3>GitHub Contributions</h3>
                 <div class="github-heatmap">
-                    <img src="https://ghchart.rshah.org/drsc777" alt="GitHub Contribution Heatmap" />
+                    <div id="github-contribution-chart"></div>
                 </div>
                 <p class="heatmap-note">Sync status: Live from GitHub</p>
             </div>
@@ -44,7 +44,7 @@
             <div class="heatmap-container">
                 <h3>MonkeyType Activity</h3>
                 <div class="monkeytype-heatmap">
-                    <iframe src="https://monkeytype.com/profile/drsc?heatmap=true" frameborder="0" width="100%" height="350" scrolling="no" style="overflow:hidden"></iframe>
+                    <iframe id="monkeytype-iframe" src="https://monkeytype.com/embed/profile/drsc" frameborder="0" width="100%" height="400" scrolling="no" style="overflow:hidden"></iframe>
                 </div>
                 <p class="heatmap-note">Showing typing activity data from MonkeyType</p>
             </div>
@@ -100,12 +100,146 @@
         <p>Copyright © 2024 Abby Li <span class="cursor-blink">_</span></p>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const savedTheme = localStorage.getItem('theme') || 'light';
             document.documentElement.setAttribute('data-theme', savedTheme);
             updateThemeButton();
+            
+            // Load GitHub contributions with tooltips
+            fetchGitHubContributions();
+            
+            // Fix MonkeyType iframe height
+            const monkeyTypeIframe = document.getElementById('monkeytype-iframe');
+            setTimeout(() => {
+                monkeyTypeIframe.style.height = '800px';
+            }, 1000);
         });
+        
+        // Fetch GitHub contributions and display with tooltips
+        async function fetchGitHubContributions() {
+            const username = 'drsc777';
+            const container = document.getElementById('github-contribution-chart');
+            
+            try {
+                // Use GitHub API to get contribution data (fallback to pre-made display if API rate limited)
+                container.innerHTML = `<div class="github-fallback">
+                    <img src="https://ghchart.rshah.org/${username}" alt="GitHub Contribution Heatmap" />
+                    <div class="tooltip">Loading GitHub data...</div>
+                </div>`;
+                
+                // Load contribution calendar via GitHub API
+                const response = await axios.get(`https://github-contributions-api.jogruber.de/v4/${username}?y=last`);
+                if (response.data && response.data.contributions) {
+                    renderContributionCalendar(response.data.contributions, container);
+                }
+            } catch (error) {
+                console.error('Error fetching GitHub contributions:', error);
+            }
+        }
+        
+        // Render GitHub contribution calendar with tooltips
+        function renderContributionCalendar(contributions, container) {
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            
+            // Group contributions by week
+            const weeks = [];
+            let currentWeek = [];
+            
+            contributions.forEach((day, index) => {
+                if (index % 7 === 0 && index > 0) {
+                    weeks.push(currentWeek);
+                    currentWeek = [];
+                }
+                currentWeek.push(day);
+            });
+            if (currentWeek.length > 0) {
+                weeks.push(currentWeek);
+            }
+            
+            // Build calendar HTML
+            let html = '<div class="github-calendar">';
+            
+            // Add month labels
+            html += '<div class="calendar-months">';
+            const firstDaysOfMonths = contributions.filter((day, i) => {
+                return i === 0 || new Date(day.date).getDate() === 1;
+            });
+            firstDaysOfMonths.forEach(day => {
+                const date = new Date(day.date);
+                const month = months[date.getMonth()];
+                const offset = Math.floor(weeks.findIndex(week => 
+                    week.some(d => d.date === day.date)
+                ) * (15 + 2)); // 15px square + 2px gap
+                html += `<div class="month-label" style="left: ${offset}px">${month}</div>`;
+            });
+            html += '</div>';
+            
+            // Add weekday labels
+            html += '<div class="calendar-weekdays">';
+            weekdays.forEach((day, i) => {
+                if (i % 2 === 0) { // Show only some days to save space
+                    html += `<div class="weekday-label">${day}</div>`;
+                } else {
+                    html += '<div class="weekday-label"></div>';
+                }
+            });
+            html += '</div>';
+            
+            // Add contribution cells
+            html += '<div class="calendar-grid">';
+            weeks.forEach(week => {
+                html += '<div class="calendar-week">';
+                week.forEach(day => {
+                    const level = getContributionLevel(day.count);
+                    const date = new Date(day.date);
+                    const formattedDate = `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
+                    html += `<div class="calendar-day level-${level}" data-date="${day.date}" data-count="${day.count}" title="${day.count} contributions on ${formattedDate}"></div>`;
+                });
+                html += '</div>';
+            });
+            html += '</div>';
+            
+            html += '</div>';
+            container.innerHTML = html;
+            
+            // Add tooltips
+            const calendarDays = document.querySelectorAll('.calendar-day');
+            calendarDays.forEach(day => {
+                day.addEventListener('mouseenter', function(event) {
+                    const count = this.getAttribute('data-count');
+                    const date = new Date(this.getAttribute('data-date'));
+                    const formattedDate = `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
+                    
+                    const tooltip = document.createElement('div');
+                    tooltip.className = 'gh-tooltip';
+                    tooltip.innerHTML = `<div class="tooltip-date">${formattedDate}</div>
+                                        <div class="tooltip-count">${count} contribution${count !== '1' ? 's' : ''}</div>`;
+                    
+                    // Position tooltip
+                    const rect = this.getBoundingClientRect();
+                    tooltip.style.top = `${rect.top - 60}px`;
+                    tooltip.style.left = `${rect.left - 60}px`;
+                    
+                    document.body.appendChild(tooltip);
+                    
+                    this.addEventListener('mouseleave', function() {
+                        document.querySelectorAll('.gh-tooltip').forEach(t => t.remove());
+                    }, { once: true });
+                });
+            });
+        }
+        
+        // Get contribution level (0-4) based on count
+        function getContributionLevel(count) {
+            if (count === 0) return 0;
+            if (count <= 3) return 1;
+            if (count <= 6) return 2;
+            if (count <= 9) return 3;
+            return 4;
+        }
     </script>
 </body>
 </html> 

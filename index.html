@@ -83,10 +83,18 @@
         }
 
         // Set theme on page load
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', function() {
             const savedTheme = localStorage.getItem('theme') || 'light';
             document.documentElement.setAttribute('data-theme', savedTheme);
             updateThemeButton();
+            
+            // Load preview GitHub chart if on homepage
+            const previewChart = document.getElementById('github-preview-chart');
+            if (previewChart) {
+                previewChart.innerHTML = `<div class="github-fallback">
+                    <img src="https://ghchart.rshah.org/drsc777" alt="GitHub Contribution Heatmap" />
+                </div>`;
+            }
         });
 
         // Message system
