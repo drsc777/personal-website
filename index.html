@@ -294,7 +294,7 @@
             <div class="github-preview">
                 <p class="prompt">GitHub contributions and coding stats</p>
                 <div class="github-heatmap small">
-                    <img src="https://ghchart.rshah.org/drsc777" alt="GitHub Contribution Heatmap" />
+                    <img src="https://ghchart.rshah.org/drsc777" alt="GitHub Contribution Heatmap">
                 </div>
             </div>
             <div class="view-more">
@@ -349,5 +349,28 @@
     <div class="view-more">
         <a href="heatmaps.html" class="view-more-link">cd ./heatmaps</a>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        // 首页GitHub预览热图加载
+        async function loadGitHubPreview() {
+            const previewChart = document.getElementById('github-preview-chart');
+            if (!previewChart) return;
+
+            try {
+                // 显示基本图像作为备份
+                previewChart.innerHTML = `<img src="https://ghchart.rshah.org/drsc777" alt="GitHub Contribution Heatmap" style="max-width:100%;">`;
+            } catch (error) {
+                console.error('Error loading GitHub preview:', error);
+            }
+        }
+
+        // 在页面加载后执行预览加载
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', loadGitHubPreview);
+        } else {
+            loadGitHubPreview();
+        }
+    </script>
 </body>
 </html> 
