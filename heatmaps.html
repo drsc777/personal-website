@@ -83,6 +83,48 @@
                 </div>
                 <p class="heatmap-note">Typing activity from MonkeyType</p>
             </div>
+            
+            <!-- Custom habit tracker heatmaps -->
+            <div class="heatmap-container">
+                <h3>Habit Tracker</h3>
+                <div class="habit-tracker">
+                    <div class="habit-item">
+                        <div class="habit-name">Meditation</div>
+                        <div class="habit-heatmap" id="meditation-heatmap"></div>
+                        <div class="habit-stats">
+                            <div>Longest Streak: <span id="meditation-streak">0</span> days</div>
+                            <div>Current Streak: <span id="meditation-current">0</span> days</div>
+                            <div>Total Count: <span id="meditation-total">0</span></div>
+                            <div>Average Duration: <span id="meditation-avg">0.00</span> minutes</div>
+                        </div>
+                        <button class="log-btn" onclick="logHabit('meditation')">Log Today</button>
+                    </div>
+                    
+                    <div class="habit-item">
+                        <div class="habit-name">Exercise</div>
+                        <div class="habit-heatmap" id="exercise-heatmap"></div>
+                        <div class="habit-stats">
+                            <div>Longest Streak: <span id="exercise-streak">0</span> days</div>
+                            <div>Current Streak: <span id="exercise-current">0</span> days</div>
+                            <div>Total Count: <span id="exercise-total">0</span></div>
+                            <div>Average Duration: <span id="exercise-avg">0.00</span> minutes</div>
+                        </div>
+                        <button class="log-btn" onclick="logHabit('exercise')">Log Today</button>
+                    </div>
+                    
+                    <div class="habit-item">
+                        <div class="habit-name">Reading</div>
+                        <div class="habit-heatmap" id="reading-heatmap"></div>
+                        <div class="habit-stats">
+                            <div>Longest Streak: <span id="reading-streak">0</span> days</div>
+                            <div>Current Streak: <span id="reading-current">0</span> days</div>
+                            <div>Total Count: <span id="reading-total">0</span></div>
+                            <div>Average Duration: <span id="reading-avg">0.00</span> minutes</div>
+                        </div>
+                        <button class="log-btn" onclick="logHabit('reading')">Log Today</button>
+                    </div>
+                </div>
+            </div>
         </section>
     </main>
 
@@ -94,7 +136,6 @@
     </footer>
 
     <script>
-        // 设置主题
         document.addEventListener('DOMContentLoaded', function() {
             console.log('页面加载完成');
             const savedTheme = localStorage.getItem('theme') || 'light';
@@ -102,6 +143,16 @@
             
             if (typeof updateThemeButton === 'function') {
                 updateThemeButton();
+            }
+            
+            // 初始化习惯追踪器
+            console.log('正在初始化习惯追踪器...');
+            if (typeof initHabitTrackers === 'function') {
+                console.log('调用initHabitTrackers函数');
+                initHabitTrackers();
+                loadHabitData();
+            } else {
+                console.error('initHabitTrackers函数不存在');
             }
             
             // 添加光标闪烁效果

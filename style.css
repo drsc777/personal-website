@@ -1097,80 +1097,41 @@ body:not(:has(nav a.active[href="projects.html"])) .construction-banner {
 .habit-tracker {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 30px;
 }
 
 .habit-item {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 15px;
-    background-color: var(--terminal-bg);
-    border-radius: 5px;
-    border: 1px solid var(--terminal-border);
+    padding: 10px;
+    border-radius: 8px;
+    background-color: var(--bg-color);
 }
 
 .habit-name {
     font-weight: bold;
+    margin-bottom: 10px;
     font-size: 1.1em;
-    margin-bottom: 5px;
+    color: var(--accent-color);
 }
 
 .habit-heatmap {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, 20px);
-    gap: 4px;
-    margin: 10px 0;
+    display: flex;
+    gap: 2px;
+    overflow-x: auto;
+    padding: 10px 0;
+    margin-bottom: 10px;
 }
 
 .habit-day {
-    width: 20px;
-    height: 20px;
-    border-radius: 3px;
+    width: 15px;
+    height: 15px;
+    border-radius: 2px;
     background-color: var(--tag-bg);
     cursor: pointer;
     transition: transform 0.2s;
 }
 
 .habit-day:hover {
-    transform: scale(1.1);
-}
-
-.habit-day.level-0 {
-    background-color: var(--tag-bg);
-    opacity: 0.5;
-}
-
-.habit-day.level-1 {
-    background-color: #9be9a8;
-}
-
-.habit-day.level-2 {
-    background-color: #40c463;
-}
-
-.habit-day.level-3 {
-    background-color: #30a14e;
-}
-
-.habit-day.level-4 {
-    background-color: #216e39;
-}
-
-[data-theme="dark"] .habit-day.level-1 {
-    background-color: #0e4429;
-}
-
-[data-theme="dark"] .habit-day.level-2 {
-    background-color: #006d32;
-}
-
-[data-theme="dark"] .habit-day.level-3 {
-    background-color: #26a641;
-}
-
-[data-theme="dark"] .habit-day.level-4 {
-    background-color: #39d353;
+    transform: scale(1.2);
 }
 
 .habit-stats {
@@ -1178,47 +1139,77 @@ body:not(:has(nav a.active[href="projects.html"])) .construction-banner {
     grid-template-columns: repeat(2, 1fr);
     gap: 8px;
     font-size: 0.9em;
-    margin-top: 5px;
+    margin: 10px 0;
 }
 
 .log-btn {
-    padding: 8px 15px;
-    background-color: var(--button-bg);
-    color: var(--button-text);
+    background-color: var(--accent-color);
+    color: white;
     border: none;
     border-radius: 4px;
+    padding: 5px 10px;
     cursor: pointer;
-    font-family: inherit;
-    font-size: 0.9em;
     transition: background-color 0.2s;
-    align-self: center;
-    margin-top: 5px;
 }
 
 .log-btn:hover {
-    background-color: var(--button-hover-bg);
+    background-color: var(--accent-hover);
 }
 
-/* Responsive adjustment */
-@media (max-width: 767px) {
-    .habit-tracker {
-        flex-direction: column;
-    }
-    
-    .habit-stats {
-        grid-template-columns: 1fr;
-    }
+/* Habit levels */
+.level-0 {
+    background-color: var(--tag-bg);
+    opacity: 0.7;
 }
 
-@media (min-width: 768px) {
-    .habit-heatmap {
-        grid-template-columns: repeat(auto-fill, 16px);
-    }
-    
-    .habit-day {
-        width: 16px;
-        height: 16px;
-    }
+.level-1 {
+    background-color: #9be9a8;
+}
+
+.level-2 {
+    background-color: #40c463;
+}
+
+.level-3 {
+    background-color: #30a14e;
+}
+
+.level-4 {
+    background-color: #216e39;
+}
+
+[data-theme="dark"] .level-1 {
+    background-color: #0e4429;
+}
+
+[data-theme="dark"] .level-2 {
+    background-color: #006d32;
+}
+
+[data-theme="dark"] .level-3 {
+    background-color: #26a641;
+}
+
+[data-theme="dark"] .level-4 {
+    background-color: #39d353;
+}
+
+/* 习惯热图日历版本 */
+.habit-calendar {
+    margin-top: 0;
+    padding-top: 0;
+}
+
+.habit-calendar .calendar-week {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.habit-heatmap .github-calendar {
+    display: flex;
+    gap: 2px;
+    padding-top: 0;
 }
 
 /* Habit modal styles */
