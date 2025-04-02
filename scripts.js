@@ -232,24 +232,51 @@ function initHabitTrackers() {
         const heatmapEl = document.getElementById(`${habit}-heatmap`);
         if (!heatmapEl) return;
         
-        // Generate cells for the past 90 days
-        for (let i = 89; i >= 0; i--) {
+        // Clear existing content
+        heatmapEl.innerHTML = '';
+        
+        // Create GitHub-style calendar layout
+        const calendarEl = document.createElement('div');
+        calendarEl.className = 'github-calendar habit-calendar';
+        
+        // Add week rows for proper grid layout (13 weeks = ~90 days)
+        const weeks = [];
+        for (let w = 0; w < 13; w++) {
+            const weekEl = document.createElement('div');
+            weekEl.className = 'calendar-week';
+            weeks.push(weekEl);
+            calendarEl.appendChild(weekEl);
+        }
+        
+        // Generate cells for the past 90 days, matching GitHub-style layout
+        for (let i = 90; i >= 0; i--) {
             const date = new Date();
             date.setDate(today.getDate() - i);
             
+            // Skip if we already have 91 days (7x13)
+            if (i === 0) break;
+            
             const dayEl = document.createElement('div');
-            dayEl.className = 'habit-day level-0';
+            dayEl.className = 'calendar-day habit-day level-0';
             dayEl.title = formatDate(date);
             dayEl.dataset.date = formatDate(date, 'yyyy-MM-dd');
             dayEl.dataset.habit = habit;
+            
+            // Determine which week this day belongs to (0-12)
+            const weekIndex = Math.floor((90 - i) / 7);
             
             // Add click event to manually toggle status
             dayEl.addEventListener('click', function() {
                 toggleHabitDay(this);
             });
             
-            heatmapEl.appendChild(dayEl);
+            // Add to appropriate week
+            if (weeks[weekIndex]) {
+                weeks[weekIndex].appendChild(dayEl);
+            }
         }
+        
+        heatmapEl.appendChild(calendarEl);
     });
 }
 
@@ -258,25 +285,42 @@ function loadHabitData() {
     const habits = ['meditation', 'exercise', 'reading'];
     
     habits.forEach(habit => {
-        // Read data from localStorage
-        const habitData = JSON.parse(localStorage.getItem(`habit_${habit}`)) || {
-            days: {},
-            streak: 0,
-            longestStreak: 0,
-            totalCount: 0,
-            totalMinutes: 0
-        };
+        // Get saved data from localStorage
+        let data = localStorage.getItem(`habit_${habit}`);
         
-        // Update UI
-        updateHabitStats(habit, habitData);
-        
-        // Update heatmap
-        for (const date in habitData.days) {
-            const level = getActivityLevel(habitData.days[date].minutes);
-            const dayEl = document.querySelector(`.habit-day[data-date="${date}"][data-habit="${habit}"]`);
-            if (dayEl) {
-                dayEl.className = `habit-day level-${level}`;
-            }
+        if (data) {
+            data = JSON.parse(data);
+            
+            // Update heatmap UI (work with both old and new class names)
+            Object.keys(data.days).forEach(dateStr => {
+                // Try both selectors to handle both old and new layouts
+                const dayEl = document.querySelector(`.calendar-day.habit-day[data-date="${dateStr}"][data-habit="${habit}"]`) || 
+                             document.querySelector(`.habit-day[data-date="${dateStr}"][data-habit="${habit}"]`);
+                
+                if (dayEl) {
+                    const level = getActivityLevel(data.days[dateStr].minutes);
+                    
+                    // Update classes for both old and new layouts
+                    if (dayEl.classList.contains('calendar-day')) {
+                        dayEl.className = `calendar-day habit-day level-${level}`;
+                    } else {
+                        dayEl.className = `habit-day level-${level}`;
+                    }
+                    
+                    // Add tooltip data
+                    dayEl.dataset.count = data.days[dateStr].minutes;
+                    dayEl.title = `${data.days[dateStr].minutes} minutes on ${formatDate(new Date(dateStr))}`;
+                    
+                    // Add journal entry if available
+                    if (data.days[dateStr].journal) {
+                        dayEl.dataset.journal = data.days[dateStr].journal;
+                    }
+                }
+            });
+            
+            // Update streak and stats
+            updateStreaks(data);
+            updateHabitStats(habit, data);
         }
     });
 }
@@ -548,12 +592,16 @@ function toggleHabitDay(dayEl) {
 
 // Update habit statistics
 function updateHabitStats(habit, data) {
-    document.getElementById(`${habit}-streak`).textContent = data.longestStreak;
-    document.getElementById(`${habit}-current`).textContent = data.streak;
-    document.getElementById(`${habit}-total`).textContent = data.totalCount;
+    const streakEl = document.getElementById(`${habit}-streak`);
+    const currentEl = document.getElementById(`${habit}-current`);
+    const totalEl = document.getElementById(`${habit}-total`);
+    const avgEl = document.getElementById(`${habit}-avg`);
     
-    const avgMinutes = data.totalCount > 0 ? (data.totalMinutes / data.totalCount).toFixed(2) : "0.00";
-    document.getElementById(`${habit}-avg`).textContent = avgMinutes;
+    // Only update if elements exist
+    if (streakEl) streakEl.textContent = data.longestStreak || 0;
+    if (currentEl) currentEl.textContent = data.currentStreak || 0;
+    if (totalEl) totalEl.textContent = data.count || 0;
+    if (avgEl) avgEl.textContent = data.avgMinutes ? data.avgMinutes.toFixed(2) : '0.00';
 }
 
 // Calculate consecutive days

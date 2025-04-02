@@ -1528,4 +1528,43 @@ body:not(:has(nav a.active[href="projects.html"])) .construction-banner {
 
 .github-fallback img {
     max-width: 100%;
+}
+
+.habit-heatmap {
+    width: 100%;
+    overflow-x: auto;
+    margin: 10px 0;
+    padding: 10px 0;
+    position: relative;
+}
+
+.habit-calendar {
+    margin-top: 0;
+    padding-top: 0;
+}
+
+.habit-calendar .calendar-week {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.habit-day {
+    width: 15px;
+    height: 15px;
+    border-radius: 2px;
+    background-color: var(--tag-bg);
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.habit-day:hover {
+    transform: scale(1.2);
+}
+
+/* Make habit heatmap match GitHub style */
+.habit-heatmap .github-calendar {
+    display: flex;
+    gap: 2px;
+    padding-top: 0;
 } 
