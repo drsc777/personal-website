@@ -68,10 +68,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Add typing effect to terminal titles
     addTypingEffect();
 
-    // 初始化习惯热力图
+    // Initialize habit heatmaps
     initHabitTrackers();
     
-    // 从localStorage加载习惯数据
+    // Load habit data from localStorage
     loadHabitData();
 });
 
@@ -222,8 +222,8 @@ function addTypingEffect() {
     });
 }
 
-// 习惯追踪功能
-// 初始化习惯追踪器
+// Habit tracking functionality
+// Initialize habit tracker
 function initHabitTrackers() {
     const habits = ['meditation', 'exercise', 'reading'];
     const today = new Date();
@@ -232,7 +232,7 @@ function initHabitTrackers() {
         const heatmapEl = document.getElementById(`${habit}-heatmap`);
         if (!heatmapEl) return;
         
-        // 生成过去90天的热力图单元格
+        // Generate cells for the past 90 days
         for (let i = 89; i >= 0; i--) {
             const date = new Date();
             date.setDate(today.getDate() - i);
@@ -243,7 +243,7 @@ function initHabitTrackers() {
             dayEl.dataset.date = formatDate(date, 'yyyy-MM-dd');
             dayEl.dataset.habit = habit;
             
-            // 添加点击事件以手动切换状态
+            // Add click event to manually toggle status
             dayEl.addEventListener('click', function() {
                 toggleHabitDay(this);
             });
@@ -253,12 +253,12 @@ function initHabitTrackers() {
     });
 }
 
-// 加载习惯数据
+// Load habit data
 function loadHabitData() {
     const habits = ['meditation', 'exercise', 'reading'];
     
     habits.forEach(habit => {
-        // 从localStorage读取数据
+        // Read data from localStorage
         const habitData = JSON.parse(localStorage.getItem(`habit_${habit}`)) || {
             days: {},
             streak: 0,
@@ -267,10 +267,10 @@ function loadHabitData() {
             totalMinutes: 0
         };
         
-        // 更新UI
+        // Update UI
         updateHabitStats(habit, habitData);
         
-        // 更新热力图
+        // Update heatmap
         for (const date in habitData.days) {
             const level = getActivityLevel(habitData.days[date].minutes);
             const dayEl = document.querySelector(`.habit-day[data-date="${date}"][data-habit="${habit}"]`);
@@ -281,11 +281,11 @@ function loadHabitData() {
     });
 }
 
-// 记录习惯
+// Log habit
 function logHabit(habit) {
     const today = formatDate(new Date(), 'yyyy-MM-dd');
     
-    // 获取当前习惯数据
+    // Get current habit data
     const habitData = JSON.parse(localStorage.getItem(`habit_${habit}`)) || {
         days: {},
         streak: 0,
@@ -294,30 +294,30 @@ function logHabit(habit) {
         totalMinutes: 0
     };
     
-    // 提示用户输入时长
+    // Prompt user to input duration
     const minutes = parseInt(prompt(`Enter ${getHabitName(habit)} duration (minutes):`, "30"));
     if (isNaN(minutes) || minutes <= 0) return;
     
-    // 更新今天的记录
+    // Update today's record
     habitData.days[today] = {
         minutes: minutes,
         timestamp: new Date().toISOString()
     };
     
-    // 计算连续天数
+    // Calculate streak
     updateStreaks(habitData);
     
-    // 更新总计数据
+    // Update total data
     habitData.totalCount = Object.keys(habitData.days).length;
     habitData.totalMinutes += minutes;
     
-    // 保存到localStorage
+    // Save to localStorage
     localStorage.setItem(`habit_${habit}`, JSON.stringify(habitData));
     
-    // 更新UI
+    // Update UI
     updateHabitStats(habit, habitData);
     
-    // 更新热力图
+    // Update heatmap
     const level = getActivityLevel(minutes);
     const dayEl = document.querySelector(`.habit-day[data-date="${today}"][data-habit="${habit}"]`);
     if (dayEl) {
@@ -325,12 +325,12 @@ function logHabit(habit) {
     }
 }
 
-// 切换习惯日期状态
+// Toggle habit day status
 function toggleHabitDay(dayEl) {
     const habit = dayEl.dataset.habit;
     const date = dayEl.dataset.date;
     
-    // 获取当前习惯数据
+    // Get current habit data
     const habitData = JSON.parse(localStorage.getItem(`habit_${habit}`)) || {
         days: {},
         streak: 0,
@@ -339,7 +339,7 @@ function toggleHabitDay(dayEl) {
         totalMinutes: 0
     };
     
-    // 如果日期已存在，则删除；否则添加
+    // If the date exists, delete it; otherwise add it
     if (habitData.days[date]) {
         habitData.totalMinutes -= habitData.days[date].minutes;
         delete habitData.days[date];
@@ -359,18 +359,18 @@ function toggleHabitDay(dayEl) {
         dayEl.className = `habit-day level-${level}`;
     }
     
-    // 更新统计数据
+    // Update statistics
     habitData.totalCount = Object.keys(habitData.days).length;
     updateStreaks(habitData);
     
-    // 保存到localStorage
+    // Save to localStorage
     localStorage.setItem(`habit_${habit}`, JSON.stringify(habitData));
     
-    // 更新UI
+    // Update UI
     updateHabitStats(habit, habitData);
 }
 
-// 更新习惯统计数据
+// Update habit statistics
 function updateHabitStats(habit, data) {
     document.getElementById(`${habit}-streak`).textContent = data.longestStreak;
     document.getElementById(`${habit}-current`).textContent = data.streak;
@@ -380,7 +380,7 @@ function updateHabitStats(habit, data) {
     document.getElementById(`${habit}-avg`).textContent = avgMinutes;
 }
 
-// 计算连续天数
+// Calculate consecutive days
 function updateStreaks(habitData) {
     const dates = Object.keys(habitData.days).sort();
     if (dates.length === 0) {
@@ -389,17 +389,17 @@ function updateStreaks(habitData) {
         return;
     }
     
-    // 计算当前连续天数
+    // Calculate current streak
     let currentStreak = 1;
     const today = formatDate(new Date(), 'yyyy-MM-dd');
     const yesterday = formatDate(new Date(Date.now() - 86400000), 'yyyy-MM-dd');
     
-    // 检查今天或昨天是否有记录，若没有则连续天数为0
+    // Check if there's a record for today or yesterday, if not the streak is 0
     if (!habitData.days[today] && !habitData.days[yesterday]) {
         habitData.streak = 0;
     } else {
-        // 如果今天有记录，从今天开始向前计算
-        // 如果今天没有但昨天有，从昨天开始计算
+        // If there's a record for today, start counting from today
+        // If no record for today but there's one for yesterday, start from yesterday
         const startDate = habitData.days[today] ? today : yesterday;
         const startIdx = dates.indexOf(startDate);
         
@@ -408,7 +408,7 @@ function updateStreaks(habitData) {
                 const currentDate = new Date(dates[i]);
                 const prevDate = new Date(dates[i-1]);
                 
-                // 检查是否是连续的日期
+                // Check if the dates are consecutive
                 const diffDays = Math.round((currentDate - prevDate) / (1000 * 60 * 60 * 24));
                 if (diffDays === 1) {
                     currentStreak++;
@@ -421,13 +421,13 @@ function updateStreaks(habitData) {
         habitData.streak = currentStreak;
     }
     
-    // 更新最长连续天数
+    // Update longest streak
     if (currentStreak > habitData.longestStreak) {
         habitData.longestStreak = currentStreak;
     }
 }
 
-// 根据时长获取活动等级
+// Get activity level based on duration
 function getActivityLevel(minutes) {
     if (minutes < 15) return 1;
     if (minutes < 30) return 2;

@@ -38,21 +38,21 @@
             const database = getDatabase(app);
             console.log('Database initialized:', database);
 
-            // 将 Firebase 实例添加到 window 对象，以便其他函数可以访问
+            // Add Firebase instance to window object for access in other functions
             window.firebaseApp = app;
             window.firebaseDatabase = database;
             window.firebaseRefs = { ref, push, remove, get, child };
             console.log('Firebase setup complete');
 
-            // 更新访问计数
+            // Update visitor count
             const visitsRef = ref(database, 'visits');
             
-            // 获取当前访问数并更新显示
+            // Get current visit count and update display
             get(visitsRef).then((snapshot) => {
                 const visits = snapshot.val() || 0;
                 document.getElementById('visitorCount').textContent = visits;
                 
-                // 增加访问计数
+                // Increment visit count
                 set(visitsRef, increment(1));
             });
 
@@ -67,10 +67,10 @@
             const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
             html.setAttribute('data-theme', newTheme);
             
-            // 保存主题偏好
+            // Save theme preference
             localStorage.setItem('theme', newTheme);
             
-            // 更新按钮文本
+            // Update button text
             updateThemeButton();
         }
 
@@ -82,7 +82,7 @@
                 : '🌙 Dark Mode';
         }
 
-        // 页面加载时设置主题
+        // Set theme on page load
         document.addEventListener('DOMContentLoaded', () => {
             const savedTheme = localStorage.getItem('theme') || 'light';
             document.documentElement.setAttribute('data-theme', savedTheme);
@@ -132,9 +132,9 @@
             }
         }
 
-        // 添加密码加密函数
+        // Add password encryption function
         async function encryptPassword(password) {
-            // 使用更简单的 SHA-512 实现
+            // Using a simpler SHA-512 implementation
             const encoder = new TextEncoder();
             const data = encoder.encode(password);
             const hashBuffer = await crypto.subtle.digest('SHA-512', data);
@@ -149,7 +149,7 @@
             
             try {
                 const encryptedPassword = await encryptPassword(password);
-                console.log('Encrypted password:', encryptedPassword); // 用于调试
+                console.log('Encrypted password:', encryptedPassword); // For debugging
                 
                 if (encryptedPassword === 'ce05d02a952d716a9c38dddc375d7518ee166a2f991637f7a8bfd4076d465b9c8c24d44e55022a01c0a886f1b52937ef8bf2d3f92923b702264774ba05a92882') {
                     const { ref, get } = window.firebaseRefs;
@@ -221,7 +221,7 @@
             }
         }
 
-        // 点击对话框外部关闭对话框
+        // Close dialog when clicking outside
         document.addEventListener('click', function(event) {
             const dialog = document.getElementById('messageDialog');
             if (event.target === dialog) {
@@ -293,7 +293,7 @@
         <p>Copyright <span class="secret-entry" onclick="showMessageDialog()">©</span> 2024 Abby Li <span class="cursor-blink">_</span></p>
     </footer>
 
-    <!-- 修改密码对话框 -->
+    <!-- Password dialog -->
     <div id="messageDialog" class="message-dialog" style="display: none;">
         <div class="dialog-content">
             <div class="terminal-header">

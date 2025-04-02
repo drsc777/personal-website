@@ -124,12 +124,12 @@ main {
     box-sizing: border-box;
 }
 
-/* 主页隐藏终端标题栏 */
+/* Hide terminal title bar on home page */
 body:has(nav a.active[href="index.html"]) .terminal-header {
     display: none;
 }
 
-/* 当终端标题栏被隐藏时，调整下方内容间距 */
+/* Adjust spacing when terminal title bar is hidden */
 body:has(nav a.active[href="index.html"]) .hero-section {
     margin-top: 15px;
 }
@@ -222,7 +222,7 @@ a:hover {
     text-decoration: underline;
 }
 
-/* 修改后的导航栏样式 - vim/emacs文件管理样式 */
+/* Modified navigation bar style - vim/emacs file management style */
 nav {
     position: fixed;
     left: 0;
@@ -363,7 +363,7 @@ nav a.active {
     margin-left: 5px;
 }
 
-/* 在项目页面上加强状态标签的视觉效果 */
+/* Enhance visual effect of status labels on project page */
 .projects-grid .project-status {
     margin-top: 3px;
     padding: 2px 6px;
@@ -810,26 +810,22 @@ footer {
     color: #a0a0a0;
 }
 
-/* 优化大屏幕下的课程布局 */
-.course-section-wrapper {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 18px;
-    width: 100%;
+/* Optimize course layout on large screens */
+@media (min-width: 1200px) {
+    .course-section-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+    
+    /* Adjust content area to make space for left navigation bar */
+    .course {
+        width: calc(50% - 15px);
+        margin-bottom: 30px;
+    }
 }
 
-/* 内容区域调整，为左侧导航栏留出空间 */
-main {
-    margin-left: 160px;
-    width: calc(100% - 160px);
-}
-
-footer {
-    margin-left: 160px;
-    width: calc(100% - 160px);
-}
-
-/* 响应式设计 */
+/* Responsive design */
 @media (min-width: 1440px) {
     main {
         max-width: 1080px;
@@ -931,13 +927,13 @@ footer {
         left: 0;
     }
     
-    /* 移动端主页隐藏终端标题栏的特殊处理 */
+    /* Special handling for hiding terminal title bar on mobile home page */
     body:has(nav a.active[href="index.html"]) .hero-section {
-        margin-top: 10px; 
+        margin-top: 10px;
     }
 }
 
-/* 优化高DPI屏幕显示 */
+/* Optimize high DPI screen display */
 @media (-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 144dpi) {
     body {
         font-weight: 400;
@@ -950,32 +946,32 @@ footer {
     }
 }
 
-/* 优化触摸屏设备 */
+/* Optimize touch screen device */
 @media (hover: none) {
     nav a:hover {
         background-color: transparent;
     }
     
     .btn, .theme-switch, .view-more-link {
-        padding: 10px 15px; /* 更大的点击区域 */
+        padding: 10px 15px; /* Larger click area */
     }
 }
 
-/* 设置特定字体平滑效果 */
+/* Set specific font smoothing effect */
 @media screen and (-webkit-min-device-pixel-ratio: 0) {
     body, input, button, textarea {
         -webkit-font-smoothing: antialiased;
     }
 }
 
-/* Firefox特定优化 */
+/* Firefox specific optimization */
 @-moz-document url-prefix() {
     body, input, button, textarea {
         -moz-osx-font-smoothing: grayscale;
     }
 }
 
-/* iPod/iPhone风格无衬线字体备选方案 */
+/* iPod/iPhone style sans serif font alternative */
 @supports not (font-family: 'Inconsolata') {
     body, input, button, textarea, .terminal-title, .message-content, nav a {
         font-family: 'Helvetica Neue', 'Lucida Grande', 'Geneva', 'Verdana', sans-serif;
@@ -984,7 +980,7 @@ footer {
     }
 }
 
-/* 删除主页特别加粗的样式，使所有页面保持统一 */
+/* Delete home page special bold style, so all pages are uniform */
 body:has(nav a.active[href="index.html"]) p,
 body:has(nav a.active[href="index.html"]) .prompt,
 body:has(nav a.active[href="index.html"]) h1,
@@ -1021,7 +1017,7 @@ body:not(:has(nav a.active[href="projects.html"])) .construction-banner {
     display: none;
 }
 
-/* 热力图和习惯追踪相关样式 */
+/* Heatmap and habit tracking related styles */
 .heatmaps-section {
     margin-top: 30px;
     margin-bottom: 40px;
@@ -1167,7 +1163,7 @@ body:not(:has(nav a.active[href="projects.html"])) .construction-banner {
     background-color: var(--button-hover-bg);
 }
 
-/* 响应式调整 */
+/* Responsive adjustment */
 @media (max-width: 767px) {
     .habit-tracker {
         flex-direction: column;
