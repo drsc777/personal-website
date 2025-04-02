@@ -1054,16 +1054,44 @@ body:not(:has(nav a.active[href="projects.html"])) .construction-banner {
 .github-heatmap {
     width: 100%;
     overflow-x: auto;
+    background-color: var(--terminal-bg);
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: inset 0 0 5px var(--shadow-color);
 }
 
 .github-heatmap img {
     max-width: 100%;
     display: block;
+    margin: 0 auto;
+}
+
+.github-heatmap.small {
+    max-height: 90px;
+    overflow: hidden;
+}
+
+.github-heatmap.small img {
+    transform: scale(0.9);
+    transform-origin: left top;
+}
+
+.github-preview {
+    margin-bottom: 15px;
 }
 
 .monkeytype-heatmap {
     width: 100%;
     overflow: hidden;
+    border-radius: 5px;
+    background-color: var(--terminal-bg);
+    padding: 0;
+    box-shadow: inset 0 0 5px var(--shadow-color);
+}
+
+.monkeytype-heatmap iframe {
+    border-radius: 5px;
+    border: none;
 }
 
 .habit-tracker {
