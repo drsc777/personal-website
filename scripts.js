@@ -295,7 +295,7 @@ function logHabit(habit) {
     };
     
     // 提示用户输入时长
-    const minutes = parseInt(prompt(`请输入${getHabitName(habit)}的时长（分钟）：`, "30"));
+    const minutes = parseInt(prompt(`Enter ${getHabitName(habit)} duration (minutes):`, "30"));
     if (isNaN(minutes) || minutes <= 0) return;
     
     // 更新今天的记录
@@ -345,7 +345,7 @@ function toggleHabitDay(dayEl) {
         delete habitData.days[date];
         dayEl.className = 'habit-day level-0';
     } else {
-        const minutes = parseInt(prompt(`请输入${getHabitName(habit)}的时长（分钟）：`, "30"));
+        const minutes = parseInt(prompt(`Enter ${getHabitName(habit)} duration (minutes):`, "30"));
         if (isNaN(minutes) || minutes <= 0) return;
         
         habitData.days[date] = {
@@ -435,18 +435,18 @@ function getActivityLevel(minutes) {
     return 4;
 }
 
-// 获取习惯名称
+// Get habit name in English
 function getHabitName(habit) {
     const names = {
-        'meditation': '冥想',
-        'exercise': '锻炼',
-        'reading': '阅读'
+        'meditation': 'Meditation',
+        'exercise': 'Exercise',
+        'reading': 'Reading'
     };
     return names[habit] || habit;
 }
 
-// 格式化日期
-function formatDate(date, format = 'yyyy年MM月dd日') {
+// Format date in English
+function formatDate(date, format = 'MMM dd, yyyy') {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
@@ -455,5 +455,8 @@ function formatDate(date, format = 'yyyy年MM月dd日') {
         return `${year}-${month}-${day}`;
     }
     
-    return `${year}年${month}月${day}日`;
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const monthName = months[date.getMonth()];
+    
+    return `${monthName} ${day}, ${year}`;
 } 

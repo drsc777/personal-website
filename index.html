@@ -235,6 +235,7 @@
         <a href="index.html" class="active">Home</a>
         <a href="projects.html">Projects</a>
         <a href="coursework.html">Coursework</a>
+        <a href="heatmaps.html">Heatmaps</a>
         <button class="theme-switch" onclick="toggleTheme()">🌙 Dark Mode</button>
     </nav>
 
@@ -281,69 +282,6 @@
                 <input type="text" id="authorName" placeholder="your_name@terminal:~$">
                 <textarea id="newMessage" placeholder="Type your message here..."></textarea>
                 <button onclick="submitMessage()">Send Message</button>
-        </div>
-        </section>
-
-        <!-- 热力图部分 -->
-        <section class="heatmaps-section">
-            <h2>活动记录</h2>
-            
-            <!-- GitHub贡献热力图 -->
-            <div class="heatmap-container">
-                <h3>GitHub贡献</h3>
-                <div class="github-heatmap">
-                    <img src="https://ghchart.rshah.org/abby-li" alt="GitHub贡献热力图" />
-                </div>
-            </div>
-            
-            <!-- MonkeyType热力图 -->
-            <div class="heatmap-container">
-                <h3>MonkeyType记录</h3>
-                <div class="monkeytype-heatmap">
-                    <iframe src="https://monkeytype.com/profile/abby-li/heatmap" frameborder="0" width="100%" height="220"></iframe>
-                </div>
-            </div>
-            
-            <!-- 自定义习惯追踪热力图 -->
-            <div class="heatmap-container">
-                <h3>习惯追踪</h3>
-                <div class="habit-tracker">
-                    <div class="habit-item">
-                        <div class="habit-name">冥想</div>
-                        <div class="habit-heatmap" id="meditation-heatmap"></div>
-                        <div class="habit-stats">
-                            <div>最长连续: <span id="meditation-streak">0</span>天</div>
-                            <div>当前连续: <span id="meditation-current">1</span>天</div>
-                            <div>总次数: <span id="meditation-total">1</span></div>
-                            <div>平均时长: <span id="meditation-avg">5.00</span>分钟</div>
-                        </div>
-                        <button class="log-btn" onclick="logHabit('meditation')">记录今天</button>
-                    </div>
-                    
-                    <div class="habit-item">
-                        <div class="habit-name">锻炼</div>
-                        <div class="habit-heatmap" id="exercise-heatmap"></div>
-                        <div class="habit-stats">
-                            <div>最长连续: <span id="exercise-streak">0</span>天</div>
-                            <div>当前连续: <span id="exercise-current">0</span>天</div>
-                            <div>总次数: <span id="exercise-total">0</span></div>
-                            <div>平均时长: <span id="exercise-avg">0.00</span>分钟</div>
-                        </div>
-                        <button class="log-btn" onclick="logHabit('exercise')">记录今天</button>
-                    </div>
-                    
-                    <div class="habit-item">
-                        <div class="habit-name">阅读</div>
-                        <div class="habit-heatmap" id="reading-heatmap"></div>
-                        <div class="habit-stats">
-                            <div>最长连续: <span id="reading-streak">0</span>天</div>
-                            <div>当前连续: <span id="reading-current">0</span>天</div>
-                            <div>总次数: <span id="reading-total">0</span></div>
-                            <div>平均时长: <span id="reading-avg">0.00</span>分钟</div>
-                        </div>
-                        <button class="log-btn" onclick="logHabit('reading')">记录今天</button>
-                    </div>
-                </div>
             </div>
         </section>
     </main>
