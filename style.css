@@ -996,33 +996,195 @@ body:has(nav a.active[href="index.html"]) .social-links a {
 
 /* Project construction banner */
 .construction-banner {
-    background-color: var(--terminal-bg);
-    border: 1px dashed var(--link-color);
-    color: var(--terminal-text);
+    background-color: rgba(255, 165, 0, 0.2);
+    border: 1px solid orange;
+    color: var(--text-color);
     padding: 10px 15px;
     margin-bottom: 20px;
     text-align: center;
-    font-family: 'Inconsolata', 'Monaco', monospace;
-    font-weight: 400;
-    font-size: 16px;
+    border-radius: 5px;
+    font-size: 0.9em;
     position: relative;
-    border-radius: 3px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
+    overflow: hidden;
 }
 
 .construction-banner::before {
-    content: "⚠️";
-    font-size: 18px;
+    content: "🚧";
+    margin-right: 8px;
 }
 
-/* 仅在项目页面显示施工横幅 */
 body:has(nav a.active[href="projects.html"]) .construction-banner {
-    display: flex;
+    display: block;
 }
 
 body:not(:has(nav a.active[href="projects.html"])) .construction-banner {
     display: none;
+}
+
+/* 热力图和习惯追踪相关样式 */
+.heatmaps-section {
+    margin-top: 30px;
+    margin-bottom: 40px;
+}
+
+.heatmap-container {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    padding: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 5px var(--shadow-color);
+}
+
+.heatmap-container h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 8px;
+}
+
+.heatmap-container h3::before {
+    content: "### ";
+}
+
+.github-heatmap {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.github-heatmap img {
+    max-width: 100%;
+    display: block;
+}
+
+.monkeytype-heatmap {
+    width: 100%;
+    overflow: hidden;
+}
+
+.habit-tracker {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.habit-item {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 15px;
+    background-color: var(--terminal-bg);
+    border-radius: 5px;
+    border: 1px solid var(--terminal-border);
+}
+
+.habit-name {
+    font-weight: bold;
+    font-size: 1.1em;
+    margin-bottom: 5px;
+}
+
+.habit-heatmap {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 20px);
+    gap: 4px;
+    margin: 10px 0;
+}
+
+.habit-day {
+    width: 20px;
+    height: 20px;
+    border-radius: 3px;
+    background-color: var(--tag-bg);
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.habit-day:hover {
+    transform: scale(1.1);
+}
+
+.habit-day.level-0 {
+    background-color: var(--tag-bg);
+    opacity: 0.5;
+}
+
+.habit-day.level-1 {
+    background-color: #9be9a8;
+}
+
+.habit-day.level-2 {
+    background-color: #40c463;
+}
+
+.habit-day.level-3 {
+    background-color: #30a14e;
+}
+
+.habit-day.level-4 {
+    background-color: #216e39;
+}
+
+[data-theme="dark"] .habit-day.level-1 {
+    background-color: #0e4429;
+}
+
+[data-theme="dark"] .habit-day.level-2 {
+    background-color: #006d32;
+}
+
+[data-theme="dark"] .habit-day.level-3 {
+    background-color: #26a641;
+}
+
+[data-theme="dark"] .habit-day.level-4 {
+    background-color: #39d353;
+}
+
+.habit-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    font-size: 0.9em;
+    margin-top: 5px;
+}
+
+.log-btn {
+    padding: 8px 15px;
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.9em;
+    transition: background-color 0.2s;
+    align-self: center;
+    margin-top: 5px;
+}
+
+.log-btn:hover {
+    background-color: var(--button-hover-bg);
+}
+
+/* 响应式调整 */
+@media (max-width: 767px) {
+    .habit-tracker {
+        flex-direction: column;
+    }
+    
+    .habit-stats {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (min-width: 768px) {
+    .habit-heatmap {
+        grid-template-columns: repeat(auto-fill, 16px);
+    }
+    
+    .habit-day {
+        width: 16px;
+        height: 16px;
+    }
 } 
