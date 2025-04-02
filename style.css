@@ -1043,6 +1043,14 @@ body:not(:has(nav a.active[href="projects.html"])) .construction-banner {
     content: "### ";
 }
 
+.heatmap-note {
+    font-size: 13px;
+    opacity: 0.7;
+    margin-top: 8px;
+    font-style: italic;
+    text-align: right;
+}
+
 .github-heatmap {
     width: 100%;
     overflow-x: auto;
@@ -1330,4 +1338,24 @@ body:not(:has(nav a.active[href="projects.html"])) .construction-banner {
     .habit-modal-body {
         padding: 15px;
     }
+}
+
+/* Terminal container for modular page sections */
+.terminal-container {
+    background-color: var(--terminal-bg);
+    border: 1px solid var(--terminal-border);
+    border-radius: 5px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 5px var(--shadow-color);
+}
+
+.terminal-container .terminal-header {
+    margin: -20px -20px 15px -20px;
+    width: calc(100% + 40px);
+    border-radius: 5px 5px 0 0;
+}
+
+.terminal-container h2 {
+    margin-top: 0;
 } 

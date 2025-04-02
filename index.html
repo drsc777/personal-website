@@ -240,28 +240,30 @@
     </nav>
 
     <main>
-        <div class="terminal-header">
-            <div class="terminal-title">Abby:~$ whoami</div>
-        </div>
-
         <section class="hero-section">
-        <h1>Abby Li</h1>
+            <h1>Abby Li</h1>
 
-        <div class="social-links">
+            <div class="social-links">
                 <a href="https://www.linkedin.com/in/abby-li-70538416b/" target="_blank">LinkedIn</a>
                 <a href="https://github.com/drsc777" target="_blank">GitHub</a>
                 <a href="mailto:yl7@berkeley.edu">Email</a>
-        </div>
+            </div>
         </section>
 
-        <section class="about-section">
-        <h2>About Me</h2>
+        <section class="terminal-container">
+            <div class="terminal-header">
+                <div class="terminal-title">Abby:~$ cat about.txt</div>
+            </div>
+            <h2>About Me</h2>
             <p class="prompt">I am a sophomore studying Electrical Engineering and Computer Science (EECS) at UC Berkeley.</p>
             <p class="prompt">I am interested in Robotics, ASIC Design, and Machine Learning.</p>
             <p class="prompt">I also enjoy running with my dog, playing rhythm games, and exploring new technologies.</p>
         </section>
 
-        <section class="projects-preview">
+        <section class="terminal-container">
+            <div class="terminal-header">
+                <div class="terminal-title">Abby:~$ ls -l ./projects</div>
+            </div>
             <h2>Current Projects</h2>
             
             <p class="prompt">> Fishing-Themed Pomodoro iOS App</p>
@@ -272,11 +274,14 @@
             
             <div class="view-more">
                 <a href="projects.html" class="view-more-link">cd ./projects</a>
-        </div>
+            </div>
         </section>
 
         <!-- Message section -->
-        <section class="message-section">
+        <section class="terminal-container">
+            <div class="terminal-header">
+                <div class="terminal-title">Abby:~$ echo "Write a message"</div>
+            </div>
             <h2>Leave a Message</h2>
             <div class="message-form">
                 <input type="text" id="authorName" placeholder="your_name@terminal:~$">
