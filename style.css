@@ -1119,6 +1119,11 @@ body:not(:has(nav a.active[href="projects.html"])) .construction-banner {
     overflow-x: auto;
     padding: 10px 0;
     margin-bottom: 10px;
+    min-height: 120px;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 100%;
+    position: relative;
 }
 
 .habit-day {
@@ -1143,17 +1148,31 @@ body:not(:has(nav a.active[href="projects.html"])) .construction-banner {
 }
 
 .log-btn {
-    background-color: var(--accent-color);
-    color: white;
-    border: none;
+    background-color: var(--terminal-header-bg);
+    color: var(--terminal-text);
+    border: 1px solid var(--terminal-border);
     border-radius: 4px;
-    padding: 5px 10px;
+    padding: 8px 12px;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: all 0.2s;
+    font-size: 14px;
+    font-weight: bold;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
 .log-btn:hover {
-    background-color: var(--accent-hover);
+    background-color: var(--terminal-bg);
+    transform: translateY(-1px);
+}
+
+[data-theme="dark"] .log-btn {
+    background-color: #444;
+    color: #ddd;
+    border-color: #555;
+}
+
+[data-theme="dark"] .log-btn:hover {
+    background-color: #555;
 }
 
 /* Habit levels */
@@ -1196,14 +1215,14 @@ body:not(:has(nav a.active[href="projects.html"])) .construction-banner {
 
 /* 习惯热图日历版本 */
 .habit-calendar {
-    margin-top: 0;
-    padding-top: 0;
+    display: flex;
+    gap: 2px;
+    width: 100%;
+    overflow-x: visible;
 }
 
-.habit-calendar .calendar-week {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
+.calendar-week {
+    min-width: 15px;
 }
 
 .habit-heatmap .github-calendar {

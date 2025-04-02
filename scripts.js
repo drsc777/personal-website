@@ -235,48 +235,60 @@ function initHabitTrackers() {
         // Clear existing content
         heatmapEl.innerHTML = '';
         
-        // Create GitHub-style calendar layout
+        // 创建GitHub风格的日历布局
         const calendarEl = document.createElement('div');
-        calendarEl.className = 'github-calendar habit-calendar';
+        calendarEl.className = 'habit-calendar';
         
-        // Add week rows for proper grid layout (13 weeks = ~90 days)
+        // 计算一年需要多少周（52周）
+        const totalWeeks = 52;
+        
+        // 添加周行用于网格布局（52周 = 一年）
         const weeks = [];
-        for (let w = 0; w < 13; w++) {
+        for (let w = 0; w < totalWeeks; w++) {
             const weekEl = document.createElement('div');
             weekEl.className = 'calendar-week';
             weeks.push(weekEl);
             calendarEl.appendChild(weekEl);
         }
         
-        // Generate cells for the past 90 days, matching GitHub-style layout
-        for (let i = 90; i >= 0; i--) {
-            const date = new Date();
-            date.setDate(today.getDate() - i);
-            
-            // Skip if we already have 91 days (7x13)
-            if (i === 0) break;
+        // 生成过去一年的单元格
+        const oneYearAgo = new Date();
+        oneYearAgo.setFullYear(today.getFullYear() - 1);
+        oneYearAgo.setDate(today.getDate() + 1);
+        
+        // 计算天数
+        const daysBetween = Math.floor((today.getTime() - oneYearAgo.getTime()) / (1000 * 3600 * 24));
+        
+        // 从一年前开始生成日期
+        for (let i = 0; i <= daysBetween; i++) {
+            const date = new Date(oneYearAgo);
+            date.setDate(oneYearAgo.getDate() + i);
             
             const dayEl = document.createElement('div');
-            dayEl.className = 'calendar-day habit-day level-0';
+            dayEl.className = 'habit-day level-0';
             dayEl.title = formatDate(date);
             dayEl.dataset.date = formatDate(date, 'yyyy-MM-dd');
             dayEl.dataset.habit = habit;
             
-            // Determine which week this day belongs to (0-12)
-            const weekIndex = Math.floor((90 - i) / 7);
+            // 确定这一天属于哪一周
+            // 将一年的天数平均分配到52周
+            const weekIndex = Math.floor(i * totalWeeks / daysBetween);
             
-            // Add click event to manually toggle status
+            // 添加点击事件以手动切换状态
             dayEl.addEventListener('click', function() {
                 toggleHabitDay(this);
             });
             
-            // Add to appropriate week
+            // 添加到适当的周
             if (weeks[weekIndex]) {
                 weeks[weekIndex].appendChild(dayEl);
             }
         }
         
         heatmapEl.appendChild(calendarEl);
+        
+        // 添加调试信息
+        console.log(`初始化 ${habit} 热图，创建了 ${daysBetween} 天的数据`);
     });
 }
 
