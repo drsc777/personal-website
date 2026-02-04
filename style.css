@@ -486,6 +486,21 @@ nav a.active {
     padding-bottom: 0;
 }
 
+/* Coursework two-column: left = Current + Future, right = Completed */
+.course-section-wrapper.course-two-column {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: start;
+}
+
+.course-column-left,
+.course-column-right {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
 .project-list li strong, .course-list li strong {
     display: block;
     color: var(--terminal-text);
