@@ -15,6 +15,7 @@
         <a href="projects.html" class="active">Projects</a>
         <a href="coursework.html">Coursework</a>
         <a href="heatmaps.html">Heatmaps</a>
+        <a href="messages.html">Messages</a>
         <button class="theme-switch" onclick="toggleTheme()">🌙 Dark Mode</button>
     </nav>
 
@@ -23,50 +24,44 @@
             <div class="terminal-title">Abby:~/Projects$ ls -la</div>
         </div>
         
-        <div class="construction-banner">
-            This page is currently under construction!
-        </div>
-
         <h1>Projects</h1>
 
         <div class="projects-grid">
             <div class="project-card">
+                <h3>> Intelligent Intersection Project</h3>
+                <p class="project-tech">Embedded and Cyber Physical Systems · Fall 2025</p>
+                <p class="prompt">Built real-time OCR on Raspberry Pi for traffic-light state and 7-segment countdown recognition; achieved 100% accuracy with 85 ms/image end-to-end latency. Owned system deployment end-to-end, including Raspberry Pi setup, camera integration, and soldering and wiring of all vehicle and intersection PCBs and harnesses.</p>
+            </div>
+
+            <div class="project-card">
+                <h3>> RISC-V ASIC Design Project</h3>
+                <p class="project-tech">Digital Design and Integrated Circuits · Fall 2025</p>
+                <p class="prompt">Implemented an RV32I 3-stage pipeline (IF/ID/EXE) with load-use hazard stalls, forwarding, branch/jump control, and load-valid writeback gating using Verilog. Designed a cache subsystem with direct-mapped I-cache and configurable direct-mapped / 2-way set-associative D-cache (64B lines), including SRAM metadata, valid bits, and miss-handling FSM. Integrated memory arbitration and built a simulation harness + Makefile flow for ISA tests and benchmark validation.</p>
+            </div>
+
+            <div class="project-card">
+                <h3>> CPU Microarchitecture Design</h3>
+                <p class="project-tech">Machine Structure · Fall 2025</p>
+                <p class="prompt">Designed and implemented a 32-bit RISC-V CPU in Logisim, building core components (ALU, 32x32 register file, immediate generator) and integrating a complete IF/ID/EX/MEM/WB datapath. Developed control logic and pipelining support, including branches, jumps, loads/stores with byte-level write masks, and control-hazard flushing, verified via unit, integration, and custom assembly tests.</p>
+            </div>
+
+            <div class="project-card">
                 <h3>> Fishing-Themed Pomodoro iOS App</h3>
-                <p class="project-tech">Swift, UIKit, Core Data</p>
-                <p class="prompt">A relaxing productivity app that combines the Pomodoro technique with a fishing game. Complete focus sessions to catch different types of fish and build your collection.</p>
+                <p class="project-tech">Cubstart iOS · Spring 2025</p>
+                <p class="prompt">Developed an iOS Pomodoro timer app with a fishing-based reward system to enhance user motivation. Implemented a task logging feature with heatmap to track completed focus sessions. Designed UI using SwiftUI and Xcode and won best UI reward and best App reward in the class contest.</p>
                 <div class="project-links">
-                    <a href="#" class="btn">View Project</a>
-                    <a href="https://github.com/abby" class="btn">Source Code</a>
-                </div>
-            </div>
-
-            <div class="project-card">
-                <h3>> Embedded AI Assistant Device</h3>
-                <p class="project-tech">C++, Raspberry Pi, TensorFlow Lite</p>
-                <p class="prompt">A custom-built voice assistant using a Raspberry Pi with offline speech recognition and a minimalist interface. Features include timer functionality, weather updates, and basic Q&A.</p>
-                <div class="project-links">
-                    <a href="#" class="btn">View Project</a>
-                    <a href="https://github.com/abby" class="btn">Source Code</a>
-                </div>
-            </div>
-
-            <div class="project-card">
-                <h3>> Mini PC Development</h3>
-                <p class="project-tech">PCB Design, Verilog, C</p>
-                <p class="prompt">Designing and building a miniature computer from scratch, including custom PCB design, programming an FPGA, and writing a simple operating system. Currently in the prototyping phase.</p>
-                <div class="project-links">
-                    <a href="#" class="btn">View Project</a>
-                    <a href="https://github.com/abby" class="btn">Source Code</a>
+                    <a href="https://www.figma.com/proto/your-prototype-link" class="btn">Figma Prototype</a>
+                    <a href="https://github.com/drsc777" class="btn">Source Code</a>
                 </div>
             </div>
 
             <div class="project-card">
                 <h3>> Personal Website Development</h3>
                 <p class="project-tech">HTML, CSS, JavaScript, Firebase</p>
-                <p class="prompt">This website! Built from scratch with a focus on clean design and responsive layout. Features include dark mode, visitor counter, and a hidden message system.</p>
+                <p class="prompt">Designed and built a responsive personal website using HTML, CSS, and JavaScript to showcase technical and exploratory projects not listed on the resume. Integrated Firebase for authentication and messaging, deployed on a custom domain with performance optimizations.</p>
                 <div class="project-links">
-                    <a href="#" class="btn">View Project</a>
-                    <a href="https://github.com/abby" class="btn">Source Code</a>
+                    <a href="index.html" class="btn">View Site</a>
+                    <a href="https://github.com/drsc777/personal-website" class="btn">Source Code</a>
                 </div>
             </div>
 

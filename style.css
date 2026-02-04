@@ -1017,6 +1017,14 @@ body:not(:has(nav a.active[href="projects.html"])) .construction-banner {
     display: none;
 }
 
+.year-line {
+    font-size: 0.95em;
+    color: var(--text-color);
+    opacity: 0.85;
+    margin: -8px 0 12px 0;
+    font-weight: 300;
+}
+
 /* Heatmap and habit tracking related styles */
 .heatmaps-section {
     margin-top: 30px;
