@@ -1,36 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Abby's Website - Messages</title>
     <link rel="icon" type="image/png" href="images/favicon.png">
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@300;400&display=swap" rel="stylesheet">
+    <script src="scripts.js"></script>
     <script>
-        // Theme management
-        function toggleTheme() {
-            const html = document.documentElement;
-            const currentTheme = html.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            html.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-            updateThemeButton();
-        }
-
-        function updateThemeButton() {
-            const button = document.querySelector('.theme-switch');
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            button.innerHTML = currentTheme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
-        }
-
-        // Message system
+        // Message system (localStorage for this page)
         function checkPassword() {
             const password = document.getElementById('password').value;
             const messageArea = document.getElementById('messageArea');
             const messages = JSON.parse(localStorage.getItem('messages') || '[]');
-            
             if (password === 'your-secret-password') {
-                messageArea.innerHTML = messages.map(msg => 
+                messageArea.innerHTML = messages.map(msg =>
                     `<div class="message">
                         <p class="message-content">${msg.content}</p>
                         <p class="message-info">
@@ -39,44 +24,28 @@
                         </p>
                     </div>`
                 ).join('');
-                document.getElementById('messageArea').style.display = 'block';
+                messageArea.style.display = 'block';
             } else {
                 alert('Incorrect password');
             }
         }
-
         function submitMessage() {
             const content = document.getElementById('newMessage').value;
             const author = document.getElementById('authorName').value || 'Anonymous';
-            
             if (!content) {
                 alert('Please write a message');
                 return;
             }
-
             const messages = JSON.parse(localStorage.getItem('messages') || '[]');
-            messages.push({
-                content: content,
-                author: author,
-                date: new Date().toISOString()
-            });
+            messages.push({ content: content, author: author, date: new Date().toISOString() });
             localStorage.setItem('messages', JSON.stringify(messages));
-            
             document.getElementById('newMessage').value = '';
             document.getElementById('authorName').value = '';
             alert('Message sent successfully!');
         }
-
-        // Initialize theme on load
-        document.addEventListener('DOMContentLoaded', () => {
-            const savedTheme = localStorage.getItem('theme') || 'light';
-            document.documentElement.setAttribute('data-theme', savedTheme);
-            updateThemeButton();
-        });
     </script>
 </head>
 <body>
-    <button class="theme-switch" onclick="toggleTheme()">🌙 Dark Mode</button>
     <nav>
         <a href="index.html">Home</a>
         <a href="projects.html">Projects</a>
@@ -86,30 +55,43 @@
         <button class="theme-switch" onclick="toggleTheme()">🌙 Dark Mode</button>
     </nav>
 
-    <main>
-        <h1>Messages</h1>
-        
-        <!-- Public message form -->
-        <div class="message-form">
-            <h2>Leave a Message</h2>
-            <input type="text" id="authorName" placeholder="Your name (optional)">
-            <textarea id="newMessage" placeholder="Write your message here..."></textarea>
-            <button onclick="submitMessage()">Send Message</button>
+    <main class="retro-terminal">
+        <div class="terminal-header">
+            <div class="terminal-title">Abby:~/Messages$ cat inbox.txt</div>
         </div>
 
-        <!-- Admin section -->
-        <div class="admin-section">
+        <h1>Messages</h1>
+
+        <section class="terminal-container">
+            <div class="terminal-header">
+                <div class="terminal-title">Abby:~/Messages$ echo "Leave a message"</div>
+            </div>
+            <h2>Leave a Message</h2>
+            <div class="message-form">
+                <input type="text" id="authorName" placeholder="your_name@terminal:~$">
+                <textarea id="newMessage" placeholder="Type your message here..."></textarea>
+                <button onclick="submitMessage()">Send Message</button>
+            </div>
+        </section>
+
+        <section class="terminal-container">
+            <div class="terminal-header">
+                <div class="terminal-title">Abby:~/Messages$ sudo view_messages</div>
+            </div>
             <h2>View Messages</h2>
             <div class="password-section">
-                <input type="password" id="password" placeholder="Enter password">
-                <button onclick="checkPassword()">View Messages</button>
+                <input type="password" id="password" placeholder="Password:" onkeyup="if(event.key === 'Enter') checkPassword()">
+                <button onclick="checkPassword()">Authenticate</button>
             </div>
             <div id="messageArea" class="message-area" style="display: none;"></div>
-        </div>
+        </section>
     </main>
 
     <footer>
-        <p>Copyright © 2026 Abby Li</p>
+        <div class="visitor-counter">
+            <p>Views: <span id="visitorCount">0</span></p>
+        </div>
+        <p>Copyright © 2026 Abby Li <span class="cursor-blink">_</span></p>
     </footer>
 </body>
-</html> 
+</html>
