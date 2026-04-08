@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Personal Website — Abby's Projects</title>
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@300;400&display=swap" rel="stylesheet">
+    <script src="scripts.js"></script>
+</head>
+<body>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="projects.html" class="active">Projects</a>
+        <a href="coursework.html">Coursework</a>
+        <a href="heatmaps.html">Heatmaps</a>
+        <a href="messages.html">Messages</a>
+        <button class="theme-switch" onclick="toggleTheme()">🌙 Dark Mode</button>
+    </nav>
+
+    <main class="retro-terminal">
+        <div class="terminal-header">
+            <div class="terminal-title">Abby:~/Projects/SmartPersonalWebsite$ cat README.md</div>
+        </div>
+
+        <h1>Smart Personal Website</h1>
+        <p class="project-tech">Full-stack · ML · System Design (In Progress)</p>
+
+        <section class="project-detail">
+            <h2>Goal</h2>
+            <p class="prompt">Build a personal website that not only displays content but learns from user interaction and provides personalized recommendations — combining full-stack development, data pipeline, and lightweight ML.</p>
+        </section>
+
+        <section class="project-detail">
+            <h2>Stack & Architecture</h2>
+            <ul class="prompt-list">
+                <li><strong>Frontend</strong> — React / HTML (current) · REST API client</li>
+                <li><strong>Backend</strong> — Node.js / Python (MongoDB-backed REST APIs)</li>
+                <li><strong>Data</strong> — User interaction logging (page view, click, dwell time, scroll depth)</li>
+                <li><strong>ML</strong> — Lightweight recommendation (Logistic Regression / Collaborative Filtering)</li>
+                <li><strong>Auth</strong> — Firebase Authentication</li>
+            </ul>
+        </section>
+
+        <section class="project-detail">
+            <h2>Core Features (Planned / In Progress)</h2>
+            <ul class="prompt-list">
+                <li>User interaction tracking → MongoDB (or Firebase) data pipeline</li>
+                <li>Content metadata (tags, category) for recommendation</li>
+                <li>Real-time inference: “Recommended for you” / “You may also like”</li>
+                <li>Dynamic UI suggestions (sidebar, cards) based on inferred interests</li>
+                <li>Firebase Auth: login, comments, saved content, personalized recs</li>
+                <li>Performance: API caching, lazy loading, DB indexing, CDN</li>
+            </ul>
+        </section>
+
+        <section class="project-detail">
+            <h2>Resume / Portfolio One-Liner</h2>
+            <blockquote class="resume-quote">
+                Developing a full-stack personal website with MongoDB-backed REST APIs for user interaction logging; building a lightweight recommendation system (logistic regression / collaborative filtering) for personalized content suggestions; implementing real-time inference pipeline and dynamic UI recommendations; integrating Firebase authentication and deploying on a custom domain.
+            </blockquote>
+        </section>
+
+        <!-- Recommended for you - filled by scripts.js -->
+        <section class="project-detail recommendation-section">
+            <h2>You may also like</h2>
+            <p class="prompt">Based on your browsing — powered by interaction data (ML pipeline in progress).</p>
+            <div id="recommendation-slot" class="recommendation-cards"></div>
+        </section>
+
+        <div class="view-more">
+            <a href="projects.html" class="view-more-link">cd ..</a>
+            <a href="docs/SMART_WEBSITE_ARCHITECTURE.md" class="view-more-link" target="_blank">Architecture doc (docs/)</a>
+        </div>
+    </main>
+
+    <footer>
+        <div class="visitor-counter">
+            <p>Views: <span id="visitorCount">0</span></p>
+        </div>
+        <p>Copyright <span class="secret-entry" onclick="typeof showMessageDialog === 'function' && showMessageDialog()">©</span> 2026 Abby Li <span class="cursor-blink">_</span></p>
+    </footer>
+
+    <script type="module" src="firebase-init.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            var btn = document.querySelector('.theme-switch');
+            if (btn) btn.innerHTML = document.documentElement.getAttribute('data-theme') === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
+            if (typeof renderRecommendations === 'function') renderRecommendations('recommendation-slot');
+        });
+    </script>
+</body>
+</html>

@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@300;400&display=swap" rel="stylesheet">
     <script src="scripts.js"></script>
+    <script type="module" src="firebase-init.js"></script>
 </head>
 <body>
     <nav>
@@ -24,13 +25,31 @@
             <div class="terminal-title">Abby:~/Projects$ ls -la</div>
         </div>
         
-        <div class="construction-banner">
-            This page is currently under construction!
-        </div>
-
         <h1>Projects</h1>
 
         <div class="projects-grid">
+            <div class="project-card project-card-featured">
+                <h3>> RISC-V CPU on FPGA</h3>
+                <p class="project-tech">Digital Design and Integrated Circuits · Spring 2026</p>
+                <p class="prompt">3-stage pipelined RV32 CPU in Verilog on Xilinx PYNQ FPGA. Features hazard forwarding, UART tethering, BIOS with serial program loading, and SystemVerilog assertions. Currently integrating a floating-point unit (FPU) and benchmarking matrix multiply workloads for CPI and Fmax optimization.</p>
+            </div>
+
+            <div class="project-card project-card-featured">
+                <h3>> Secure File Sharing System</h3>
+                <p class="project-tech">Computer Security · Spring 2026</p>
+                <p class="prompt">End-to-end encrypted file sharing system in Go. Implements encrypt-then-MAC, RSA hybrid encryption, digital signatures, Argon2 key derivation, and access revocation with full key rotation. Defends against tampering, spoofing, replay, and metadata leakage attacks. 59/59 tests passing.</p>
+            </div>
+
+            <div class="project-card">
+                <h3>> Smart Personal Website</h3>
+                <p class="project-tech">Full-stack · ML · System Design (In Progress)</p>
+                <p class="prompt">Full-stack personal website with user interaction logging and a lightweight ML recommendation system (logistic regression / collaborative filtering). Real-time inference pipeline for "Recommended for you" and dynamic UI suggestions; Firebase auth, MongoDB-backed APIs, custom domain deployment.</p>
+                <div class="project-links">
+                    <a href="project-smart-website.html" class="btn">Project Page</a>
+                    <a href="docs/SMART_WEBSITE_ARCHITECTURE.md" class="btn" target="_blank">Architecture</a>
+                </div>
+            </div>
+
             <div class="project-card">
                 <h3>> Intelligent Intersection Project</h3>
                 <p class="project-tech">Embedded and Cyber Physical Systems · Fall 2025</p>
@@ -129,6 +148,26 @@
                 </div>
             </div>
         </div>
+
+        <div class="terminal-header" style="margin-top: 2rem;">
+            <div class="terminal-title">Abby:~/Projects$ ls ./teaching</div>
+        </div>
+
+        <h2>Teaching</h2>
+
+        <div class="projects-grid">
+            <div class="project-card">
+                <h3>> Cubstart iOS Course Instructor</h3>
+                <p class="project-tech">Cal Hacks · Sept 2025 - May 2026</p>
+                <p class="prompt">Primary instructor teaching ~100 students per semester about iOS development and design. Lead and teach lectures, discussions and create custom-curated content for lectures, homeworks, and discussions. Technologies taught: Swift, SwiftUI, Data Flow, Animations, Data Persistence (SwiftData, Firebase), Framework Integration.</p>
+            </div>
+
+            <div class="project-card">
+                <h3>> IEEE Micromouse Course Instructor</h3>
+                <p class="project-tech">UC Berkeley IEEE · Sept 2025 - May 2026</p>
+                <p class="prompt">Instruct students in embedded systems and robotics, including microcontroller programming, sensor integration, soldering and autonomous robot navigation. Lead technical office hours and labs, debugging hardware/software issues and guiding teams through system-level design and implementation.</p>
+            </div>
+        </div>
     </main>
 
     <footer>
@@ -152,5 +191,13 @@
             <button id="clearAllBtn" class="clear-all-btn" onclick="clearAllMessages()" style="display: none;">rm -rf messages/*</button>
         </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            var btn = document.querySelector('.theme-switch');
+            if (btn) btn.innerHTML = document.documentElement.getAttribute('data-theme') === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
+        });
+    </script>
 </body>
 </html> 

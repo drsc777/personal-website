@@ -1,30 +1,55 @@
-// Firebase initialization (should be updated with your Firebase config)
-const firebaseConfig = {
-    apiKey: "AIzaSyBHPRWuP6wg4hNZx1wm-5k1zv9yGtGFEME",
-    authDomain: "personal-website-efcd6.firebaseapp.com",
-    databaseURL: "https://personal-website-efcd6-default-rtdb.firebaseio.com",
-    projectId: "personal-website-efcd6",
-    storageBucket: "personal-website-efcd6.appspot.com",
-    messagingSenderId: "538307028479",
-    appId: "1:538307028479:web:8acbd8d2c5c9c25d74dc38"
-};
+// --- Content registry for recommendation (Smart Personal Website) ---
+const CONTENT_REGISTRY = [
+  { id: "home", title: "Home", url: "index.html", tags: ["about"], category: "home" },
+  { id: "projects", title: "Projects", url: "projects.html", tags: ["ml", "systems", "fullstack", "embedded", "hardware"], category: "projects" },
+  { id: "coursework", title: "Coursework", url: "coursework.html", tags: ["courses", "eecs"], category: "academic" },
+  { id: "heatmaps", title: "Heatmaps", url: "heatmaps.html", tags: ["activity", "github"], category: "tools" },
+  { id: "messages", title: "Messages", url: "messages.html", tags: ["contact"], category: "contact" },
+  { id: "smart-website", title: "Smart Personal Website", url: "project-smart-website.html", tags: ["ml", "systems", "fullstack"], category: "projects" }
+];
 
-// Initialize Firebase
-if (typeof firebase !== 'undefined') {
-    firebase.initializeApp(firebaseConfig);
-    
-    // Update visitor counter
-    const database = firebase.database();
-    const visitorCountRef = database.ref('visitorCount');
-    
-    visitorCountRef.transaction(function(currentCount) {
-        return (currentCount || 0) + 1;
+function getRecommendations(currentPageId, limit) {
+  const limitNum = Math.min(limit || 3, CONTENT_REGISTRY.length - 1);
+  const others = CONTENT_REGISTRY.filter(function (c) { return c.id !== currentPageId; });
+  if (others.length <= limitNum) return others;
+  try {
+    const raw = localStorage.getItem("smart_website_recent_views");
+    const recent = raw ? JSON.parse(raw) : [];
+    const viewedIds = recent.map(function (r) { return r.page_id; });
+    const byTag = {};
+    viewedIds.forEach(function (id) {
+      const c = CONTENT_REGISTRY.find(function (x) { return x.id === id; });
+      if (c && c.tags) c.tags.forEach(function (t) { byTag[t] = (byTag[t] || 0) + 1; });
     });
-    
-    visitorCountRef.on('value', function(snapshot) {
-        const count = snapshot.val() || 0;
-        document.getElementById('visitorCount').textContent = count;
+    const scored = others.map(function (c) {
+      let s = 0;
+      if (c.tags) c.tags.forEach(function (t) { s += byTag[t] || 0; });
+      return { item: c, score: s };
     });
+    scored.sort(function (a, b) { return b.score - a.score; });
+    const top = scored.slice(0, limitNum).map(function (x) { return x.item; });
+    while (top.length < limitNum) {
+      const next = others.find(function (c) { return top.indexOf(c) < 0; });
+      if (!next) break;
+      top.push(next);
+    }
+    return top;
+  } catch (_) {
+    return others.slice(0, limitNum);
+  }
+}
+
+function renderRecommendations(containerId) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  const pageId = (function () {
+    const path = window.location.pathname.replace(/^\//, "").replace(/\.html$/, "") || "index";
+    return path === "index" ? "home" : path === "project-smart-website" ? "smart-website" : path;
+  })();
+  const recs = getRecommendations(pageId, 3);
+  el.innerHTML = recs.map(function (c) {
+    return '<a href="' + c.url + '" class="recommendation-card"><span class="rec-title">' + c.title + '</span><span class="rec-meta">' + (c.category || "") + '</span></a>';
+  }).join("");
 }
 
 // Theme Toggling

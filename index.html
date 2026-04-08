@@ -12,54 +12,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <script src="scripts.js"></script>
-    <script type="module">
-        // Import the functions you need from the SDKs you need
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, push, remove, get, child, set, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-
-        // Your web app's Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyBnyUJvCCDZ2txRai9akUjIkH0-qVnrwys",
-            authDomain: "abby-li-website.firebaseapp.com",
-            databaseURL: "https://abby-li-website-default-rtdb.firebaseio.com",
-            projectId: "abby-li-website",
-            storageBucket: "abby-li-website.firebastorage.app",
-            messagingSenderId: "109684047786",
-            appId: "1:109684047786:web:2dabbb1c8279ef4c9675d3",
-            measurementId: "G-BK78DY09CP"
-        };
-
-        try {
-            console.log('Initializing Firebase...');
-            // Initialize Firebase
-            const app = initializeApp(firebaseConfig);
-            console.log('Firebase app initialized:', app);
-            
-            const database = getDatabase(app);
-            console.log('Database initialized:', database);
-
-            // Add Firebase instance to window object for access in other functions
-            window.firebaseApp = app;
-            window.firebaseDatabase = database;
-            window.firebaseRefs = { ref, push, remove, get, child };
-            console.log('Firebase setup complete');
-
-            // Update visitor count
-            const visitsRef = ref(database, 'visits');
-            
-            // Get current visit count and update display
-            get(visitsRef).then((snapshot) => {
-                const visits = snapshot.val() || 0;
-                document.getElementById('visitorCount').textContent = visits;
-                
-                // Increment visit count
-                set(visitsRef, increment(1));
-            });
-
-        } catch (error) {
-            console.error('Error initializing Firebase:', error);
-        }
-    </script>
+    <script type="module" src="firebase-init.js"></script>
     <script>
         function toggleTheme() {
             const html = document.documentElement;
@@ -87,7 +40,7 @@
             const savedTheme = localStorage.getItem('theme') || 'light';
             document.documentElement.setAttribute('data-theme', savedTheme);
             updateThemeButton();
-            
+            if (typeof renderRecommendations === 'function') renderRecommendations('recommendation-slot');
             // Load preview GitHub chart if on homepage
             const previewChart = document.getElementById('github-preview-chart');
             if (previewChart) {
@@ -275,11 +228,14 @@
             </div>
             <h2>Current Projects</h2>
             
+            <p class="prompt">> RISC-V CPU on FPGA</p>
+            <p class="prompt">3-stage pipelined RV32 processor with FPU, UART, and BIOS on Xilinx PYNQ. Currently integrating floating-point unit.</p>
+
+            <p class="prompt">> Secure File Sharing System</p>
+            <p class="prompt">End-to-end encrypted file sharing in Go with RSA, digital signatures, and Argon2 key derivation.</p>
+
             <p class="prompt">> Micromouse Competition</p>
-            <p class="prompt">Autonomous maze-solving robot project for competition.</p>
-            
-            <p class="prompt">> FPGA CPU</p>
-            <p class="prompt">CPU design and implementation on FPGA.</p>
+            <p class="prompt">Autonomous maze-solving robot with embedded sensor integration and navigation algorithms.</p>
             
             <div class="view-more">
                 <a href="projects.html" class="view-more-link">cd ./projects</a>
@@ -301,6 +257,16 @@
             <div class="view-more">
                 <a href="heatmaps.html" class="view-more-link">cd ./heatmaps</a>
             </div>
+        </section>
+
+        <!-- Recommended for you (Smart Website feature) -->
+        <section class="terminal-container recommendation-section">
+            <div class="terminal-header">
+                <div class="terminal-title">Abby:~$ cat recommended_for_you.txt</div>
+            </div>
+            <h2>You may also like</h2>
+            <p class="prompt">Based on your browsing — personalized recommendations (ML pipeline in progress).</p>
+            <div id="recommendation-slot" class="recommendation-cards"></div>
         </section>
 
         <!-- Message section -->

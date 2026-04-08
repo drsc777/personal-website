@@ -467,6 +467,78 @@ nav a.active {
     text-decoration: none;
 }
 
+.project-card-featured {
+    border-left: 3px solid var(--link-color);
+}
+
+.project-detail {
+    margin-bottom: 1.5rem;
+}
+
+.project-detail h2 {
+    margin-bottom: 0.5rem;
+}
+
+.prompt-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+.prompt-list li {
+    margin-bottom: 0.5rem;
+    padding-left: 1rem;
+    position: relative;
+}
+
+.prompt-list li::before {
+    content: ">";
+    position: absolute;
+    left: 0;
+    color: var(--link-color);
+}
+
+.resume-quote {
+    border-left: 4px solid var(--border-color);
+    padding: 0.75rem 1rem;
+    margin: 0.5rem 0;
+    font-size: 0.95em;
+    color: var(--text-color);
+    background: var(--card-bg);
+}
+
+.recommendation-section .recommendation-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.recommendation-cards .recommendation-card {
+    display: block;
+    padding: 12px 16px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    text-decoration: none;
+    color: var(--text-color);
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.recommendation-cards .recommendation-card:hover {
+    background: var(--card-hover-bg);
+    border-color: var(--link-color);
+}
+
+.recommendation-card .rec-title {
+    font-weight: 400;
+    margin-bottom: 4px;
+}
+
+.recommendation-card .rec-meta {
+    font-size: 0.85em;
+    color: var(--tag-text);
+}
+
 .project-list, .course-list {
     list-style-type: none;
     padding: 0;
