@@ -9,6 +9,55 @@
     <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@300;400&display=swap" rel="stylesheet">
     <script src="scripts.js"></script>
     <script type="module" src="firebase-init.js"></script>
+    <style>
+        .study-tools { margin: 24px 0; }
+        .study-card {
+            display: inline-block;
+            background: var(--card-bg, #f8f9fb);
+            border: 1px solid var(--border-color, #e2e4ea);
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin: 8px;
+            width: calc(33% - 20px);
+            min-width: 260px;
+            vertical-align: top;
+            transition: transform .2s, box-shadow .2s;
+            text-decoration: none;
+            color: inherit;
+        }
+        .study-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,0,0,.1);
+            border-color: #7c3aed;
+        }
+        .study-card h4 { margin: 0 0 6px; color: #7c3aed; font-size: 1.1em; }
+        .study-card .badge {
+            display: inline-block;
+            font-size: .7em;
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .badge-interactive { background: #ede9fe; color: #7c3aed; }
+        .badge-notes { background: #dcfce7; color: #16a34a; }
+        .badge-exam { background: #fef3c7; color: #d97706; }
+        .study-card p { font-size: .85em; opacity: .8; margin: 0; }
+        .study-card .stats { font-size: .75em; color: #6b7280; margin-top: 8px; }
+        .section-label {
+            font-size: .85em;
+            color: #7c3aed;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 32px 0 12px;
+            font-weight: 600;
+        }
+        [data-theme="dark"] .study-card { background: #1e1e2e; border-color: #333; }
+        [data-theme="dark"] .study-card:hover { border-color: #7c3aed; }
+        [data-theme="dark"] .badge-interactive { background: #2d2050; }
+        [data-theme="dark"] .badge-notes { background: #0a2e1a; }
+        [data-theme="dark"] .badge-exam { background: #2e2000; }
+    </style>
 </head>
 <body>
     <nav>
@@ -27,94 +76,76 @@
 
         <h1>Coursework</h1>
 
+        <!-- ========== INTERACTIVE STUDY TOOLS ========== -->
+        <div class="section-label">📚 Interactive Study Tools</div>
+        <p class="prompt" style="margin-bottom:16px;">Self-built interactive study sites with Chinese annotations, step-by-step walkthroughs, circuit simulators, and AI chat.</p>
+
+        <div class="study-tools">
+            <a href="study/eecs151.html" class="study-card">
+                <span class="badge badge-interactive">🎮 Interactive</span>
+                <h4>EECS 151 · Digital Design</h4>
+                <p>17 topics · Gate simulator · Pipeline hazard animator · FSM builder · CMOS visualizer · Timing diagram tool · Logical effort calculator</p>
+                <div class="stats">2491 lines · 20+ interactive elements · 中文注解</div>
+            </a>
+            <a href="study/eecs151-notes.html" class="study-card">
+                <span class="badge badge-notes">📝 Study Guide</span>
+                <h4>EECS 151 · Complete Notes</h4>
+                <p>19 sections · 65 Chinese annotations · 45 flashcards · 30 quiz questions · 3 cheatsheets (MT1/MT2/Final)</p>
+                <div class="stats">1829 lines · Searchable · Light mode</div>
+            </a>
+            <a href="study/cs152.html" class="study-card">
+                <span class="badge badge-exam">🎯 Exam Prep</span>
+                <h4>CS 152 · Computer Architecture</h4>
+                <p>10 topics (Pipeline → OoO → BPred → Cache → VM → VLIW → Vectors → MT → GPU → Coherence) · AI chat · Voice input · Step-by-step walkthroughs</p>
+                <div class="stats">Full semester · openclaw chat · 中文优先</div>
+            </a>
+        </div>
+
+        <!-- ========== COURSE LISTS ========== -->
         <div class="course-section-wrapper">
             <div class="course">
-                <h3>> Current Courses</h3>
+                <h3>> Current Courses · Spring 2026</h3>
                 <ul class="course-list">
-                    <li>
-                        <strong>COMPSCI 152: Computer Architecture and Engineering</strong>
-                    </li>
-                    <li>
-                        <strong>COMPSCI 161: Computer Security</strong>
-                    </li>
-                    <li>
-                        <strong>EECS 151: Introduction to Digital Design and Integrated Circuits</strong>
-                    </li>
-                    <li>
-                        <strong>EECS 151LB: Field-Programmable Gate Array Laboratory</strong>
-                    </li>
-                    <li>
-                        <strong>151Tapeout Decal</strong>
-                    </li>
+                    <li><strong>COMPSCI 152: Computer Architecture and Engineering</strong></li>
+                    <li><strong>COMPSCI 161: Computer Security</strong></li>
+                    <li><strong>EECS 151: Introduction to Digital Design and Integrated Circuits</strong></li>
+                    <li><strong>EECS 151LB: Field-Programmable Gate Array Laboratory</strong></li>
+                    <li><strong>151Tapeout Decal</strong></li>
                 </ul>
             </div>
 
             <div class="course">
-                <h3>> Future Upper Division Courses</h3>
+                <h3>> Teaching · Spring 2026</h3>
                 <ul class="course-list">
-                    <li>
-                        <strong>EECS C106A: Introduction to Robotics</strong>
-                    </li>
-                    <li>
-                        <strong>EECS C106B: Robotic Manipulation and Interaction</strong>
-                    </li>
-                    <li>
-                        <strong>EE 140: Linear Integrated Circuits</strong>
-                    </li>
-                    <li>
-                        <strong>EE 194: Special Topics (Tapeout)</strong>
-                    </li>
-                    <li>
-                        <strong>CS 188: Introduction to Artificial Intelligence</strong>
-                    </li>
-                    <li>
-                        <strong>CS 189: Introduction to Machine Learning</strong>
-                    </li>
-                    <li>
-                        <strong>CS 162: Operating Systems</strong>
-                    </li>
+                    <li><strong>Micromouse Decal</strong> — Instructor. Help students build autonomous maze-solving robots. PCB design, soldering, embedded debugging.</li>
+                    <li><strong>Cubstart iOS Development</strong> — Instructor. Teach Swift, SwiftUI, and app design to 30+ students.</li>
                 </ul>
             </div>
 
             <div class="course">
                 <h3>> Completed Courses</h3>
                 <ul class="course-list">
-                    <li>
-                        <strong>CS 61A: The Structure and Interpretation of Computer Programs</strong>
-                    </li>
-                    <li>
-                        <strong>CS 61B: Data Structures</strong>
-                    </li>
-                    <li>
-                        <strong>EECS 16A: Designing Information Devices and Systems I</strong>
-                    </li>
-                    <li>
-                        <strong>EECS 16B: Designing Information Devices and Systems II</strong>
-                    </li>
-                    <li>
-                        <strong>COMPSCI 61C: Great Ideas of Computer Architecture (Machine Structures)</strong>
-                    </li>
-                    <li>
-                        <strong>COMPSCI 70: Discrete Mathematics and Probability Theory</strong>
-                    </li>
-                    <li>
-                        <strong>COMPSCI 195: Social Implications of Computer Technology</strong>
-                    </li>
-                    <li>
-                        <strong>ELENG 105: Microelectronic Devices and Circuits</strong>
-                    </li>
-                    <li>
-                        <strong>COMPSCI 168: Introduction to the Internet: Architecture and Protocols</strong>
-                    </li>
-                    <li>
-                        <strong>EECS 149: Introduction to Embedded and Cyber Physical Systems</strong>
-                    </li>
-                    <li>
-                        <strong>EECS 151: Introduction to Digital Design and Integrated Circuits</strong>
-                    </li>
-                    <li>
-                        <strong>EECS 151LA: Application Specific Integrated Circuits Laboratory</strong>
-                    </li>
+                    <li><strong>CS 61A: Structure and Interpretation of Computer Programs</strong></li>
+                    <li><strong>CS 61B: Data Structures</strong></li>
+                    <li><strong>CS 61C: Great Ideas of Computer Architecture</strong></li>
+                    <li><strong>CS 70: Discrete Mathematics and Probability Theory</strong></li>
+                    <li><strong>CS 168: Introduction to the Internet</strong></li>
+                    <li><strong>CS 195: Social Implications of Computer Technology</strong></li>
+                    <li><strong>EECS 16A/16B: Designing Information Devices and Systems</strong></li>
+                    <li><strong>EE 105: Microelectronic Devices and Circuits</strong></li>
+                    <li><strong>EECS 149: Embedded and Cyber Physical Systems</strong></li>
+                    <li><strong>EECS 151 + 151LA: Digital Design + ASIC Lab (Fall 2025)</strong></li>
+                </ul>
+            </div>
+
+            <div class="course">
+                <h3>> Planned Courses</h3>
+                <ul class="course-list">
+                    <li><strong>EECS C106A/B: Introduction to Robotics</strong></li>
+                    <li><strong>EE 140: Linear Integrated Circuits</strong></li>
+                    <li><strong>CS 162: Operating Systems</strong></li>
+                    <li><strong>CS 188: Introduction to Artificial Intelligence</strong></li>
+                    <li><strong>CS 189: Introduction to Machine Learning</strong></li>
                 </ul>
             </div>
         </div>
@@ -132,8 +163,8 @@
             <div class="terminal-header">
                 <div class="terminal-title">sudo view_messages</div>
             </div>
-            <input type="password" 
-                   id="password" 
+            <input type="password"
+                   id="password"
                    placeholder="Password:"
                    onkeyup="if(event.key === 'Enter') checkPassword()">
             <button onclick="checkPassword()">Authenticate</button>
@@ -142,4 +173,4 @@
         </div>
     </div>
 </body>
-</html> 
+</html>

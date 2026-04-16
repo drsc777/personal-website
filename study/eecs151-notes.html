@@ -1,0 +1,1829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EECS 151 Complete Study Guide</title>
+<style>
+:root{--bg:#ffffff;--card:#f8f9fb;--nav:#ffffffee;--accent:#58a6ff;--accent2:#3fb950;--accent3:#d29922;--warn:#f85149;--text:#1a1a2e;--dim:#6b7280;--border:#e2e4ea;--card2:#f0f2f5}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.65;font-size:15px}
+.container{max-width:960px;margin:0 auto;padding:16px}
+a{color:var(--accent);text-decoration:none}
+
+/* SIDEBAR NAV */
+.sidebar{position:fixed;top:0;left:0;width:220px;height:100vh;background:var(--card);border-right:1px solid var(--border);overflow-y:auto;z-index:100;padding:12px 0;transition:transform .3s}
+.sidebar h2{font-size:.85em;color:var(--accent);padding:8px 16px 4px;letter-spacing:.5px;text-transform:uppercase}
+.sidebar .nav-item{display:block;padding:5px 16px 5px 24px;color:var(--dim);font-size:.82em;cursor:pointer;border-left:2px solid transparent;transition:all .15s}
+.sidebar .nav-item:hover{color:var(--text);background:rgba(88,166,255,.06)}
+.sidebar .nav-item.active{color:var(--accent);border-left-color:var(--accent);background:rgba(88,166,255,.1)}
+.sidebar .nav-item.sub{padding-left:36px;font-size:.78em}
+.sidebar .divider{height:1px;background:var(--border);margin:8px 16px}
+.main{margin-left:220px;min-height:100vh}
+.menu-btn{display:none;position:fixed;top:10px;left:10px;z-index:200;background:var(--card);border:1px solid var(--border);color:var(--text);padding:6px 12px;border-radius:6px;cursor:pointer;font-size:1.1em}
+
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-left:0}
+  .menu-btn{display:block}
+}
+
+/* SECTIONS */
+.section{display:none;padding:20px 0}
+.section.active{display:block}
+h1{font-size:1.8em;margin:0 0 8px;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+h2.sec-title{font-size:1.35em;color:var(--accent);margin:24px 0 8px;border-bottom:1px solid var(--border);padding-bottom:6px}
+h3{color:var(--accent3);margin:16px 0 6px;font-size:1.05em}
+h4{color:var(--accent2);margin:12px 0 4px;font-size:.95em}
+
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;margin:12px 0}
+.card.concept{border-left:3px solid var(--accent)}
+.card.formula{border-left:3px solid var(--accent3)}
+.card.example{border-left:3px solid var(--accent2)}
+.card.warn{border-left:3px solid var(--warn)}
+.card.zh{border-left:3px solid var(--dim);font-size:.9em;background:var(--card2)}
+.tag{display:inline-block;font-size:.7em;padding:1px 7px;border-radius:3px;margin-bottom:6px;font-weight:600}
+.tag.c{background:rgba(88,166,255,.15);color:var(--accent)}
+.tag.f{background:rgba(210,153,34,.15);color:var(--accent3)}
+.tag.e{background:rgba(63,185,80,.15);color:var(--accent2)}
+.tag.w{background:rgba(248,81,73,.15);color:var(--warn)}
+.tag.z{background:rgba(139,148,158,.15);color:var(--dim)}
+
+/* EXPANDABLE */
+details{margin:8px 0}
+details summary{cursor:pointer;padding:8px 12px;background:var(--card2);border:1px solid var(--border);border-radius:8px;font-weight:600;font-size:.9em;color:var(--text);list-style:none}
+details summary::before{content:'+ ';color:var(--accent)}
+details[open] summary::before{content:'- '}
+details[open] summary{border-radius:8px 8px 0 0}
+details .detail-body{padding:12px;border:1px solid var(--border);border-top:0;border-radius:0 0 8px 8px;background:var(--card)}
+
+/* TABLE */
+table{width:100%;border-collapse:collapse;margin:8px 0;font-size:.88em}
+th,td{padding:6px 10px;border:1px solid var(--border);text-align:center}
+th{background:rgba(88,166,255,.1);color:var(--accent);font-weight:600}
+
+/* CODE */
+code{font-family:'Fira Code',Consolas,monospace;background:rgba(0,0,0,.06);padding:1px 5px;border-radius:3px;font-size:.88em;color:#1a7f37}
+pre{background:rgba(0,0,0,.04);padding:12px;border-radius:8px;overflow-x:auto;margin:8px 0;border:1px solid var(--border);font-size:.85em;line-height:1.5}
+pre code{background:none;padding:0}
+
+/* SVG DIAGRAMS */
+.svg-container{display:flex;justify-content:center;margin:12px 0}
+.svg-container svg{max-width:100%;height:auto}
+svg text{font-family:'Segoe UI',sans-serif}
+
+/* INTERACTIVE ANIMATIONS */
+.anim-container{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:16px;margin:12px 0;text-align:center}
+.anim-container canvas{border-radius:8px;display:block;margin:0 auto}
+.anim-controls{display:flex;gap:8px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+
+/* BUTTONS */
+.btn{background:var(--accent);color:#fff;border:none;padding:7px 18px;border-radius:6px;cursor:pointer;font-size:.85em;transition:all .15s}
+.btn:hover{filter:brightness(1.15)}
+.btn.sec{background:var(--card);border:1px solid var(--border);color:var(--text)}
+.btn.sm{padding:4px 12px;font-size:.8em}
+
+/* FLASHCARD */
+.fc-wrap{perspective:800px;margin:16px 0}
+.fc{width:100%;min-height:180px;position:relative;transform-style:preserve-3d;transition:transform .5s;cursor:pointer}
+.fc.flip{transform:rotateY(180deg)}
+.fc-face{position:absolute;width:100%;min-height:180px;backface-visibility:hidden;border-radius:10px;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center;font-size:.95em}
+.fc-front{background:linear-gradient(135deg,#e8edf5,#ede8f5);border:1px solid var(--accent);color:var(--text)}
+.fc-back{background:linear-gradient(135deg,#e8f5f0,#e8edf5);border:1px solid var(--accent2);transform:rotateY(180deg);color:var(--text)}
+.fc-nav{display:flex;justify-content:center;gap:8px;margin-top:8px}
+.fc-count{text-align:center;color:var(--dim);font-size:.82em;margin-top:4px}
+
+/* QUIZ */
+.q-item{margin:14px 0}
+.q-item p.q-text{font-weight:600;margin-bottom:6px;font-size:.92em}
+.q-opts label{display:block;padding:6px 12px;margin:3px 0;background:rgba(240,242,245,.8);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:.88em;transition:all .15s}
+.q-opts label:hover{border-color:var(--accent)}
+.q-opts input{display:none}
+.q-opts label.ok{border-color:var(--accent2);background:rgba(63,185,80,.12)}
+.q-opts label.no{border-color:var(--warn);background:rgba(248,81,73,.1)}
+.q-fb{font-size:.85em;margin-top:4px;display:none}
+
+/* CHEATSHEET */
+.cheat-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:700px){.cheat-grid{grid-template-columns:1fr}}
+.cheat-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px;font-size:.82em}
+.cheat-card h4{margin:0 0 6px;font-size:.9em}
+.cheat-card ul{padding-left:16px;margin:4px 0}
+.cheat-card li{margin:2px 0}
+
+/* PRINT */
+@media print{
+  .sidebar,.menu-btn,.btn,.anim-controls,.fc-nav,.q-opts{display:none!important}
+  .main{margin-left:0}
+  body{background:#fff;color:#000;font-size:10pt}
+  .card,.cheat-card{background:#fff;border-color:#ccc;break-inside:avoid}
+  .section{display:block!important}
+  h1,h2.sec-title,h3,h4{color:#000!important;-webkit-text-fill-color:#000!important}
+  .cheat-grid{grid-template-columns:1fr 1fr}
+}
+ul,ol{padding-left:18px;margin:6px 0}
+li{margin:3px 0}
+.math{color:var(--accent3);font-style:italic}
+.hi{color:var(--accent2);font-weight:600}
+.imp{color:var(--warn);font-weight:600}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:600px){.grid2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<button class="menu-btn" onclick="document.querySelector('.sidebar').classList.toggle('open')">&#9776;</button>
+
+<div class="sidebar" id="sidebar">
+  <h2>Prerequisites</h2>
+  <div class="nav-item" onclick="go('prereq')">61C Background</div>
+  <div class="divider"></div>
+  <h2>MT1 Topics</h2>
+  <div class="nav-item active" onclick="go('home')">Course Overview</div>
+  <div class="nav-item" onclick="go('boolean')">Boolean Logic</div>
+  <div class="nav-item" onclick="go('verilog')">SystemVerilog</div>
+  <div class="nav-item" onclick="go('seq')">Sequential Logic & FSM</div>
+  <div class="nav-item" onclick="go('riscv')">RISC-V & Datapath</div>
+  <div class="nav-item" onclick="go('pipeline')">Pipelining</div>
+  <div class="divider"></div>
+  <h2>MT2 Topics</h2>
+  <div class="nav-item" onclick="go('cmos')">CMOS Fundamentals</div>
+  <div class="nav-item" onclick="go('delay')">CMOS Delay</div>
+  <div class="nav-item" onclick="go('effort')">Logical Effort</div>
+  <div class="nav-item" onclick="go('wires')">Wires & Energy</div>
+  <div class="nav-item" onclick="go('adders')">Adders</div>
+  <div class="nav-item" onclick="go('mult')">Multipliers</div>
+  <div class="divider"></div>
+  <h2>Final Topics</h2>
+  <div class="nav-item" onclick="go('timing')">Timing & Latches</div>
+  <div class="nav-item" onclick="go('sram')">SRAM & Memory</div>
+  <div class="nav-item" onclick="go('power')">Power & Energy</div>
+  <div class="nav-item" onclick="go('shifters')">Shifters & Crossbars</div>
+  <div class="nav-item" onclick="go('division')">Binary Division</div>
+  <div class="nav-item" onclick="go('fpga')">FPGA vs ASIC</div>
+  <div class="divider"></div>
+  <h2>Exam Prep</h2>
+  <div class="nav-item" onclick="go('cs1')">Cheatsheet: MT1</div>
+  <div class="nav-item" onclick="go('cs2')">Cheatsheet: MT2</div>
+  <div class="nav-item" onclick="go('cs3')">Cheatsheet: Final</div>
+  <div class="nav-item" onclick="go('flash')">Flashcards</div>
+  <div class="nav-item" onclick="go('quiz')">Practice Quiz</div>
+</div>
+
+<div class="main">
+<div class="container">
+
+<!-- ==================== HOME ==================== -->
+<div class="section active" id="sec-home">
+<h1>EECS 151: Complete Study Guide</h1>
+<p>Introduction to Digital Design and ICs &mdash; UC Berkeley, Spring 2026</p>
+
+<div class="card zh"><span class="tag z">中文概要</span>
+<p>EECS 151是UC Berkeley的数字集成电路设计入门课。涵盖：布尔逻辑、SystemVerilog硬件描述语言、有限状态机、RISC-V处理器设计、流水线、CMOS晶体管电路、延迟分析、逻辑努力、导线与能耗、加法器与乘法器、时序分析与存储器、功耗分析、移位器与交叉开关、除法器、FPGA与ASIC比较。本网站覆盖全部讲义内容加上61C背景知识复习，提供三份考试速查表、交互式动画和练习题。</p>
+</div>
+
+<h2 class="sec-title">Course Map</h2>
+<div class="card">
+<!-- Interactive SVG Course Map -->
+<svg viewBox="0 0 800 340" xmlns="http://www.w3.org/2000/svg" style="width:100%;font-size:11px">
+  <defs>
+    <linearGradient id="g1" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#58a6ff"/><stop offset="100%" stop-color="#3fb950"/></linearGradient>
+    <linearGradient id="g2" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#d29922"/><stop offset="100%" stop-color="#f85149"/></linearGradient>
+    <linearGradient id="g3" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#a371f7"/><stop offset="100%" stop-color="#58a6ff"/></linearGradient>
+  </defs>
+  <!-- MT1 Block -->
+  <rect x="10" y="10" width="380" height="150" rx="10" fill="none" stroke="url(#g1)" stroke-width="2"/>
+  <text x="20" y="30" fill="#58a6ff" font-weight="bold" font-size="13">MIDTERM 1 (Lec 1-11)</text>
+  <g fill="#1a1a2e" font-size="10.5">
+    <text x="25" y="52">L1-2: Introduction, Design Process</text>
+    <text x="25" y="68">L3: Design Metrics, Noise Margins</text>
+    <text x="25" y="84">L4-6: SystemVerilog (Structural, Behavioral, Sequential)</text>
+    <text x="25" y="100">L7: Finite State Machines</text>
+    <text x="25" y="116">L8: Combinational Logic, Boolean Algebra</text>
+    <text x="25" y="132">L9-11: RISC-V, Pipelining, FPGAs, Hazards</text>
+    <text x="25" y="148">L12: Formal Verification (guest)</text>
+  </g>
+  <!-- MT2 Block -->
+  <rect x="410" y="10" width="380" height="150" rx="10" fill="none" stroke="url(#g2)" stroke-width="2"/>
+  <text x="420" y="30" fill="#d29922" font-weight="bold" font-size="13">MIDTERM 2 (Lec 13-20)</text>
+  <g fill="#1a1a2e" font-size="10.5">
+    <text x="425" y="52">L13: CMOS Process (fabrication, finFET)</text>
+    <text x="425" y="68">L14: CMOS Inverter (MOS transistor, VTC)</text>
+    <text x="425" y="84">L15: CMOS Delay (RC model, Elmore delay)</text>
+    <text x="425" y="100">L16: Logical Effort (gate sizing optimization)</text>
+    <text x="425" y="116">L17: Wires &amp; Energy (dynamic/static power)</text>
+    <text x="425" y="132">L18: Adders (RCA, carry-bypass, carry-select)</text>
+    <text x="425" y="148">L19-20: Adders 2, Multipliers, Dividers</text>
+  </g>
+  <!-- Final Block -->
+  <rect x="150" y="180" width="500" height="80" rx="10" fill="none" stroke="url(#g3)" stroke-width="2"/>
+  <text x="160" y="200" fill="#a371f7" font-weight="bold" font-size="13">FINAL EXAM (Cumulative + Lec 21+)</text>
+  <g fill="#1a1a2e" font-size="10.5">
+    <text x="170" y="220">L21: Timing &amp; Latches, Shifters, Division, Power Analysis</text>
+    <text x="170" y="236">+ SRAM Memory, FPGA vs ASIC</text>
+    <text x="170" y="252">+ All MT1 and MT2 content</text>
+  </g>
+  <!-- Arrows -->
+  <path d="M200 160 L200 180" stroke="#58a6ff" stroke-width="1.5" fill="none" marker-end="url(#ah)"/>
+  <path d="M600 160 L600 180" stroke="#d29922" stroke-width="1.5" fill="none" marker-end="url(#ah)"/>
+  <defs><marker id="ah" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#6b7280"/></marker></defs>
+  <!-- Legend -->
+  <text x="10" y="290" fill="#6b7280" font-size="10">Click any topic in the sidebar to study it. Each section has: concepts, formulas, diagrams, worked examples, and a Chinese summary.</text>
+  <text x="10" y="310" fill="#6b7280" font-size="10">Cheatsheets are printable (Ctrl+P). Flashcards and quizzes at the bottom for self-testing.</text>
+</svg>
+</div>
+</div>
+
+<!-- ==================== 61C PREREQUISITES ==================== -->
+<div class="section" id="sec-prereq">
+<h1>61C Background / Prerequisites</h1>
+<p>Review of CS 61C concepts needed for EECS 151</p>
+
+<div class="card zh"><span class="tag z">中文</span>
+<p>这一节回顾61C的核心基础：数的表示(无符号、二进制补码、符号扩展)，RISC-V指令集基础(6种格式)，内存模型(字节寻址、大小端、对齐)，以及C语言到汇编的映射。就像盖房子之前要先了解砖块和水泥一样，这些是设计数字电路的"原材料"。</p>
+</div>
+
+<h2 class="sec-title">Number Representation</h2>
+<div class="card concept"><span class="tag c">UNSIGNED & TWO'S COMPLEMENT</span>
+<ul>
+<li><strong>Unsigned N-bit:</strong> range [0, 2<sup>N</sup>-1]. Simply binary place values.</li>
+<li><strong>Two's complement N-bit:</strong> range [-2<sup>N-1</sup>, 2<sup>N-1</sup>-1]. MSB has weight -2<sup>N-1</sup>.</li>
+<li><strong>Negation:</strong> flip all bits, add 1. Example: -5 in 8-bit = ~(00000101)+1 = 11111011</li>
+<li><strong>Sign extension:</strong> replicate the MSB to fill wider register. E.g., 1011 (4-bit, -5) &rarr; 11111011 (8-bit, still -5)</li>
+<li><strong>Zero extension:</strong> pad with 0s (for unsigned values)</li>
+</ul>
+</div>
+<div class="card zh"><span class="tag z">中文</span>
+<p>二进制补码像一个"环形数轴"：从0往上数到最大正数(01...1)，再往上就跳到最小负数(10...0)。符号扩展就是复制最高位来保持数值不变，就像把"-5"从4位搬到8位时，前面都填1。</p>
+</div>
+
+<div class="card example"><span class="tag e">WORKED EXAMPLE</span>
+<p>Convert -13 to 8-bit two's complement:</p>
+<ol>
+<li>13 in binary = 00001101</li>
+<li>Flip bits = 11110010</li>
+<li>Add 1 = 11110011</li>
+<li>Check: -128+64+32+16+0+0+2+1 = -128+115 = -13</li>
+</ol>
+</div>
+
+<h2 class="sec-title">RISC-V ISA Quick Reference</h2>
+<div class="card concept"><span class="tag c">6 INSTRUCTION FORMATS</span>
+<table style="font-size:.8em">
+<tr><th>Format</th><th>Key Fields</th><th>Examples</th></tr>
+<tr><td>R-type</td><td>funct7 | rs2 | rs1 | funct3 | rd | opcode</td><td>add, sub, and, or, xor, slt</td></tr>
+<tr><td>I-type</td><td>imm[11:0] | rs1 | funct3 | rd | opcode</td><td>addi, lw, jalr, slli</td></tr>
+<tr><td>S-type</td><td>imm[11:5] | rs2 | rs1 | funct3 | imm[4:0] | opcode</td><td>sw, sb, sh</td></tr>
+<tr><td>B-type</td><td>imm bits | rs2 | rs1 | funct3 | imm bits | opcode</td><td>beq, bne, blt, bge</td></tr>
+<tr><td>U-type</td><td>imm[31:12] | rd | opcode</td><td>lui, auipc</td></tr>
+<tr><td>J-type</td><td>imm bits | rd | opcode</td><td>jal</td></tr>
+</table>
+<p>All instructions are 32 bits. <code>x0</code> is hardwired to 0. <code>rd</code> = destination register.</p>
+</div>
+<div class="card zh"><span class="tag z">中文</span>
+<p>RISC-V的6种指令格式就像6种不同的"信封"模板。R型用于寄存器间运算(如加减)，I型用于带立即数的操作(如addi、加载)，S型用于存储(把数据写入内存)，B型用于条件跳转，U/J型用于大跳转和上半立即数。</p>
+</div>
+
+<h2 class="sec-title">Memory Model</h2>
+<div class="card concept"><span class="tag c">BYTE ADDRESSING & ENDIANNESS</span>
+<ul>
+<li><strong>Byte addressing:</strong> each memory address points to one byte (8 bits)</li>
+<li><strong>Word:</strong> 4 bytes (32 bits) in RV32. <code>lw</code> loads 4 bytes starting at address.</li>
+<li><strong>Little-endian (RISC-V):</strong> least significant byte at lowest address</li>
+<li><strong>Alignment:</strong> word access should be at addresses divisible by 4; half-word by 2</li>
+<li>Misaligned access may cause exceptions or be slower</li>
+</ul>
+</div>
+<div class="card zh"><span class="tag z">中文</span>
+<p>内存就像一排编了号的"小格子"，每格存1字节。小端序(Little-endian)就是低位字节放在低地址，像把数字"从右往左"排列。对齐要求4字节数据必须放在4的倍数地址上，否则硬件访问会出问题。</p>
+</div>
+
+<h2 class="sec-title">C to Assembly Mapping</h2>
+<div class="card example"><span class="tag e">COMMON PATTERNS</span>
+<pre><code>// C: int x = a + b;
+// ASM: add x0_reg, a_reg, b_reg
+
+// C: if (a == b) { ... }
+// ASM: beq a_reg, b_reg, label
+
+// C: int arr[10]; x = arr[3];
+// ASM: lw x_reg, 12(base_reg)   # 3*4=12 byte offset
+
+// C: for (int i=0; i<N; i++) { ... }
+// ASM: addi i_reg, x0, 0       # i=0
+//      loop: ...
+//      addi i_reg, i_reg, 1    # i++
+//      blt i_reg, N_reg, loop  # if i<N goto loop</code></pre>
+</div>
+</div>
+
+<!-- ==================== BOOLEAN LOGIC ==================== -->
+<div class="section" id="sec-boolean">
+<h1>Boolean Logic & Combinational Circuits</h1>
+<p>Lectures 2-3, 7-8 | Midterm 1 scope</p>
+<div class="card zh"><span class="tag z">中文概要</span><p>布尔代数是数字设计的数学基础。变量只有0和1两个值。基本运算：AND(与)、OR(或)、NOT(非)。关键定律：德摩根定律(NOT(AB)=A'+B')、分配律、吸收律。组合逻辑的输出仅取决于当前输入。可用真值表、卡诺图、SOP/POS形式表达和化简。噪声容限衡量信号在传输中抗干扰的能力。</p></div>
+
+<h2 class="sec-title">Boolean Algebra Laws</h2>
+<div class="grid2">
+<div class="card concept"><span class="tag c">IDENTITIES</span>
+<ul><li>X + 0 = X, X &middot; 1 = X</li><li>X + 1 = 1, X &middot; 0 = 0</li><li>X + X = X, X &middot; X = X</li><li>X + X' = 1, X &middot; X' = 0</li></ul>
+</div>
+<div class="card concept"><span class="tag c">KEY LAWS</span>
+<ul>
+<li><strong>De Morgan's:</strong> <span class="math">(AB)' = A' + B'</span>, <span class="math">(A+B)' = A'B'</span></li>
+<li><strong>Distributive:</strong> A(B+C) = AB+AC, <em>also</em> A+BC = (A+B)(A+C)</li>
+<li><strong>Absorptive:</strong> A+AB = A, A(A+B) = A</li>
+<li><strong>Consensus:</strong> AB+A'C+BC = AB+A'C</li>
+</ul>
+</div>
+</div>
+<div class="card zh"><span class="tag z">中文</span>
+<p>德摩根定律是最重要的化简工具，可以记为"打破长杠，变换运算"：AND变OR，OR变AND，各变量取反。吸收律(A+AB=A)的直觉是：如果A已经是1，加上AB不改变结果。共识定律说多余项BC可以去掉，因为它被AB和A'C覆盖。</p>
+</div>
+
+<h2 class="sec-title">Canonical Forms</h2>
+<div class="card">
+<ul>
+<li><strong>SOP (Sum of Products)</strong>: OR of minterms where f=1. Each minterm is an AND of all variables.</li>
+<li><strong>POS (Product of Sums)</strong>: AND of maxterms where f=0. Each maxterm is an OR of all variables.</li>
+</ul>
+</div>
+<div class="card zh"><span class="tag z">中文</span>
+<p>SOP就是把真值表中输出为1的行写成"乘积之和"，每一项包含所有变量(取值为0的变量加非号)。POS则相反，取输出为0的行写成"和之积"。两者互为对偶。</p>
+</div>
+
+<h2 class="sec-title">Noise Margins</h2>
+<div class="card formula"><span class="tag f">FORMULAS</span>
+<!-- SVG Noise Margin Diagram -->
+<div class="svg-container">
+<svg viewBox="0 0 420 200" width="420">
+  <rect x="100" y="10" width="120" height="30" fill="rgba(63,185,80,.2)" stroke="#3fb950" rx="4"/>
+  <text x="160" y="30" text-anchor="middle" fill="#3fb950" font-size="11" font-weight="bold">NM_H</text>
+  <rect x="100" y="45" width="120" height="30" fill="rgba(139,148,158,.15)" stroke="#6b7280" rx="4" stroke-dasharray="4"/>
+  <text x="160" y="65" text-anchor="middle" fill="#6b7280" font-size="10">Undefined</text>
+  <rect x="100" y="80" width="120" height="30" fill="rgba(88,166,255,.2)" stroke="#58a6ff" rx="4"/>
+  <text x="160" y="100" text-anchor="middle" fill="#58a6ff" font-size="11" font-weight="bold">NM_L</text>
+  <text x="80" y="18" text-anchor="end" fill="#1a1a2e" font-size="10">V_OH</text>
+  <text x="80" y="47" text-anchor="end" fill="#1a1a2e" font-size="10">V_IH</text>
+  <text x="80" y="82" text-anchor="end" fill="#1a1a2e" font-size="10">V_IL</text>
+  <text x="80" y="115" text-anchor="end" fill="#1a1a2e" font-size="10">V_OL</text>
+  <text x="280" y="25" fill="#3fb950" font-size="11">NM_H = V_OH - V_IH</text>
+  <text x="280" y="95" fill="#58a6ff" font-size="11">NM_L = V_IL - V_OL</text>
+  <text x="50" y="15" fill="#1a1a2e" font-size="10">"1"</text>
+  <text x="50" y="115" fill="#1a1a2e" font-size="10">"0"</text>
+  <text x="280" y="60" fill="#6b7280" font-size="10">Amount of noise tolerable</text>
+  <text x="280" y="73" fill="#6b7280" font-size="10">at worst-case output</text>
+</svg>
+</div>
+</div>
+<div class="card zh"><span class="tag z">中文</span>
+<p>噪声容限就像信号的"安全边距"。NM_H是高电平输出和下一级高电平输入阈值之间的差距，NM_L是低电平的对应差距。越大越抗干扰，就像围墙越高越安全。</p>
+</div>
+
+<h2 class="sec-title">Design Metrics</h2>
+<div class="card">
+<ul>
+<li><strong>Propagation delay (t_p)</strong>: time from input 50% to output 50%. t_p = (t_pHL + t_pLH)/2</li>
+<li><strong>Rise time (t_r)</strong>: output 10% to 90%. <strong>Fall time (t_f)</strong>: 90% to 10%.</li>
+<li><strong>Throughput</strong>: operations per unit time. <strong>Latency</strong>: time from start to finish of one task.</li>
+</ul>
+</div>
+<div class="card zh"><span class="tag z">中文</span>
+<p>传播延迟是信号从输入到输出经过50%点的时间。吞吐量是单位时间能完成多少操作(像流水线工厂每秒出几个产品)，延迟是一个操作从头到尾的时间(一个产品走完整条流水线要多久)。</p>
+</div>
+</div>
+
+<!-- ==================== SYSTEMVERILOG ==================== -->
+<div class="section" id="sec-verilog">
+<h1>SystemVerilog</h1>
+<p>Lectures 4-6 | Midterm 1 scope</p>
+<div class="card zh"><span class="tag z">中文概要</span><p>SystemVerilog是硬件描述语言，分为结构化（门级连接）和行为化（算法描述）两种风格。关键区别：assign是连续赋值（组合逻辑），always_ff用于时序逻辑（触发器），always_comb用于组合逻辑。阻塞赋值(=)按顺序执行，非阻塞赋值(<=)并行更新（用于触发器）。模块可参数化、可用generate循环实例化。</p></div>
+
+<h2 class="sec-title">Two Styles</h2>
+<div class="grid2">
+<div class="card concept"><span class="tag c">STRUCTURAL</span>
+<pre><code>module mux2(input a,b,sel, output out);
+  logic s0, w0, w1;
+  not (s0, sel);
+  and (w0, s0, a);
+  and (w1, sel, b);
+  or  (out, w0, w1);
+endmodule</code></pre>
+<p>Instantiates gates explicitly. Output is always first argument.</p>
+</div>
+<div class="card concept"><span class="tag c">BEHAVIORAL</span>
+<pre><code>module mux2(input a,b,sel, output out);
+  assign out = sel ? b : a;
+endmodule</code></pre>
+<p><code>assign</code> = continuous assignment (combinational logic). Changes on RHS immediately reflected.</p>
+</div>
+</div>
+<div class="card zh"><span class="tag z">中文</span>
+<p>结构化描述就像画电路图，一个一个门连起来。行为化描述更像写代码，描述"做什么"而不是"怎么连"。两种方式综合后可以得到一样的电路。assign相当于"永远保持这个等式成立的导线连接"。</p>
+</div>
+
+<h2 class="sec-title">Always Blocks</h2>
+<div class="card formula"><span class="tag f">KEY RULES</span>
+<table>
+<tr><th>Block</th><th>Use For</th><th>Assignment</th><th>Sensitivity</th></tr>
+<tr><td><code>always_comb</code></td><td>Combinational logic</td><td><code>=</code> (blocking)</td><td>Auto (all inputs)</td></tr>
+<tr><td><code>always_ff</code></td><td>Flip-flops</td><td><code>&lt;=</code> (non-blocking)</td><td><code>@(posedge clk)</code></td></tr>
+<tr><td><code>always_latch</code></td><td>Latches (avoid!)</td><td><code>&lt;=</code></td><td>Level-sensitive</td></tr>
+</table>
+</div>
+<div class="card zh"><span class="tag z">中文</span>
+<p>always_comb像一个"随时更新的计算器"，输入一变输出立刻变。always_ff像一个"快门"，只在时钟上升沿那一刻拍一张"快照"存起来。记住：组合逻辑用=（阻塞），触发器用<=（非阻塞）。</p>
+</div>
+
+<h2 class="sec-title">Blocking vs Non-Blocking</h2>
+<div class="card example"><span class="tag e">CRITICAL DIFFERENCE</span>
+<div class="grid2">
+<div><h4>Non-blocking (<=) - for FF</h4>
+<pre><code>always_ff @(posedge clk) begin
+  q1 <= in;  // all evaluate
+  q2 <= q1;  // using OLD values
+  q3 <= q2;  // = shift register!
+end</code></pre></div>
+<div><h4>Blocking (=) - WRONG for FF</h4>
+<pre><code>always_ff @(posedge clk) begin
+  q1 = in;   // updates immediately
+  q2 = q1;   // uses NEW q1 = in
+  q3 = q2;   // all get same value!
+end</code></pre></div>
+</div>
+</div>
+
+<h2 class="sec-title">Parameterized Modules & Generate</h2>
+<div class="card">
+<pre><code>module counter #(parameter N = 4) (
+  input clk, rst, enb,
+  output logic [N-1:0] count
+);
+  always_ff @(posedge clk)
+    count <= rst ? '0 : (enb ? count+1 : count);
+endmodule</code></pre>
+</div>
+<div class="card zh"><span class="tag z">中文</span>
+<p>参数化模块像一个"可调尺寸的模具"。parameter定义可调参数(如位宽N)，generate/for可以批量生成重复硬件结构(如N个加法器)。实例化时用 #(.N(8)) 指定参数值。</p>
+</div>
+</div>
+
+<!-- ==================== SEQUENTIAL LOGIC ==================== -->
+<div class="section" id="sec-seq">
+<h1>Sequential Logic & FSMs</h1>
+<p>Lectures 6-7 | Midterm 1 scope</p>
+<div class="card zh"><span class="tag z">中文概要</span><p>时序逻辑的输出取决于当前输入和历史状态（通过触发器存储）。有限状态机(FSM)是常见的时序电路。Moore机输出仅取决于当前状态，Mealy机输出取决于当前状态和输入。FSM用两段式always block实现：一个always_ff更新状态寄存器，一个always_comb计算下一状态和输出。同步/异步复位的区别在于复位是否依赖时钟。</p></div>
+
+<h2 class="sec-title">Moore vs Mealy</h2>
+<div class="card">
+<table>
+<tr><th></th><th>Moore</th><th>Mealy</th></tr>
+<tr><td>Output depends on</td><td>State only</td><td>State + Input</td></tr>
+<tr><td>Output changes</td><td>On clock edge</td><td>Asynchronously with input</td></tr>
+<tr><td>Typically needs</td><td>More states</td><td>Fewer states</td></tr>
+</table>
+</div>
+<div class="card zh"><span class="tag z">中文</span>
+<p>Moore机像一个"只看当前房间决定行为"的机器人，Mealy机还会"听门外的声音来决定"。Moore更安全(输出同步)，Mealy更省状态但输出可能有毛刺。</p>
+</div>
+
+<h2 class="sec-title">FSM in SystemVerilog (Two-Block Style)</h2>
+<div class="card">
+<pre><code>typedef enum logic [1:0] {IDLE, RUN, DONE} state_t;
+state_t state, next_state;
+
+always_ff @(posedge clk)
+  state <= rst ? IDLE : next_state;
+
+always_comb begin
+  next_state = state;  // default: stay
+  case (state)
+    IDLE: if (start) next_state = RUN;
+    RUN:  if (finish) next_state = DONE;
+    DONE: next_state = IDLE;
+  endcase
+end</code></pre>
+</div>
+<div class="card zh"><span class="tag z">中文</span>
+<p>两段式FSM：第一段(always_ff)是"记忆"，每个时钟存一次当前状态；第二段(always_comb)是"决策"，根据当前状态和输入决定下一步。注意always_comb里要有默认赋值(next_state=state)，否则会综合出latch。</p>
+</div>
+
+<h2 class="sec-title">Sync vs Async Reset</h2>
+<div class="card">
+<div class="grid2">
+<div><h4>Synchronous Reset</h4>
+<pre><code>always_ff @(posedge clk)
+  if (!reset_n) q <= 0;
+  else q <= d;</code></pre>
+<p>Reset only on clock edge.</p></div>
+<div><h4>Asynchronous Reset</h4>
+<pre><code>always_ff @(posedge clk or
+           negedge reset_n)
+  if (!reset_n) q <= 0;
+  else q <= d;</code></pre>
+<p>Reset immediately, no clock needed.</p></div>
+</div>
+</div>
+</div>
+
+<!-- ==================== RISC-V ==================== -->
+<div class="section" id="sec-riscv">
+<h1>RISC-V & Datapath</h1>
+<p>Lectures 8-10 | Midterm 1 scope</p>
+<div class="card zh"><span class="tag z">中文概要</span><p>RISC-V是开源指令集架构，有6种指令格式(R/I/S/B/U/J)。处理器是一个大型状态机：每个时钟周期取指、译码、执行、访存、写回。数据通路包括PC、指令存储器、寄存器文件、ALU、数据存储器、立即数生成器。控制信号(PCSel, ALUSel, RegWEn等)由指令的opcode/funct字段决定。JAL/JALR用于跳转，Branch用于条件分支。</p></div>
+
+<h2 class="sec-title">Instruction Formats</h2>
+<div class="card">
+<table style="font-size:.8em">
+<tr><th>Format</th><th>Fields (31..0)</th><th>Used By</th></tr>
+<tr><td>R-type</td><td>funct7 | rs2 | rs1 | funct3 | rd | opcode</td><td>ADD, SUB, AND, OR, XOR, SLT...</td></tr>
+<tr><td>I-type</td><td>imm[11:0] | rs1 | funct3 | rd | opcode</td><td>ADDI, LW, JALR, SLLI...</td></tr>
+<tr><td>S-type</td><td>imm[11:5] | rs2 | rs1 | funct3 | imm[4:0] | opcode</td><td>SW, SB, SH</td></tr>
+<tr><td>B-type</td><td>imm[12|10:5] | rs2 | rs1 | funct3 | imm[4:1|11] | opcode</td><td>BEQ, BNE, BLT, BGE...</td></tr>
+<tr><td>U-type</td><td>imm[31:12] | rd | opcode</td><td>LUI, AUIPC</td></tr>
+<tr><td>J-type</td><td>imm[20|10:1|11|19:12] | rd | opcode</td><td>JAL</td></tr>
+</table>
+</div>
+<div class="card zh"><span class="tag z">中文</span>
+<p>RISC-V指令格式里，立即数的位分布看起来很乱，但其实是为了让不同格式的相同位尽量对齐(简化硬件)。记住关键：R型用于寄存器运算，I型用于立即数和加载，S型用于存储，B型用于分支。</p>
+</div>
+
+<h2 class="sec-title">Single-Cycle Datapath</h2>
+<div class="card">
+<div class="svg-container">
+<svg viewBox="0 0 700 200" width="700" xmlns="http://www.w3.org/2000/svg">
+  <style>svg text{font-size:9px;fill:#1a1a2e} .box{fill:none;stroke:#58a6ff;stroke-width:1.5;rx:4} .arr{stroke:#6b7280;stroke-width:1;fill:none;marker-end:url(#arh)}</style>
+  <defs><marker id="arh" viewBox="0 0 8 8" refX="4" refY="4" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L8 4L0 8z" fill="#6b7280"/></marker></defs>
+  <rect class="box" x="10" y="60" width="50" height="40"/><text x="35" y="84" text-anchor="middle" font-weight="bold">PC</text>
+  <rect class="box" x="80" y="50" width="70" height="60"/><text x="115" y="84" text-anchor="middle" font-weight="bold">IMEM</text>
+  <rect class="box" x="170" y="40" width="70" height="80"/><text x="205" y="75" text-anchor="middle" font-weight="bold">Reg[]</text>
+  <text x="205" y="87" text-anchor="middle" font-size="7">rs1,rs2,rd</text>
+  <rect class="box" x="280" y="50" width="60" height="60"/><text x="310" y="84" text-anchor="middle" font-weight="bold">ALU</text>
+  <rect class="box" x="370" y="50" width="70" height="60"/><text x="405" y="84" text-anchor="middle" font-weight="bold">DMEM</text>
+  <rect class="box" x="480" y="60" width="50" height="40"/><text x="505" y="84" text-anchor="middle" font-weight="bold">WB</text>
+  <rect x="170" y="140" width="80" height="30" fill="none" stroke="#d29922" stroke-width="1" rx="4"/><text x="210" y="159" text-anchor="middle" fill="#d29922" font-weight="bold">Imm Gen</text>
+  <path class="arr" d="M60 80 L80 80"/><path class="arr" d="M150 80 L170 80"/><path class="arr" d="M240 75 L280 75"/>
+  <path class="arr" d="M340 80 L370 80"/><path class="arr" d="M440 80 L480 80"/>
+  <path class="arr" d="M530 80 L550 80"/><text x="560" y="84" fill="#3fb950">wb</text>
+  <!-- Control -->
+  <rect x="80" y="170" width="350" height="22" fill="none" stroke="#58a6ff" stroke-width="1" rx="4" stroke-dasharray="4"/>
+  <text x="255" y="185" text-anchor="middle" fill="#58a6ff" font-size="8">Control Logic: PCSel, ImmSel, RegWEn, BrSel, ALUSel, MemRW, WBSel</text>
+</svg>
+</div>
+<p>Data flows: PC &rarr; IMEM &rarr; Decode/RegRead &rarr; ALU &rarr; DMEM &rarr; WriteBack</p>
+</div>
+<div class="card zh"><span class="tag z">中文</span>
+<p>单周期数据通路就像一条"流水线工厂"：PC提供地址 &rarr; 指令存储器取出指令 &rarr; 译码并读寄存器 &rarr; ALU计算 &rarr; 访问数据存储器 &rarr; 结果写回寄存器。控制逻辑就像"车间主任"，根据指令类型发出不同控制信号。</p>
+</div>
+</div>
+
+<!-- ==================== PIPELINING ==================== -->
+<div class="section" id="sec-pipeline">
+<h1>Pipelining & Hazards</h1>
+<p>Lectures 10-11 | Midterm 1 scope</p>
+<div class="card zh"><span class="tag z">中文概要</span><p>流水线将数据通路分成多个阶段(取指F、译码D、执行X、访存M、写回W)，用寄存器分隔，使多条指令可以同时在不同阶段执行，提高吞吐量。但引入三种冒险：结构冒险(资源冲突)、数据冒险(数据依赖)、控制冒险(分支)。解决方法：转发(forwarding)、停顿(stalling)、分支预测。最大频率由最慢阶段决定。</p></div>
+
+<h2 class="sec-title">5-Stage Pipeline</h2>
+<div class="card">
+<div class="anim-container">
+<canvas id="pipeCanvas" width="650" height="180"></canvas>
+<div class="anim-controls">
+<button class="btn sm" onclick="pipeStep()">Step</button>
+<button class="btn sm sec" onclick="pipeReset()">Reset</button>
+</div>
+</div>
+</div>
+
+<h2 class="sec-title">Hazards</h2>
+<div class="card">
+<table>
+<tr><th>Type</th><th>Cause</th><th>Solution</th></tr>
+<tr><td><strong>Structural</strong></td><td>Two stages need same resource</td><td>Separate IMEM/DMEM, multi-port regfile</td></tr>
+<tr><td><strong>Data</strong></td><td>Instruction depends on result of prior instr</td><td>Forwarding, stalling</td></tr>
+<tr><td><strong>Control</strong></td><td>Branch/jump changes PC</td><td>Branch prediction, flush, delay slots</td></tr>
+</table>
+</div>
+<div class="card zh"><span class="tag z">中文</span>
+<p>流水线冒险就像高速公路上的"堵车"：结构冒险是两辆车抢同一车道(加车道解决)；数据冒险是后车需要前车的结果(转发=直接传递，停顿=等一等)；控制冒险是不知道该走哪个出口(分支预测=猜一个方向先走着)。</p>
+</div>
+
+<h2 class="sec-title">Timing</h2>
+<div class="card formula"><span class="tag f">FORMULAS</span>
+<ul>
+<li><strong>Max frequency:</strong> <span class="math">f = 1/T<sub>min</sub></span></li>
+<li><span class="math">T<sub>min</sub> = t<sub>clk-q</sub> + t<sub>logic,max</sub> + t<sub>setup</sub></span></li>
+<li><strong>Hold constraint:</strong> <span class="math">t<sub>clk-q</sub> + t<sub>logic,min</sub> &gt; t<sub>hold</sub></span></li>
+<li><strong>Retiming:</strong> move registers to balance critical path across pipeline stages</li>
+</ul>
+</div>
+</div>
+
+<!-- ==================== CMOS ==================== -->
+<div class="section" id="sec-cmos">
+<h1>CMOS Fundamentals</h1>
+<p>Lectures 13-14 | Midterm 2 scope</p>
+<div class="card zh"><span class="tag z">中文概要</span><p>CMOS是现代芯片的基础。NMOS在栅极高电平时导通（拉低输出），PMOS在栅极低电平时导通（拉高输出）。每个门有互补的上拉(PUN,PMOS)和下拉(PDN,NMOS)网络，是对偶关系：串联变并联。静态CMOS门只能实现反相功能(NAND/NOR)。晶体管尺寸设计：串联时加倍宽度以保持等效驱动能力。</p></div>
+
+<h2 class="sec-title">NMOS vs PMOS</h2>
+<div class="card">
+<!-- Interactive MOSFET Diagram -->
+<div class="anim-container">
+<canvas id="mosCanvas" width="500" height="220"></canvas>
+<div class="anim-controls">
+<button class="btn sm" id="mosBtn" onclick="toggleMos()">Toggle Gate Voltage</button>
+<span id="mosLabel" style="color:var(--dim);font-size:.85em">V_G = 0 (NMOS OFF)</span>
+</div>
+</div>
+</div>
+<div class="card zh"><span class="tag z">中文</span>
+<p>NMOS就像一个"高电平才开的水龙头"，导通时把输出拉到地(输出0)。PMOS相反，"低电平才开"，导通时把输出拉到电源(输出1)。NMOS传递强0弱1，PMOS传递强1弱0，所以CMOS两者配合使用。</p>
+</div>
+
+<h2 class="sec-title">CMOS Gate Structure</h2>
+<div class="card concept"><span class="tag c">KEY RULES</span>
+<ul>
+<li><strong>PDN (NMOS, to GND):</strong> Series = AND, Parallel = OR</li>
+<li><strong>PUN (PMOS, to V<sub>DD</sub>):</strong> Dual of PDN (Series&harr;Parallel)</li>
+<li>Output = <strong>complement</strong> of PDN expression</li>
+<li>Static CMOS is <span class="imp">always inverting</span>: can build NAND, NOR, not AND/OR directly</li>
+</ul>
+</div>
+<div class="card zh"><span class="tag z">中文</span>
+<p>PDN决定什么时候输出拉低(接地)，所以如果PDN中两个NMOS串联(都导通才接地=AND条件)，输出就是(AB)的反=NAND。对偶规则：PDN串联&harr;PUN并联，像镜子里的倒影。</p>
+</div>
+
+<h2 class="sec-title">Interactive: Build a CMOS Gate</h2>
+<div class="anim-container">
+<canvas id="cmosGateCanvas" width="400" height="280"></canvas>
+<div class="anim-controls">
+<button class="btn sm" onclick="setCmosGate('inv')">INV</button>
+<button class="btn sm" onclick="setCmosGate('nand2')">NAND2</button>
+<button class="btn sm" onclick="setCmosGate('nor2')">NOR2</button>
+<button class="btn sm" onclick="setCmosGate('nand3')">NAND3</button>
+</div>
+<p id="cmosGateLabel" style="margin-top:8px;color:var(--accent)"></p>
+</div>
+
+<h2 class="sec-title">Transistor Sizing</h2>
+<div class="card formula"><span class="tag f">METHOD</span>
+<p>Goal: equal pull-up/pull-down strength as reference inverter (W<sub>p</sub>/W<sub>n</sub> = &beta;)</p>
+<ul>
+<li><strong>NMOS in series &times; N:</strong> each width = N &times; W<sub>n,min</sub></li>
+<li><strong>PMOS in series &times; N:</strong> each width = N &times; W<sub>p,min</sub></li>
+<li>Parallel: keep minimum width</li>
+</ul>
+<table>
+<tr><th>Gate</th><th>NMOS config</th><th>PMOS config</th><th>Each NMOS W</th><th>Each PMOS W</th><th>Total (&beta;=2)</th></tr>
+<tr><td>NAND2</td><td>2 series</td><td>2 parallel</td><td>2</td><td>2</td><td>8</td></tr>
+<tr><td>NAND3</td><td>3 series</td><td>3 parallel</td><td>3</td><td>2</td><td>15</td></tr>
+<tr><td>NOR2</td><td>2 parallel</td><td>2 series</td><td>1</td><td>4</td><td>10</td></tr>
+<tr><td>NOR3</td><td>3 parallel</td><td>3 series</td><td>1</td><td>6</td><td>21</td></tr>
+</table>
+<p class="imp">NAND gates are smaller than NOR gates! (because PMOS in parallel, not series)</p>
+</div>
+<div class="card zh"><span class="tag z">中文</span>
+<p>晶体管串联时电阻加倍，所以要加倍宽度来补偿。NAND中NMOS串联(需要加倍)而PMOS并联(不用加倍)，NOR则相反。因为PMOS本身就比NMOS大(beta=2)，所以NOR中PMOS串联会变得很大，这就是为什么NAND比NOR更受欢迎。</p>
+</div>
+</div>
+
+<!-- ==================== DELAY ==================== -->
+<div class="section" id="sec-delay">
+<h1>CMOS Delay</h1>
+<p>Lecture 15 | Midterm 2 scope</p>
+<div class="card zh"><span class="tag z">中文概要</span><p>CMOS延迟用RC模型分析。每个晶体管导通时有电阻R(与宽度成反比)，栅极和漏极有电容。传播延迟：t = ln(2) &times; R &times; (寄生电容 + 负载电容)。Elmore延迟用于复杂RC网络：对每个电容，乘以从源到该电容的共享电阻，求和。关键：包含非通路电容，不包含非通路电阻。反相器链最优扇出约为e&asymp;2.7。</p></div>
+
+<h2 class="sec-title">RC Model</h2>
+<div class="card formula"><span class="tag f">FORMULAS</span>
+<ul>
+<li><strong>On-resistance:</strong> <span class="math">R = R<sub>on</sub> / W</span> (wider = lower resistance)</li>
+<li><strong>Gate capacitance:</strong> <span class="math">C<sub>g</sub> = W &times; C<sub>i</sub></span></li>
+<li><strong>Drain capacitance:</strong> <span class="math">C<sub>d</sub> = &gamma; &times; C<sub>g</sub></span> (&gamma; &asymp; 1 in this class)</li>
+<li><strong>Inverter delay:</strong> <span class="math">t<sub>p</sub> = ln(2) &times; R<sub>eq</sub> &times; (C<sub>parasitic</sub> + C<sub>load</sub>)</span></li>
+</ul>
+</div>
+<div class="card zh"><span class="tag z">中文</span>
+<p>RC模型把晶体管简化为"水管"(电阻R)和"水桶"(电容C)。宽度大=水管粗=电阻小=充电快。延迟就是给电容充到50%所需的时间=ln(2)*RC。就像用水管往桶里灌水，管越粗(R小)桶越小(C小)就越快。</p>
+</div>
+
+<h2 class="sec-title">Elmore Delay</h2>
+<div class="card concept"><span class="tag c">METHOD</span>
+<p><span class="math">t<sub>D</sub> = ln(2) &times; &sum;<sub>i</sub> R<sub>shared,i</sub> &times; C<sub>i</sub></span></p>
+<p>For each capacitor: multiply by total resistance from source to that cap. Sum all.</p>
+<p class="imp">Include off-path CAPACITANCES. Exclude off-path RESISTANCES.</p>
+</div>
+<div class="card zh"><span class="tag z">中文</span>
+<p>Elmore延迟就像算"每个水桶被上游所有水管拖慢了多少"。对每个电容C_i，找从源到它经过的所有电阻加起来(共享路径)，乘以C_i，最后全部求和。非通路上的电容要算(因为也要充电)，但非通路上的电阻不算(因为电流不经过那里)。</p>
+</div>
+
+<h2 class="sec-title">Interactive: RC Charging</h2>
+<div class="anim-container">
+<canvas id="rcCanvas" width="500" height="200"></canvas>
+<div class="anim-controls">
+<button class="btn sm" onclick="startRC()">Charge!</button>
+<button class="btn sm sec" onclick="resetRC()">Reset</button>
+<span style="color:var(--dim);font-size:.82em">V(t) = V<sub>DD</sub>(1 - e<sup>-t/RC</sup>), 50% at t = ln(2)&middot;RC</span>
+</div>
+</div>
+
+<h2 class="sec-title">Inverter Chain Optimization</h2>
+<div class="card formula"><span class="tag f">FORMULA</span>
+<ul>
+<li>Overall fanout: <span class="math">F = C<sub>L</sub>/C<sub>in</sub></span></li>
+<li>N stages, optimal fanout per stage: <span class="math">f = F<sup>1/N</sup></span></li>
+<li>Optimal f &asymp; e &asymp; 2.718 (practical: 3-4)</li>
+<li>Chain delay: <span class="math">D = N &times; t<sub>p0</sub>(1 + &gamma;/f)</span></li>
+</ul>
+</div>
+<div class="card zh"><span class="tag z">中文</span>
+<p>如果要驱动一个很大的负载(比如C_L是输入的1000倍)，直接用一个反相器会太慢。解决方案：用一串逐渐变大的反相器，每级放大约e倍(2.7倍)。级数N=ln(F)/ln(e)，总延迟最小。就像搬重物时用多个滑轮逐级放大力量。</p>
+</div>
+</div>
+
+<!-- ==================== LOGICAL EFFORT ==================== -->
+<div class="section" id="sec-effort">
+<h1>Logical Effort</h1>
+<p>Lecture 16 | Midterm 2 scope</p>
+<div class="card zh"><span class="tag z">中文概要</span><p>逻辑努力是比较不同门速度并优化尺寸的方法。门延迟 d = g&times;h + p（逻辑努力&times;电气努力 + 寄生延迟）。路径总努力 F = G&times;B&times;H，最优每级努力 f = F^(1/N)。从输出往回算每个门的输入电容来确定尺寸。NAND比NOR快（逻辑努力更小）。</p></div>
+
+<h2 class="sec-title">Gate Delay Formula</h2>
+<div class="card formula"><span class="tag f">CORE FORMULA</span>
+<p style="font-size:1.15em;text-align:center"><span class="math">d = g &times; h + p</span></p>
+<ul>
+<li><strong>g</strong> = logical effort (gate type property)</li>
+<li><strong>h</strong> = C<sub>out</sub>/C<sub>in</sub> = electrical effort (fanout)</li>
+<li><strong>p</strong> = parasitic delay</li>
+<li><strong>f = g&times;h</strong> = stage effort</li>
+</ul>
+</div>
+<div class="card zh"><span class="tag z">中文</span>
+<p>逻辑努力g衡量"这个门比反相器慢多少"。电气努力h衡量"负载有多重"。寄生延迟p是门自身的固有延迟。总延迟d就像做一件事的难度=事情本身的难度(g) &times; 负担大小(h) + 准备时间(p)。</p>
+</div>
+
+<h2 class="sec-title">Logical Effort Table</h2>
+<div class="card">
+<table>
+<tr><th>Gate</th><th>g (logical effort)</th><th>p (parasitic delay)</th></tr>
+<tr><td>Inverter</td><td>1</td><td>1</td></tr>
+<tr><td>NAND2</td><td>4/3</td><td>2</td></tr>
+<tr><td>NAND3</td><td>5/3</td><td>3</td></tr>
+<tr><td>NOR2</td><td>5/3</td><td>2</td></tr>
+<tr><td>NOR3</td><td>7/3</td><td>3</td></tr>
+</table>
+</div>
+
+<h2 class="sec-title">Path Optimization</h2>
+<div class="card formula"><span class="tag f">OPTIMIZATION METHOD</span>
+<ol>
+<li>Compute: G = &prod;g<sub>i</sub>, B = &prod;b<sub>i</sub> (branching), H = C<sub>out</sub>/C<sub>in</sub></li>
+<li>Path effort: <span class="math">F = G &times; B &times; H</span></li>
+<li>Optimal stage effort: <span class="math">f&#x0302; = F<sup>1/N</sup></span></li>
+<li>Min delay: <span class="math">D = N &times; f&#x0302; + &sum;p<sub>i</sub></span></li>
+<li>Size backwards: <span class="math">C<sub>in,i</sub> = g<sub>i</sub> &times; C<sub>out,i</sub> / f&#x0302;</span></li>
+</ol>
+</div>
+<div class="card zh"><span class="tag z">中文</span>
+<p>路径优化的步骤：(1)算总努力F=G*B*H；(2)求最优每级努力f=F^(1/N)；(3)从输出往回推每个门的输入电容C_in = g*C_out/f。就像规划旅程：先算总路程，再平均分配每天的行程，然后从目的地往回安排住宿点。</p>
+</div>
+</div>
+
+<!-- ==================== WIRES & ENERGY ==================== -->
+<div class="section" id="sec-wires">
+<h1>Wires & Energy</h1>
+<p>Lecture 17-18 | Midterm 2 scope</p>
+<div class="card zh"><span class="tag z">中文概要</span><p>导线有电阻和电容，先进工艺中导线延迟可超过门延迟。总功耗 = 动态 + 短路 + 漏电。动态功耗 P = &alpha;CV&sup2;f，其中&alpha;是活动因子=2p(1-p)。降压可大幅降低功耗(P&prop;V&sup3;)但频率也降(f&prop;V)。每次开关能量=CV&sup2;。短路功耗在PUN/PDN同时导通时产生，峰值在V<sub>DD</sub>/2。</p></div>
+
+<h2 class="sec-title">Wire Delay</h2>
+<div class="card formula"><span class="tag f">FORMULAS</span>
+<ul>
+<li><strong>Wire R:</strong> R = &rho; &times; L / (W &times; t) = R<sub>sq</sub> &times; L/W</li>
+<li><strong>Wire C:</strong> C = &epsilon; &times; A / d</li>
+<li><strong>Lumped:</strong> t = 0.7 RC</li>
+<li><strong>Distributed (N&rarr;&infin;):</strong> t &asymp; 0.35 RC</li>
+</ul>
+</div>
+<div class="card zh"><span class="tag z">中文</span>
+<p>导线不是理想的，有电阻(越长越细越大)和电容(与邻近导线的耦合)。集中式模型把整条导线的RC集中在一点，分布式模型更准确(延迟减半)。在先进工艺中导线延迟已经超过门延迟，成为瓶颈。</p>
+</div>
+
+<h2 class="sec-title">Dynamic Power</h2>
+<div class="card formula"><span class="tag f">THE MOST IMPORTANT POWER FORMULA</span>
+<p style="font-size:1.2em;text-align:center"><span class="math">P<sub>dynamic</sub> = &alpha; &times; C<sub>L</sub> &times; V<sub>DD</sub>&sup2; &times; f<sub>clk</sub></span></p>
+<ul>
+<li><strong>Activity factor:</strong> <span class="math">&alpha; = 2p(1-p)</span> where p = P(output=1)</li>
+<li><strong>Energy per switch:</strong> <span class="math">E = C<sub>L</sub> &times; V<sub>DD</sub>&sup2;</span></li>
+<li><strong>Short-circuit:</strong> P<sub>sc</sub> = I<sub>sc</sub> &times; V<sub>DD</sub>, peaks at V<sub>in</sub> = V<sub>DD</sub>/2</li>
+<li><strong>Static:</strong> P<sub>leak</sub> = I<sub>leak</sub> &times; V<sub>DD</sub></li>
+</ul>
+</div>
+<div class="card zh"><span class="tag z">中文</span>
+<p>动态功耗P=alpha*C*V^2*f是最重要的公式。alpha是"活动因子"=信号翻转的概率(对于随机信号，p=0.5时alpha最大=0.5)。降压效果显著：电压降一半，功耗降到1/8(因为f也降一半)。但不能无限降压，低于阈值电压晶体管就不工作了。</p>
+</div>
+
+<h2 class="sec-title">Interactive: Voltage Scaling</h2>
+<div class="anim-container">
+<div style="display:flex;gap:20px;justify-content:center;align-items:center;flex-wrap:wrap">
+<div>
+<label style="color:var(--dim);font-size:.85em">V<sub>DD</sub>: <span id="vddVal">1.0</span>V</label><br>
+<input type="range" id="vddSlider" min="0.5" max="1.2" step="0.05" value="1.0" oninput="updateVScale()" style="width:200px">
+</div>
+<div id="vscaleResult" style="font-size:.9em;text-align:left">
+<div>Frequency: <span class="hi" id="vsF">200</span> MHz</div>
+<div>Power: <span class="hi" id="vsP">200</span> mW</div>
+<div>Energy/op: <span class="hi" id="vsE">1.00</span> &mu;J</div>
+</div>
+</div>
+<p style="font-size:.8em;color:var(--dim);margin-top:8px">Base: C=10nF, f=200MHz@1.0V, &alpha;=0.1. Assumes I<sub>D</sub> &prop; V<sub>DD</sub>.</p>
+</div>
+</div>
+
+<!-- ==================== ADDERS ==================== -->
+<div class="section" id="sec-adders">
+<h1>Adders</h1>
+<p>Lectures 18-19 | Midterm 2 scope</p>
+<div class="card zh"><span class="tag z">中文概要</span><p>加法器核心信号：生成G=AB，传播P=A&oplus;B，C<sub>out</sub>=G+P&middot;C<sub>in</sub>。行波进位O(N)最慢但最省面积和能量。进位跳跃O(&radic;N)利用分组跳过全传播段。进位选择O(&radic;N)并行计算两种进位假设再选择。进位前瞻O(logN)最快但面积最大。</p></div>
+
+<h2 class="sec-title">Full Adder</h2>
+<div class="card concept"><span class="tag c">CORE EQUATIONS</span>
+<ul>
+<li><span class="math">S = A &oplus; B &oplus; C<sub>in</sub></span></li>
+<li><span class="math">C<sub>out</sub> = G + P &middot; C<sub>in</sub></span> &nbsp; where G = AB, P = A&oplus;B</li>
+<li>Kill: K = A&#x0304;B&#x0304; (carry always killed)</li>
+</ul>
+</div>
+<div class="card zh"><span class="tag z">中文</span>
+<p>全加器是加法器的"砖块"。G(生成)=两个输入都是1时自己产生进位。P(传播)=恰好一个是1时把进位传递下去。K(杀死)=两个都是0时进位被吃掉。C_out = G + P*C_in 就是"要么自己生成，要么传递进来的"。</p>
+</div>
+
+<h2 class="sec-title">Adder Comparison</h2>
+<div class="card">
+<table>
+<tr><th>Type</th><th>Delay</th><th>Area</th><th>Energy</th><th>Key Idea</th></tr>
+<tr><td>Ripple-Carry</td><td>O(N)</td><td>O(N)</td><td>Lowest</td><td>Chain carries</td></tr>
+<tr><td>Carry-Bypass</td><td>O(&radic;N)</td><td>O(N)</td><td>Low</td><td>Skip groups if all P=1; b=&radic;(N/2)</td></tr>
+<tr><td>Carry-Select</td><td>O(&radic;N)</td><td>~2N</td><td>Med</td><td>Compute Cin=0,1 in parallel</td></tr>
+<tr><td>Carry-Lookahead</td><td>O(log N)</td><td>O(NlogN)</td><td>High</td><td>Parallel G/P tree</td></tr>
+</table>
+</div>
+
+<h2 class="sec-title">Interactive: Carry Propagation</h2>
+<div class="anim-container">
+<canvas id="adderCanvas" width="600" height="120"></canvas>
+<div class="anim-controls">
+<button class="btn sm" onclick="animAdder('rca')">Ripple-Carry</button>
+<button class="btn sm" onclick="animAdder('cba')">Carry-Bypass</button>
+<button class="btn sm" onclick="animAdder('cla')">Carry-Lookahead</button>
+</div>
+<p id="adderLabel" style="font-size:.82em;color:var(--dim);margin-top:6px"></p>
+</div>
+</div>
+
+<!-- ==================== MULTIPLIERS ==================== -->
+<div class="section" id="sec-mult">
+<h1>Multipliers</h1>
+<p>Lectures 19-20 | Midterm 2 scope</p>
+<div class="card zh"><span class="tag z">中文概要</span><p>N位乘法三步：部分积生成(AND)、部分积压缩(CSA)、最终加法。CSA将3个数变2个数仅需O(1)。Wallace树用多层CSA，O(log N)层压缩。Booth编码(基4)把N个部分积减半为N/2：3A=4A-A，避免困难乘法。Baugh-Wooley用于有符号乘法的符号扩展优化。</p></div>
+
+<h2 class="sec-title">Three Stages</h2>
+<div class="card">
+<div class="svg-container">
+<svg viewBox="0 0 600 80" width="600">
+  <rect x="10" y="20" width="150" height="40" rx="6" fill="rgba(88,166,255,.15)" stroke="#58a6ff"/>
+  <text x="85" y="44" text-anchor="middle" fill="#58a6ff" font-size="11" font-weight="bold">Partial Products</text>
+  <text x="85" y="56" text-anchor="middle" fill="#6b7280" font-size="9">AND gates or Booth</text>
+  <path d="M160 40 L190 40" stroke="#6b7280" stroke-width="1.5" marker-end="url(#arh)"/>
+  <rect x="190" y="20" width="150" height="40" rx="6" fill="rgba(210,153,34,.15)" stroke="#d29922"/>
+  <text x="265" y="44" text-anchor="middle" fill="#d29922" font-size="11" font-weight="bold">Reduction (CSA)</text>
+  <text x="265" y="56" text-anchor="middle" fill="#6b7280" font-size="9">3:2 compress, Wallace tree</text>
+  <path d="M340 40 L370 40" stroke="#6b7280" stroke-width="1.5" marker-end="url(#arh)"/>
+  <rect x="370" y="20" width="150" height="40" rx="6" fill="rgba(63,185,80,.15)" stroke="#3fb950"/>
+  <text x="445" y="44" text-anchor="middle" fill="#3fb950" font-size="11" font-weight="bold">Final Adder</text>
+  <text x="445" y="56" text-anchor="middle" fill="#6b7280" font-size="9">CLA or fast adder</text>
+</svg>
+</div>
+</div>
+<div class="card zh"><span class="tag z">中文</span>
+<p>乘法器就像手算竖式乘法的硬件版：(1)算出所有部分积(每一位乘以被乘数)；(2)用CSA(进位保留加法器)快速压缩，每次3个数变2个数；(3)最后用快速加法器把剩下的2个数加起来。Wallace树就是一层层CSA嵌套。</p>
+</div>
+
+<h2 class="sec-title">Booth Recoding (Radix-4)</h2>
+<div class="card formula"><span class="tag f">ENCODING TABLE</span>
+<table>
+<tr><th>B<sub>k+1</sub>B<sub>k</sub>B<sub>k-1</sub></th><td>000</td><td>001</td><td>010</td><td>011</td><td>100</td><td>101</td><td>110</td><td>111</td></tr>
+<tr><th>Partial Product</th><td>0</td><td>+A</td><td>+A</td><td>+2A</td><td>-2A</td><td>-A</td><td>-A</td><td>0</td></tr>
+</table>
+<p>N partial products &rarr; N/2. Key insight: 3A = 4A - A (defer 4A to next group).</p>
+</div>
+<div class="card zh"><span class="tag z">中文</span>
+<p>Booth编码的核心思想：把连续的1变成"高位+1、低位-1"。比如0111=1000-0001=8-1。基4版本每次看3位(重叠1位)，把部分积数量减半。硬件只需要做0、+A、-A、+2A、-2A五种操作，其中2A就是左移一位。</p>
+</div>
+</div>
+
+<!-- ==================== TIMING & LATCHES ==================== -->
+<div class="section" id="sec-timing">
+<h1>Timing & Latches</h1>
+<p>Lecture 21 | Final scope</p>
+<div class="card zh"><span class="tag z">中文概要</span><p>时序分析：建立时间(setup)是数据在时钟边沿前必须稳定的时间，保持时间(hold)是之后必须保持的时间。最小周期T &ge; t<sub>clk-q</sub> + t<sub>logic,max</sub> + t<sub>setup</sub> + t<sub>skew</sub> + t<sub>jitter</sub>。保持约束：t<sub>clk-q</sub> + t<sub>logic,min</sub> &gt; t<sub>hold</sub> + t<sub>skew</sub>。锁存器(latch)是电平敏感的，透明时D直通到Q；触发器(flip-flop)是边沿触发的，由两个锁存器组成。时钟偏移(skew)是空间变化，抖动(jitter)是时间变化。</p></div>
+
+<h2 class="sec-title">Setup and Hold</h2>
+<div class="card formula"><span class="tag f">TIMING CONSTRAINTS</span>
+<ul>
+<li><strong>Setup (max delay):</strong> <span class="math">T &ge; t<sub>clk-q</sub> + t<sub>logic,max</sub> + t<sub>setup</sub> + t<sub>skew</sub> + t<sub>jitter</sub></span></li>
+<li><strong>Hold (min delay):</strong> <span class="math">t<sub>clk-q</sub> + t<sub>logic,min</sub> &ge; t<sub>hold</sub> + t<sub>skew</sub> + t<sub>jitter</sub></span></li>
+<li><strong>Setup slack:</strong> T - (t<sub>clk-q</sub> + t<sub>logic,max</sub> + t<sub>setup</sub> - t<sub>skew</sub> + t<sub>jitter</sub>)</li>
+<li><strong>Hold slack:</strong> (t<sub>clk-q</sub> + t<sub>logic,min</sub> - t<sub>skew</sub> - t<sub>jitter</sub>) - t<sub>hold</sub></li>
+</ul>
+<p><strong>Setup too slow?</strong> Reduce logic, retime, pipeline. &nbsp; <strong>Hold too fast?</strong> Add buffers.</p>
+</div>
+<div class="card zh"><span class="tag z">中文</span>
+<p>建立时间就像"提前到机场的时间"——数据必须在时钟来之前就稳定好。保持时间就像"不能提前离开考场"——时钟来了之后数据还要保持一段时间。建立违例可以通过降频解决(给更多时间)，但保持违例不行(与频率无关)，只能加缓冲器。</p>
+</div>
+
+<h2 class="sec-title">Flip-Flop vs Latch</h2>
+<div class="card">
+<table>
+<tr><th></th><th>Flip-Flop</th><th>Latch</th></tr>
+<tr><td>Triggered by</td><td>Clock <em>edge</em></td><td>Clock <em>level</em></td></tr>
+<tr><td>Transparent when</td><td>Never (samples at edge)</td><td>CLK high (or low)</td></tr>
+<tr><td>Built from</td><td>Two latches (primary+secondary)</td><td>Transmission gate + inverter</td></tr>
+<tr><td>Verilog</td><td><code>always_ff @(posedge clk)</code></td><td><code>always_latch if(clk) q<=d;</code></td></tr>
+</table>
+</div>
+<div class="card zh"><span class="tag z">中文</span>
+<p>锁存器像一扇"电动门"——时钟高电平时门开着，输入直接穿过到输出(透明)；时钟低电平时门关闭，保持最后的值。触发器像"快门相机"——只在时钟上升沿那一瞬间"拍照"(采样)。触发器由两个锁存器组成(主从结构)。</p>
+</div>
+
+<h2 class="sec-title">Clock Skew & Jitter</h2>
+<div class="card">
+<ul>
+<li><strong>Clock skew (t<sub>SK</sub>):</strong> spatial variation in clock arrival. Deterministic + random.</li>
+<li><strong>Clock jitter (t<sub>J</sub>):</strong> temporal variation in consecutive clock edges. Random noise.</li>
+<li>Positive skew (receiver late) helps setup, hurts hold</li>
+<li>Negative skew (receiver early) hurts setup, helps hold</li>
+</ul>
+</div>
+<div class="card zh"><span class="tag z">中文</span>
+<p>时钟偏移(skew)是"空间上的不同步"——芯片不同角落的时钟到达时间不同(像广播信号到达不同城市有延迟)。抖动(jitter)是"时间上的不稳定"——同一个点的时钟周期忽长忽短。正偏移(接收器晚收到时钟)给了数据更多时间到达(利于建立)，但也给了旧数据更多时间残留(不利于保持)。</p>
+</div>
+</div>
+
+<!-- ==================== SRAM ==================== -->
+<div class="section" id="sec-sram">
+<h1>SRAM & Memory</h1>
+<p>Final scope (from FA25 notes)</p>
+<div class="card zh"><span class="tag z">中文概要</span><p>SRAM用6个晶体管存储1位数据。读操作：预充电位线到V<sub>DD</sub>，开启字线，感应放大器检测位线差异。读稳定性要求存储节点不被翻转(拉下>拉起)。写操作：拉低一条位线迫使单元翻转。写能力要求访问管能覆盖存储反相器。行译码器用NAND门选中字线。列电路包括位线调节、写驱动、感应放大器。</p></div>
+
+<h2 class="sec-title">6T SRAM Cell</h2>
+<div class="card">
+<div class="svg-container">
+<svg viewBox="0 0 360 240" width="360" xmlns="http://www.w3.org/2000/svg">
+  <style>.cell-line{stroke:#58a6ff;stroke-width:1.5;fill:none}.cell-text{font-size:10px;fill:#1a1a2e}</style>
+  <!-- Wordline -->
+  <line x1="30" y1="20" x2="330" y2="20" stroke="#d29922" stroke-width="2"/><text x="180" y="14" text-anchor="middle" fill="#d29922" font-size="11" font-weight="bold">WL (Word Line)</text>
+  <!-- BL and BLbar -->
+  <line x1="60" y1="20" x2="60" y2="230" stroke="#3fb950" stroke-width="2"/><text x="60" y="240" text-anchor="middle" fill="#3fb950" font-size="10">BL</text>
+  <line x1="300" y1="20" x2="300" y2="230" stroke="#f85149" stroke-width="2"/><text x="300" y="240" text-anchor="middle" fill="#f85149" font-size="10">BL&#x0304;</text>
+  <!-- Access transistors M5, M6 -->
+  <rect x="45" y="35" width="30" height="20" fill="rgba(210,153,34,.2)" stroke="#d29922" rx="3"/><text x="60" y="49" text-anchor="middle" class="cell-text">M5</text>
+  <rect x="285" y="35" width="30" height="20" fill="rgba(210,153,34,.2)" stroke="#d29922" rx="3"/><text x="300" y="49" text-anchor="middle" class="cell-text">M6</text>
+  <!-- Cross-coupled inverters -->
+  <rect x="100" y="80" width="70" height="80" fill="rgba(88,166,255,.1)" stroke="#58a6ff" rx="5"/>
+  <text x="135" y="110" text-anchor="middle" fill="#58a6ff" font-size="10">INV 1</text>
+  <text x="135" y="125" text-anchor="middle" fill="#6b7280" font-size="8">M1(N) M2(P)</text>
+  <rect x="190" y="80" width="70" height="80" fill="rgba(88,166,255,.1)" stroke="#58a6ff" rx="5"/>
+  <text x="225" y="110" text-anchor="middle" fill="#58a6ff" font-size="10">INV 2</text>
+  <text x="225" y="125" text-anchor="middle" fill="#6b7280" font-size="8">M3(N) M4(P)</text>
+  <!-- Cross connections -->
+  <path d="M170 100 L190 120" stroke="#1a1a2e" stroke-width="1"/><path d="M190 100 L170 120" stroke="#1a1a2e" stroke-width="1"/>
+  <!-- Q and Qbar labels -->
+  <text x="90" y="75" fill="#3fb950" font-size="10" font-weight="bold">Q</text>
+  <text x="265" y="75" fill="#f85149" font-size="10" font-weight="bold">Q&#x0304;</text>
+  <!-- VDD and GND -->
+  <text x="180" y="78" text-anchor="middle" fill="#d29922" font-size="9">V<tspan baseline-shift="sub" font-size="7">DD</tspan></text>
+  <text x="180" y="172" text-anchor="middle" fill="#6b7280" font-size="9">GND</text>
+  <!-- Notes -->
+  <text x="30" y="195" fill="#6b7280" font-size="9">Read: precharge BL,BL&#x0304; high, assert WL</text>
+  <text x="30" y="208" fill="#6b7280" font-size="9">Write: force one BL low, assert WL</text>
+  <text x="30" y="221" fill="#6b7280" font-size="9">Sizing: PD &gt; Access &gt; PU for stability</text>
+</svg>
+</div>
+</div>
+<div class="card zh"><span class="tag z">中文</span>
+<p>6T SRAM像两个互相"掐架"的反相器(交叉耦合)，稳定在两个状态之一(存0或存1)。读的时候先把两条"天平秤"(位线)都充到高电平，然后打开门(字线)，存储的值会让一边稍微降低，感应放大器放大这个微小差异。写的时候强行把一边拉到低，迫使状态翻转。</p>
+</div>
+
+<h2 class="sec-title">Read vs Write</h2>
+<div class="card">
+<table>
+<tr><th></th><th>Read</th><th>Write</th></tr>
+<tr><td>Requirement</td><td>Stability (don't flip the cell)</td><td>Writability (must flip the cell)</td></tr>
+<tr><td>Pull-down vs Access</td><td>PD &gt; Access (W/L<sub>1</sub> &gt; W/L<sub>5</sub>)</td><td>Access &gt; PU (W/L<sub>5</sub> &gt; W/L<sub>2</sub>)</td></tr>
+<tr><td>Typical ratio</td><td>1.5:1 (planar), 2:1 (finFET)</td><td>1:1 (planar), 2:1 (finFET)</td></tr>
+</table>
+</div>
+</div>
+
+<!-- ==================== POWER & ENERGY ==================== -->
+<div class="section" id="sec-power">
+<h1>Power & Energy Analysis</h1>
+<p>Lectures 17, 19 | Final scope</p>
+
+<div class="card zh"><span class="tag z">中文</span>
+<p>功耗分析是芯片设计的核心挑战之一。总功耗=动态功耗+静态功耗。动态功耗来自充放电(开关活动)，静态功耗来自漏电流。就像一辆汽车：动态功耗是踩油门时消耗的油(取决于踩了多少次和踩多深)，静态功耗是停车时发动机空转消耗的油(一直在漏)。现代芯片两者都很重要，需要用各种技术来管理。</p>
+</div>
+
+<h2 class="sec-title">Power Breakdown</h2>
+<div class="card formula"><span class="tag f">TOTAL POWER</span>
+<p style="font-size:1.1em;text-align:center"><span class="math">P<sub>total</sub> = P<sub>dynamic</sub> + P<sub>short-circuit</sub> + P<sub>static</sub></span></p>
+<ul>
+<li><strong>Dynamic:</strong> <span class="math">P<sub>dyn</sub> = &alpha; &times; C<sub>L</sub> &times; V<sub>DD</sub><sup>2</sup> &times; f</span> &mdash; from charging/discharging load capacitances</li>
+<li><strong>Short-circuit:</strong> <span class="math">P<sub>sc</sub> = I<sub>sc</sub> &times; V<sub>DD</sub></span> &mdash; when PMOS and NMOS both on during transition</li>
+<li><strong>Static (leakage):</strong> <span class="math">P<sub>static</sub> = I<sub>leak</sub> &times; V<sub>DD</sub></span> &mdash; subthreshold and gate leakage</li>
+</ul>
+</div>
+<div class="card zh"><span class="tag z">中文</span>
+<p>动态功耗：每次信号翻转，给电容充电(0&rarr;1)从电源取能量CV^2，放电(1&rarr;0)能量消散到地。短路功耗：输入翻转过程中PMOS和NMOS同时短暂导通，产生直通电流(V_in在V_DD/2时最大)。静态功耗：即使不翻转，晶体管也有微小漏电流。</p>
+</div>
+
+<h2 class="sec-title">Activity Factor</h2>
+<div class="card concept"><span class="tag c">ACTIVITY FACTOR alpha</span>
+<p>The activity factor <span class="math">&alpha;</span> represents the probability of a 0&rarr;1 transition per clock cycle.</p>
+<ul>
+<li><span class="math">&alpha; = 2 &times; p &times; (1-p)</span> where p = P(output = 1)</li>
+<li>Maximum when p = 0.5: &alpha;<sub>max</sub> = 0.5</li>
+<li>Clock signal: &alpha; = 1 (transitions every cycle)</li>
+<li>For an AND2 with independent random inputs: p = 0.25, &alpha; = 2(0.25)(0.75) = 0.375</li>
+<li>For an OR2 with independent random inputs: p = 0.75, &alpha; = 2(0.75)(0.25) = 0.375</li>
+</ul>
+</div>
+<div class="card zh"><span class="tag z">中文</span>
+<p>活动因子alpha衡量"信号有多忙"。alpha=2p(1-p)中p是输出为1的概率。如果信号总是0或总是1(p=0或1)，alpha=0(没有翻转)。如果p=0.5(随机信号)，alpha=0.5(最大翻转率)。时钟信号每个周期都翻转，所以alpha=1。</p>
+</div>
+
+<h2 class="sec-title">Energy Per Operation</h2>
+<div class="card formula"><span class="tag f">ENERGY FORMULAS</span>
+<ul>
+<li><strong>Energy per switching event:</strong> <span class="math">E<sub>switch</sub> = C<sub>L</sub> &times; V<sub>DD</sub><sup>2</sup></span></li>
+<li><strong>Energy per operation (considering activity):</strong> <span class="math">E<sub>op</sub> = &alpha; &times; C<sub>L</sub> &times; V<sub>DD</sub><sup>2</sup></span></li>
+<li>Note: energy is <strong>independent of frequency</strong>! Lowering f reduces power but not energy/op.</li>
+<li>Lowering V<sub>DD</sub> reduces energy/op quadratically (<span class="math">E &prop; V<sub>DD</sub><sup>2</sup></span>)</li>
+</ul>
+</div>
+<div class="card zh"><span class="tag z">中文</span>
+<p>能量和功率的区别：功率P=能量/时间。降低频率可以降低功率(单位时间做的事少了)，但每次操作的能量不变。降低电压才能真正降低每次操作的能量(E正比于V^2)。这就是为什么降压是最有效的省电手段。</p>
+</div>
+
+<h2 class="sec-title">Power Management Techniques</h2>
+<div class="card concept"><span class="tag c">TECHNIQUES</span>
+<table>
+<tr><th>Technique</th><th>What It Does</th><th>Saves</th></tr>
+<tr><td><strong>Clock Gating</strong></td><td>Disable clock to idle blocks (alpha &rarr; 0)</td><td>Dynamic power</td></tr>
+<tr><td><strong>Voltage Scaling</strong></td><td>Lower V<sub>DD</sub> (P &prop; V<sup>3</sup> since f &prop; V)</td><td>Dynamic + Energy</td></tr>
+<tr><td><strong>Power Gating</strong></td><td>Cut V<sub>DD</sub> to idle blocks entirely</td><td>Static (leakage)</td></tr>
+<tr><td><strong>Multi-V<sub>th</sub></strong></td><td>High V<sub>th</sub> on non-critical paths (less leakage)</td><td>Static power</td></tr>
+<tr><td><strong>Body Biasing</strong></td><td>Adjust V<sub>th</sub> dynamically via substrate voltage</td><td>Static power</td></tr>
+</table>
+</div>
+<div class="card zh"><span class="tag z">中文</span>
+<p>时钟门控：给不用的模块"关掉闹钟"，不翻转就不耗动态功耗。电压缩放：降低供电电压，功耗按V^3下降(因为频率也按V下降)。电源门控：给不用的模块彻底"断电"，消除漏电。多阈值：关键路径用快(低阈值)晶体管，其他用省电(高阈值)的。</p>
+</div>
+
+<h2 class="sec-title">DVFS (Dynamic Voltage and Frequency Scaling)</h2>
+<div class="card concept"><span class="tag c">DVFS</span>
+<ul>
+<li>Adjust V<sub>DD</sub> and f together based on workload</li>
+<li>High load &rarr; high V/f for performance</li>
+<li>Low load &rarr; low V/f to save power</li>
+<li>Key relationship: <span class="math">f<sub>max</sub> &prop; (V<sub>DD</sub> - V<sub>th</sub>)<sup>2</sup> / V<sub>DD</sub></span> (simplified: <span class="math">f &prop; V<sub>DD</sub></span>)</li>
+<li>Power scales as <span class="math">P &prop; V<sub>DD</sub><sup>3</sup></span> (because both V<sup>2</sup> and f scale)</li>
+</ul>
+</div>
+<div class="card zh"><span class="tag z">中文</span>
+<p>DVFS就像汽车的"巡航模式"：高速公路上加大油门(高电压高频率)跑得快，城市里降低油门(低电压低频率)省油。手机CPU就大量使用DVFS：刷微博时降频省电，玩游戏时全速运行。功耗按电压的三次方下降，所以降压10%可以省电约27%。</p>
+</div>
+
+<div class="card example"><span class="tag e">WORKED EXAMPLE</span>
+<p><strong>Q:</strong> A chip has C<sub>total</sub>=20nF, V<sub>DD</sub>=1.0V, f=1GHz, alpha=0.15, I<sub>leak</sub>=100mA. Find total power.</p>
+<ol>
+<li>P<sub>dyn</sub> = 0.15 &times; 20&times;10<sup>-9</sup> &times; 1.0<sup>2</sup> &times; 10<sup>9</sup> = 3.0 W</li>
+<li>P<sub>static</sub> = 0.1 &times; 1.0 = 0.1 W</li>
+<li>P<sub>total</sub> &asymp; 3.0 + 0.1 = 3.1 W (ignoring short-circuit)</li>
+</ol>
+<p>If we scale V<sub>DD</sub> to 0.8V: f scales to 0.8GHz, P<sub>dyn</sub> = 0.15 &times; 20e-9 &times; 0.64 &times; 0.8e9 = 1.536 W (49% reduction!)</p>
+</div>
+</div>
+
+<!-- ==================== SHIFTERS & CROSSBARS ==================== -->
+<div class="section" id="sec-shifters">
+<h1>Shifters & Crossbars</h1>
+<p>Lecture 21 | Final scope</p>
+
+<div class="card zh"><span class="tag z">中文</span>
+<p>移位器用于将二进制数左移或右移若干位(乘以或除以2的幂)。桶形移位器用多级MUX实现对数级延迟的任意移位。漏斗移位器把左移和右移统一成一个操作。交叉开关是N个输入到M个输出的全连接开关网络，用于路由器和网络芯片。就像火车站的"道岔"系统，可以把任意一条入轨连到任意一条出轨。</p>
+</div>
+
+<h2 class="sec-title">Barrel Shifter</h2>
+<div class="card concept"><span class="tag c">LOGARITHMIC MUX STAGES</span>
+<p>An N-bit barrel shifter uses <span class="math">log<sub>2</sub>(N)</span> stages of 2:1 muxes.</p>
+<ul>
+<li><strong>Stage k</strong> shifts by 2<sup>k</sup> positions if shift_amount[k] = 1</li>
+<li>For 8-bit: 3 stages (shift by 1, 2, 4)</li>
+<li>For 32-bit: 5 stages (shift by 1, 2, 4, 8, 16)</li>
+<li>Each stage: N muxes selecting between shifted and unshifted</li>
+<li><strong>Delay:</strong> O(log N) mux delays</li>
+<li><strong>Area:</strong> O(N log N) muxes total</li>
+</ul>
+</div>
+<div class="card zh"><span class="tag z">中文</span>
+<p>桶形移位器的巧妙之处：把移位量分解成二进制位。比如移位5=101(二进制)，就先移1位(第0级)，跳过移2位(第1级)，再移4位(第2级)。每一级是一排MUX，选择"移还是不移"。就像调音量旋钮，每个刻度都是上一个的两倍。</p>
+</div>
+
+<div class="card example"><span class="tag e">EXAMPLE: 8-BIT BARREL SHIFTER</span>
+<pre><code>// Shift amount = 5 = 101 in binary
+// Input:    A B C D E F G H
+
+// Stage 0 (shift by 1, enabled): B C D E F G H 0
+// Stage 1 (shift by 2, skip):    B C D E F G H 0
+// Stage 2 (shift by 4, enabled): F G H 0 0 0 0 0
+
+// Result: left shift by 5</code></pre>
+</div>
+
+<h2 class="sec-title">Funnel Shifter</h2>
+<div class="card concept"><span class="tag c">UNIFIED SHIFT</span>
+<ul>
+<li>Combines left shift, right shift, and rotate into one structure</li>
+<li>Place two copies of input side-by-side: [A | A] (2N bits)</li>
+<li>Select N consecutive bits from this 2N-bit word</li>
+<li><strong>Left shift by k:</strong> select bits starting at position N-k</li>
+<li><strong>Right shift by k:</strong> select bits starting at position k (with sign/zero extension for upper copy)</li>
+<li><strong>Rotate by k:</strong> select bits starting at position k (upper copy = lower copy)</li>
+</ul>
+</div>
+<div class="card zh"><span class="tag z">中文</span>
+<p>漏斗移位器的思路很优雅：把输入复制一份拼成2N位的"长条"，然后从中选取连续的N位。左移就是选靠后的位置，右移就是选靠前的位置，旋转就是两份都用原数据。就像一个"取景框"在两倍长的胶片上滑动。</p>
+</div>
+
+<h2 class="sec-title">Crossbar Switch</h2>
+<div class="card concept"><span class="tag c">N x M CROSSBAR</span>
+<ul>
+<li>Connects any of N inputs to any of M outputs</li>
+<li>Each output has an N:1 mux</li>
+<li>Total: M muxes, each N-to-1</li>
+<li><strong>Area:</strong> O(N &times; M) &mdash; grows quadratically</li>
+<li><strong>Delay:</strong> O(1) mux delay per output (single stage)</li>
+<li>Used in: network switches, NoC routers, register file read ports</li>
+</ul>
+</div>
+<div class="card zh"><span class="tag z">中文</span>
+<p>交叉开关就像电话交换机：N个输入和M个输出之间可以任意连接。每个输出端有一个N选1的MUX。面积是N*M(每个交叉点一个开关)，所以规模大了很贵。在片上网络(NoC)和路由器中广泛使用。</p>
+</div>
+
+<div class="card">
+<div class="svg-container">
+<svg viewBox="0 0 300 200" width="300" xmlns="http://www.w3.org/2000/svg">
+  <text x="10" y="15" fill="#58a6ff" font-size="11" font-weight="bold">4x3 Crossbar</text>
+  <!-- Inputs -->
+  <g fill="#1a1a2e" font-size="10">
+    <text x="5" y="55">In0</text><text x="5" y="95">In1</text><text x="5" y="135">In2</text><text x="5" y="175">In3</text>
+  </g>
+  <!-- Horizontal lines -->
+  <line x1="35" y1="50" x2="250" y2="50" stroke="#58a6ff" stroke-width="1"/>
+  <line x1="35" y1="90" x2="250" y2="90" stroke="#58a6ff" stroke-width="1"/>
+  <line x1="35" y1="130" x2="250" y2="130" stroke="#58a6ff" stroke-width="1"/>
+  <line x1="35" y1="170" x2="250" y2="170" stroke="#58a6ff" stroke-width="1"/>
+  <!-- Vertical lines -->
+  <line x1="100" y1="30" x2="100" y2="190" stroke="#3fb950" stroke-width="1"/>
+  <line x1="160" y1="30" x2="160" y2="190" stroke="#3fb950" stroke-width="1"/>
+  <line x1="220" y1="30" x2="220" y2="190" stroke="#3fb950" stroke-width="1"/>
+  <!-- Crosspoints -->
+  <g>
+    <circle cx="100" cy="50" r="4" fill="#d29922"/><circle cx="100" cy="90" r="4" fill="#d29922"/>
+    <circle cx="100" cy="130" r="4" fill="#d29922"/><circle cx="100" cy="170" r="4" fill="#d29922"/>
+    <circle cx="160" cy="50" r="4" fill="#d29922"/><circle cx="160" cy="90" r="4" fill="#d29922"/>
+    <circle cx="160" cy="130" r="4" fill="#d29922"/><circle cx="160" cy="170" r="4" fill="#d29922"/>
+    <circle cx="220" cy="50" r="4" fill="#d29922"/><circle cx="220" cy="90" r="4" fill="#d29922"/>
+    <circle cx="220" cy="130" r="4" fill="#d29922"/><circle cx="220" cy="170" r="4" fill="#d29922"/>
+  </g>
+  <!-- Outputs -->
+  <g fill="#3fb950" font-size="10">
+    <text x="88" y="28">Out0</text><text x="148" y="28">Out1</text><text x="208" y="28">Out2</text>
+  </g>
+</svg>
+</div>
+</div>
+</div>
+
+<!-- ==================== BINARY DIVISION ==================== -->
+<div class="section" id="sec-division">
+<h1>Binary Division</h1>
+<p>Lecture 21 | Final scope</p>
+
+<div class="card zh"><span class="tag z">中文</span>
+<p>二进制除法比乘法更复杂，因为每一步都依赖上一步的结果(无法像乘法那样并行)。恢复除法最直观：试减，如果不够就加回来。不恢复除法更快：不加回去，而是下一步补偿。SRT除法用更高基数(基4/8)每步产生多位商，是现代处理器的标准做法。就像手算长除法，但每一步可以"猜"多位。</p>
+</div>
+
+<h2 class="sec-title">Restoring Division</h2>
+<div class="card concept"><span class="tag c">ALGORITHM</span>
+<ol>
+<li>Initialize: remainder R = dividend (2N bits), divisor D, quotient Q = 0</li>
+<li>For each bit position (N iterations):
+  <ul>
+  <li>Left-shift R by 1</li>
+  <li>Trial subtract: R' = R - D</li>
+  <li>If R' &ge; 0: set Q bit = 1, R = R'</li>
+  <li>If R' &lt; 0: set Q bit = 0, <strong>restore</strong> R (don't update)</li>
+  </ul>
+</li>
+<li>After N steps: Q = quotient, R = remainder</li>
+</ol>
+<p><strong>Delay:</strong> O(N) iterations, each with an N-bit subtraction</p>
+<p><strong>Hardware:</strong> N-bit adder/subtractor + shift registers</p>
+</div>
+<div class="card zh"><span class="tag z">中文</span>
+<p>恢复除法就像手算除法：每次"试探"能不能减去除数。能减(够减)就商1，不能减(不够减)就商0并把减掉的加回来(恢复)。缺点是"加回来"这一步浪费时间。</p>
+</div>
+
+<div class="card example"><span class="tag e">EXAMPLE: 7 / 3</span>
+<pre><code>Dividend = 0111 (7), Divisor = 011 (3)
+Step 1: R=0111, shift left -> 01110
+        Trial: 01110 - 01100 = 00010 >= 0, Q[1]=1, R=00010
+Step 2: R=00010, shift left -> 00100
+        Trial: 00100 - 01100 = -01000 < 0, Q[0]=0, R=00100(restore)
+Result: Q = 10 (2), R = 01 (1)
+Check: 7 = 3*2 + 1 correct!</code></pre>
+</div>
+
+<h2 class="sec-title">Non-Restoring Division</h2>
+<div class="card concept"><span class="tag c">FASTER ALGORITHM</span>
+<ul>
+<li>Instead of restoring, <strong>add</strong> D in the next step if previous step was negative</li>
+<li>If previous remainder &ge; 0: shift left, subtract D, Q bit = 1</li>
+<li>If previous remainder &lt; 0: shift left, <strong>add</strong> D, Q bit = 0</li>
+<li>At the end: if remainder is negative, add D to correct</li>
+<li><strong>Advantage:</strong> only one add/subtract per step (no restore step)</li>
+<li>Quotient bits are in {0,1} but may need final correction</li>
+</ul>
+</div>
+<div class="card zh"><span class="tag z">中文</span>
+<p>不恢复除法的思路：如果这一步减多了(结果为负)，下一步不是"加回来再减"，而是直接"加"来补偿。省去了恢复那一步。就像在天平上称重：放错了砝码不用拿下来重放，直接在另一边加砝码补偿。</p>
+</div>
+
+<h2 class="sec-title">SRT Division</h2>
+<div class="card concept"><span class="tag c">HIGH-RADIX DIVISION</span>
+<ul>
+<li>Named after Sweeney, Robertson, Tocher</li>
+<li>Uses <strong>radix-4</strong> or higher: produces 2+ quotient bits per iteration</li>
+<li>Quotient digits from <strong>redundant set</strong> {-2, -1, 0, 1, 2} for radix-4</li>
+<li>Uses a <strong>lookup table (PLA)</strong> indexed by top bits of remainder and divisor</li>
+<li>Redundancy allows imprecise remainder estimation &rarr; faster</li>
+<li><strong>Delay:</strong> O(N/2) for radix-4, O(N/k) for radix-2<sup>k</sup></li>
+<li>Used in modern Intel/AMD/ARM processors</li>
+</ul>
+</div>
+<div class="card zh"><span class="tag z">中文</span>
+<p>SRT除法是现代CPU的标准。基4版本每步产生2位商，速度翻倍。关键技巧是使用"冗余表示"：商的每一位可以是-2到+2(不只是0和1)，这样不需要精确知道余数的值就能选择商，容错性更强。就像去超市不用精确到分地算钱，四舍五入也能结账。(著名的Pentium FDIV bug就是SRT表格里少了几个条目。)</p>
+</div>
+
+<div class="card warn"><span class="tag w">EXAM TIP</span>
+<p>Division is <strong>inherently sequential</strong> (each step depends on previous remainder). Unlike multiplication, you cannot parallelize the iterations. This is why division is 10-40x slower than multiplication in hardware.</p>
+</div>
+</div>
+
+<!-- ==================== FPGA vs ASIC ==================== -->
+<div class="section" id="sec-fpga">
+<h1>FPGA vs ASIC</h1>
+<p>Project-relevant | Final scope</p>
+
+<div class="card zh"><span class="tag z">中文</span>
+<p>FPGA(现场可编程门阵列)就像"乐高积木"——买回来后可以反复重新编程配置。ASIC(专用集成电路)就像"定制模具"——一旦制造出来就不能改了。FPGA适合原型验证和小批量，ASIC适合大批量生产(手机芯片等)。我们151的项目就是在FPGA上实现RISC-V处理器。</p>
+</div>
+
+<h2 class="sec-title">FPGA Architecture</h2>
+<div class="card concept"><span class="tag c">CORE COMPONENTS</span>
+<ul>
+<li><strong>LUT (Look-Up Table):</strong> Small SRAM that can implement any N-input boolean function (typically 4-6 inputs). Acts as a universal gate.</li>
+<li><strong>CLB (Configurable Logic Block):</strong> Contains multiple LUTs + flip-flops + carry chains + muxes</li>
+<li><strong>Routing:</strong> Programmable interconnect (switch boxes + connection boxes) that connects CLBs</li>
+<li><strong>IOBs:</strong> Input/Output blocks at chip periphery</li>
+<li><strong>Block RAM:</strong> Dedicated SRAM blocks (e.g., 36Kbit)</li>
+<li><strong>DSP slices:</strong> Hardened multiply-accumulate units</li>
+</ul>
+</div>
+<div class="card zh"><span class="tag z">中文</span>
+<p>FPGA的核心是LUT(查找表)——一小块SRAM存储真值表，可以实现任何N输入布尔函数。比如4输入LUT有16个存储单元(2^4)，可以实现任何4输入逻辑。CLB把多个LUT、触发器、进位链打包在一起。可编程路由网络把它们连接起来。就像一块"万能面包板"。</p>
+</div>
+
+<h2 class="sec-title">FPGA vs ASIC Comparison</h2>
+<div class="card">
+<table>
+<tr><th>Aspect</th><th>FPGA</th><th>ASIC</th></tr>
+<tr><td>Reconfigurable</td><td>Yes (reprogram anytime)</td><td>No (fixed after fabrication)</td></tr>
+<tr><td>NRE Cost</td><td>Low ($0 - $10K)</td><td>Very high ($1M - $100M+)</td></tr>
+<tr><td>Unit Cost</td><td>High ($10 - $10K per chip)</td><td>Low ($0.10 - $100 per chip)</td></tr>
+<tr><td>Performance</td><td>~100-500 MHz typical</td><td>~1-5 GHz</td></tr>
+<tr><td>Power Efficiency</td><td>10-100x worse</td><td>Best (optimized transistors)</td></tr>
+<tr><td>Area Efficiency</td><td>10-40x worse</td><td>Best (custom layout)</td></tr>
+<tr><td>Time to Market</td><td>Days to weeks</td><td>Months to years</td></tr>
+<tr><td>Best For</td><td>Prototyping, low volume, reconfigurable</td><td>High volume, max performance</td></tr>
+</table>
+</div>
+<div class="card zh"><span class="tag z">中文</span>
+<p>选择FPGA还是ASIC就像选择"3D打印"还是"开模具"：3D打印(FPGA)灵活快速但单件贵，开模具(ASIC)前期投入大但大量生产便宜。FPGA因为用通用LUT和可编程路由，面积和功耗都比ASIC大很多，但开发周期短，适合我们做项目验证。</p>
+</div>
+
+<h2 class="sec-title">FPGA Design Flow</h2>
+<div class="card concept"><span class="tag c">DESIGN STEPS</span>
+<ol>
+<li><strong>RTL Design:</strong> Write SystemVerilog (behavioral)</li>
+<li><strong>Simulation:</strong> Verify with testbenches (iverilog, VCS)</li>
+<li><strong>Synthesis:</strong> Convert RTL to LUT/FF netlist (Vivado)</li>
+<li><strong>Place & Route:</strong> Map netlist to physical FPGA resources</li>
+<li><strong>Bitstream Generation:</strong> Create configuration file</li>
+<li><strong>Program FPGA:</strong> Load bitstream onto device</li>
+</ol>
+</div>
+
+<h2 class="sec-title">ASIC Design Flow</h2>
+<div class="card concept"><span class="tag c">DESIGN STEPS</span>
+<ol>
+<li><strong>RTL Design:</strong> Write SystemVerilog</li>
+<li><strong>Simulation:</strong> Functional verification</li>
+<li><strong>Logic Synthesis:</strong> Map to standard cell library (Design Compiler)</li>
+<li><strong>Floor Planning:</strong> Arrange major blocks on die</li>
+<li><strong>Place & Route:</strong> Place cells and connect wires</li>
+<li><strong>Timing Closure:</strong> Meet setup/hold across all paths (STA)</li>
+<li><strong>DRC/LVS:</strong> Design rule check / layout vs schematic</li>
+<li><strong>Tapeout:</strong> Send to foundry (TSMC, Samsung, etc.)</li>
+<li><strong>Fabrication:</strong> Weeks to months</li>
+</ol>
+</div>
+<div class="card zh"><span class="tag z">中文</span>
+<p>FPGA流程：写代码 &rarr; 仿真 &rarr; 综合(变成LUT网表) &rarr; 布局布线 &rarr; 生成比特流 &rarr; 下载到板子上。几小时就能完成。ASIC流程多了很多步：综合到标准单元库、时序收敛、物理验证(DRC/LVS)、然后送去代工厂流片，整个过程几个月到一年。</p>
+</div>
+
+<div class="card warn"><span class="tag w">PROJECT NOTE</span>
+<p>In EECS 151, your RISC-V processor targets the <strong>Xilinx PYNQ-Z1 FPGA</strong>. Use Vivado for synthesis. Key FPGA-specific considerations: LUT utilization, BRAM usage, timing constraints (100MHz target), and using <code>always @(*)</code> for iverilog compatibility.</p>
+</div>
+</div>
+
+<!-- ==================== CHEATSHEET MT1 ==================== -->
+<div class="section" id="sec-cs1">
+<h1>Cheatsheet: Midterm 1</h1>
+<button class="btn sm" onclick="window.print()">Print</button>
+<div class="cheat-grid">
+<div class="cheat-card"><h4>Boolean Algebra</h4>
+<ul><li>De Morgan: (AB)'=A'+B', (A+B)'=A'B'</li><li>Absorption: A+AB=A</li><li>Consensus: AB+A'C+BC=AB+A'C</li><li>SOP: OR of AND minterms</li><li>POS: AND of OR maxterms</li></ul></div>
+<div class="cheat-card"><h4>Noise Margins</h4>
+<ul><li>NM_H = V_OH - V_IH</li><li>NM_L = V_IL - V_OL</li><li>t_p = (t_pHL + t_pLH)/2</li></ul></div>
+<div class="cheat-card"><h4>SystemVerilog</h4>
+<ul><li>assign = continuous (comb)</li><li>always_comb: blocking (=)</li><li>always_ff: non-blocking (<=)</li><li>Module instantiation: .port(signal)</li><li>generate/for: parameterized hardware</li></ul></div>
+<div class="cheat-card"><h4>FSMs</h4>
+<ul><li>Moore: output = f(state)</li><li>Mealy: output = f(state, input)</li><li>Two-block style: 1 always_ff + 1 always_comb</li></ul></div>
+<div class="cheat-card"><h4>RISC-V Formats</h4>
+<ul><li>R: funct7|rs2|rs1|f3|rd|op (ADD,SUB,AND)</li><li>I: imm[11:0]|rs1|f3|rd|op (ADDI,LW,JALR)</li><li>S: imm[11:5]|rs2|rs1|f3|imm[4:0]|op (SW)</li><li>B: imm|rs2|rs1|f3|imm|op (BEQ,BNE)</li><li>U: imm[31:12]|rd|op (LUI,AUIPC)</li><li>J: imm|rd|op (JAL)</li></ul></div>
+<div class="cheat-card"><h4>Pipelining</h4>
+<ul><li>5 stages: F D X M W</li><li>T_min = t_cq + t_logic + t_su</li><li>Hold: t_cq + t_min > t_hold</li><li>Hazards: structural, data, control</li><li>Fix: forwarding, stalling, prediction</li></ul></div>
+<div class="cheat-card"><h4>Control Signals</h4>
+<ul><li>PCSel: pc+4 or branch target</li><li>ImmSel: I/S/B/U/J format</li><li>ALUSel: ADD/SUB/AND/OR/XOR/SLT</li><li>MemRW: Read/Write</li><li>WBSel: ALU/mem/PC+4</li><li>RegWEn: write enable</li></ul></div>
+<div class="cheat-card"><h4>Key Constants</h4>
+<ul><li>x0 always = 0</li><li>JAL: rd=PC+4, PC=PC+imm</li><li>JALR: rd=PC+4, PC=rs1+imm</li><li>LUI: rd=imm<<12</li><li>AUIPC: rd=PC+(imm<<12)</li></ul></div>
+</div>
+</div>
+
+<!-- ==================== CHEATSHEET MT2 ==================== -->
+<div class="section" id="sec-cs2">
+<h1>Cheatsheet: Midterm 2</h1>
+<button class="btn sm" onclick="window.print()">Print</button>
+<div class="cheat-grid">
+<div class="cheat-card"><h4>CMOS Basics</h4>
+<ul><li>NMOS ON: V_GS > V_th (strong 0)</li><li>PMOS ON: V_GS < -|V_th| (strong 1)</li><li>PDN: series=AND, parallel=OR</li><li>PUN = dual of PDN</li><li>Always inverting: NAND, NOR only</li><li>Sizing: N in series => width x N</li></ul></div>
+<div class="cheat-card"><h4>CMOS Delay</h4>
+<ul><li>R = R_on/W, C_g = W*C_i, C_d = gamma*C_g</li><li>t_p = ln(2)*R*(C_p + C_L)</li><li>Elmore: t = ln(2)*sum(R_shared * C_i)</li><li>Off-path caps: YES. Off-path R: NO</li><li>Chain: f_opt = F^(1/N), f ~= e ~= 2.7</li></ul></div>
+<div class="cheat-card"><h4>Logical Effort</h4>
+<ul><li>d = g*h + p</li><li>INV: g=1,p=1. NAND2: g=4/3,p=2</li><li>NAND3: g=5/3,p=3. NOR2: g=5/3,p=2</li><li>F = G*B*H, f_hat = F^(1/N)</li><li>D_min = N*f_hat + sum(p_i)</li><li>Size: C_in,i = g_i * C_out,i / f_hat</li></ul></div>
+<div class="cheat-card"><h4>Power & Energy</h4>
+<ul><li>P_dyn = alpha * C * V_DD^2 * f</li><li>alpha = 2*p*(1-p)</li><li>E_switch = C * V_DD^2</li><li>P_sc = I_sc * V_DD (peak at V_DD/2)</li><li>P_leak = I_leak * V_DD</li><li>V scaling: f prop V, P prop V^3</li><li>DVFS: adjust V and f with workload</li></ul></div>
+<div class="cheat-card"><h4>Wires</h4>
+<ul><li>Lumped: t = 0.7RC</li><li>Distributed: t = 0.35RC</li><li>R = rho*L/(W*t), C = eps*A/d</li><li>Use Elmore delay for RC trees</li></ul></div>
+<div class="cheat-card"><h4>Adders</h4>
+<ul><li>G=AB, P=A xor B, C_out=G+P*Cin</li><li>RCA: O(N). Bypass: O(sqrt N), b=sqrt(N/2)</li><li>Select: O(sqrt N). CLA: O(log N)</li><li>Bypass delay: 2b + N/b - 2</li></ul></div>
+<div class="cheat-card"><h4>Multipliers</h4>
+<ul><li>CSA: 3 nums -> 2 in O(1)</li><li>Wallace: O(log_1.5 N) CSA levels</li><li>Booth radix-4: N->N/2 partial products</li><li>3A = 4A - A trick</li></ul></div>
+<div class="cheat-card"><h4>Constants</h4>
+<ul><li>ln(2) = 0.693</li><li>e = 2.718 (optimal fanout)</li><li>gamma = C_d/C_g (usually 1)</li><li>NAND preferred over NOR</li></ul></div>
+</div>
+</div>
+
+<!-- ==================== CHEATSHEET FINAL ==================== -->
+<div class="section" id="sec-cs3">
+<h1>Cheatsheet: Final Exam</h1>
+<button class="btn sm" onclick="window.print()">Print</button>
+<p>Cumulative: includes all MT1 + MT2 content plus the following.</p>
+<div class="cheat-grid">
+<div class="cheat-card"><h4>Timing Constraints</h4>
+<ul><li>T >= t_cq + t_logic,max + t_su + t_sk + t_j</li><li>Hold: t_cq + t_min >= t_hold + t_sk + t_j</li><li>Setup slack = T - (t_cq+t_max+t_su-t_sk+t_j)</li><li>Hold slack = (t_cq+t_min-t_sk-t_j) - t_hold</li><li>Setup fail: reduce logic, retime, pipeline</li><li>Hold fail: add buffers (cannot fix with freq)</li></ul></div>
+<div class="cheat-card"><h4>Clock Non-Idealities</h4>
+<ul><li>Skew (t_SK): spatial (deterministic+random)</li><li>Jitter (t_J): temporal (cycle-to-cycle)</li><li>+skew: helps setup, hurts hold</li><li>-skew: hurts setup, helps hold</li><li>Both reduce effective cycle time</li></ul></div>
+<div class="cheat-card"><h4>Latch vs Flip-Flop</h4>
+<ul><li>Latch: level-sensitive (transparent)</li><li>FF: edge-triggered (two latches)</li><li>Latch has t_cq, t_dq, t_su, t_hold</li><li>FF has t_cq, t_su, t_hold</li><li>Transmission gate latch: NMOS+PMOS parallel</li></ul></div>
+<div class="cheat-card"><h4>SRAM</h4>
+<ul><li>6T cell: 2 access + 2 inverters</li><li>Read: precharge BL/BLbar, assert WL</li><li>Read stability: PD > Access transistor</li><li>Write: force BL low, assert WL</li><li>Writability: Access > PU</li><li>Ratio: PD:Access:PU = 3:2:1 (approx)</li></ul></div>
+<div class="cheat-card"><h4>Memory Periphery</h4>
+<ul><li>Row decoder: NAND gates -> wordline</li><li>Predecoder: smaller groups first</li><li>Bitline conditioning: precharge high</li><li>Write driver: pull one BL to 0</li><li>Sense amplifier: detect BL vs BLbar diff</li></ul></div>
+<div class="cheat-card"><h4>Power Analysis</h4>
+<ul><li>P_total = P_dyn + P_sc + P_leak</li><li>P_dyn = alpha*C*V^2*f</li><li>E_op = alpha*C*V^2 (freq independent)</li><li>Clock gating: reduce alpha</li><li>DVFS: adjust V,f with workload</li><li>Power gating: cut V_DD to idle blocks</li></ul></div>
+<div class="cheat-card"><h4>Division Algorithms</h4>
+<ul><li>Restoring: trial subtract, restore if neg</li><li>Non-restoring: add next step if neg</li><li>SRT: radix-4, 2 bits/iter, redundant digits</li><li>Division is sequential: O(N) iterations</li><li>~10-40x slower than multiplication</li></ul></div>
+<div class="cheat-card"><h4>Shifters & FPGA</h4>
+<ul><li>Barrel: log2(N) mux stages, O(NlogN)</li><li>Funnel: 2N concat, select N bits</li><li>Crossbar: N*M muxes, O(1) delay</li><li>FPGA: LUT + CLB + routing + BRAM</li><li>ASIC: standard cells, tapeout, months</li><li>FPGA 10-100x less efficient than ASIC</li></ul></div>
+</div>
+</div>
+
+<!-- ==================== FLASHCARDS ==================== -->
+<div class="section" id="sec-flash">
+<h1>Flashcards</h1>
+<p>Click to flip. Covers all exam material.</p>
+<div class="fc-wrap">
+<div class="fc" id="fc" onclick="this.classList.toggle('flip')">
+<div class="fc-face fc-front" id="fcF"><div>Loading...</div></div>
+<div class="fc-face fc-back" id="fcB"><div>Loading...</div></div>
+</div></div>
+<div class="fc-count" id="fcC">1/1</div>
+<div class="fc-nav">
+<button class="btn sm sec" onclick="fcP()">Prev</button>
+<button class="btn sm" onclick="fcSh()">Shuffle</button>
+<button class="btn sm sec" onclick="fcN()">Next</button>
+</div>
+<div style="margin-top:12px;text-align:center">
+<button class="btn sm sec" onclick="fcFilter('all')">All</button>
+<button class="btn sm sec" onclick="fcFilter('mt1')">MT1 Only</button>
+<button class="btn sm sec" onclick="fcFilter('mt2')">MT2 Only</button>
+<button class="btn sm sec" onclick="fcFilter('final')">Final Only</button>
+</div>
+</div>
+
+<!-- ==================== QUIZ ==================== -->
+<div class="section" id="sec-quiz">
+<h1>Practice Quiz</h1>
+<div id="quizBox"></div>
+<div style="margin-top:16px;text-align:center">
+<button class="btn" onclick="scoreQ()">Check Score</button>
+<button class="btn sec" onclick="buildQ()">Reset</button>
+</div>
+</div>
+
+</div><!-- container -->
+</div><!-- main -->
+
+<script>
+// ===== NAVIGATION =====
+function go(id){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  event.target.classList.add('active');
+  document.querySelector('.sidebar').classList.remove('open');
+  window.scrollTo(0,0);
+}
+
+// ===== PIPELINE ANIMATION =====
+const pipeStages=['F','D','X','M','W'];
+let pipeState=0;
+const pipeColors=['#58a6ff','#3fb950','#d29922','#a371f7','#f85149'];
+function drawPipe(){
+  const c=document.getElementById('pipeCanvas'),ctx=c.getContext('2d');
+  ctx.clearRect(0,0,c.width,c.height);
+  const w=110,h=30,gap=15,startY=10;
+  // Draw grid
+  ctx.fillStyle='#6b7280';ctx.font='11px sans-serif';
+  for(let i=0;i<5;i++) ctx.fillText('Cycle '+(i+1),60+i*(w+gap),startY+8);
+  for(let i=0;i<5;i++) ctx.fillText('I'+(i+1),10,startY+30+i*(h+5));
+  // Draw active stages
+  for(let instr=0;instr<Math.min(pipeState,5);instr++){
+    for(let stage=0;stage<Math.min(pipeState-instr,5);stage++){
+      const x=60+(instr+stage)*(w+gap)/1.0;
+      // Simplified: each instruction starts at its cycle
+      const cx=60+stage*(w+gap),cy=startY+20+instr*(h+5);
+      if(cx+w<c.width){
+        ctx.fillStyle=pipeColors[stage%5]+'33';
+        ctx.strokeStyle=pipeColors[stage%5];
+        ctx.lineWidth=1.5;
+        ctx.beginPath();ctx.roundRect(cx,cy,w,h,5);ctx.fill();ctx.stroke();
+        ctx.fillStyle=pipeColors[stage%5];ctx.font='bold 12px sans-serif';
+        ctx.fillText(pipeStages[stage],cx+w/2-8,cy+20);
+      }
+    }
+  }
+}
+function pipeStep(){pipeState=Math.min(pipeState+1,9);drawPipe();}
+function pipeReset(){pipeState=0;drawPipe();}
+drawPipe();
+
+// ===== MOSFET TOGGLE =====
+let mosOn=false;
+function drawMos(){
+  const c=document.getElementById('mosCanvas'),ctx=c.getContext('2d');
+  ctx.clearRect(0,0,c.width,c.height);
+  const cx=250,cy=110;
+  // Gate
+  ctx.strokeStyle='#58a6ff';ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(cx-80,cy);ctx.lineTo(cx-30,cy);ctx.stroke();
+  ctx.fillStyle='#58a6ff';ctx.font='12px sans-serif';ctx.fillText('G',cx-90,cy+5);
+  // Channel line
+  ctx.strokeStyle=mosOn?'#3fb950':'#f85149';ctx.lineWidth=3;
+  ctx.beginPath();ctx.moveTo(cx-25,cy-40);ctx.lineTo(cx-25,cy+40);ctx.stroke();
+  // Drain
+  ctx.strokeStyle='#1a1a2e';ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(cx-25,cy-30);ctx.lineTo(cx+40,cy-30);ctx.lineTo(cx+40,cy-60);ctx.stroke();
+  ctx.fillText('D',cx+45,cy-40);
+  // Source
+  ctx.beginPath();ctx.moveTo(cx-25,cy+30);ctx.lineTo(cx+40,cy+30);ctx.lineTo(cx+40,cy+60);ctx.stroke();
+  ctx.fillText('S',cx+45,cy+40);
+  // Gate oxide
+  ctx.strokeStyle='#d29922';ctx.lineWidth=1;ctx.setLineDash([3,3]);
+  ctx.beginPath();ctx.moveTo(cx-28,cy-40);ctx.lineTo(cx-28,cy+40);ctx.stroke();
+  ctx.setLineDash([]);
+  // Current arrow
+  if(mosOn){
+    ctx.fillStyle='#3fb950';ctx.font='bold 13px sans-serif';ctx.fillText('I_DS flows!',cx+60,cy+5);
+    ctx.strokeStyle='#3fb950';ctx.lineWidth=2;
+    ctx.beginPath();ctx.moveTo(cx+40,cy-50);ctx.lineTo(cx+40,cy+50);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(cx+35,cy+40);ctx.lineTo(cx+40,cy+50);ctx.lineTo(cx+45,cy+40);ctx.fill();
+  } else {
+    ctx.fillStyle='#f85149';ctx.font='bold 13px sans-serif';ctx.fillText('No current',cx+60,cy+5);
+  }
+  // Labels
+  ctx.fillStyle='#6b7280';ctx.font='11px sans-serif';
+  ctx.fillText(mosOn?'NMOS: V_GS > V_th => ON':'NMOS: V_GS < V_th => OFF',30,200);
+  document.getElementById('mosLabel').textContent=mosOn?'V_G = V_DD (NMOS ON)':'V_G = 0 (NMOS OFF)';
+}
+function toggleMos(){mosOn=!mosOn;drawMos();}
+drawMos();
+
+// ===== CMOS GATE VIEWER =====
+function setCmosGate(type){
+  const c=document.getElementById('cmosGateCanvas'),ctx=c.getContext('2d');
+  ctx.clearRect(0,0,c.width,c.height);
+  const desc={
+    inv:{name:'Inverter',pdn:'A (1 NMOS)',pun:'A (1 PMOS)',fn:"Out = A'",nmos:1,pmos:1},
+    nand2:{name:'NAND2',pdn:'A,B series (2 NMOS)',pun:'A,B parallel (2 PMOS)',fn:"Out = (AB)'",nmos:2,pmos:2},
+    nor2:{name:'NOR2',pdn:'A,B parallel (2 NMOS)',pun:'A,B series (2 PMOS)',fn:"Out = (A+B)'",nmos:2,pmos:2},
+    nand3:{name:'NAND3',pdn:'A,B,C series (3 NMOS)',pun:'A,B,C parallel (3 PMOS)',fn:"Out = (ABC)'",nmos:3,pmos:3}
+  }[type];
+  const cx=200,topY=30;
+  // VDD
+  ctx.fillStyle='#d29922';ctx.font='bold 12px sans-serif';ctx.fillText('V_DD',cx-18,topY);
+  ctx.strokeStyle='#d29922';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(cx,topY+5);ctx.lineTo(cx,topY+20);ctx.stroke();
+  // PUN box
+  ctx.fillStyle='rgba(163,113,247,.15)';ctx.strokeStyle='#a371f7';ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.roundRect(cx-60,topY+20,120,60,6);ctx.fill();ctx.stroke();
+  ctx.fillStyle='#a371f7';ctx.font='11px sans-serif';ctx.fillText('PUN (PMOS)',cx-35,topY+45);
+  ctx.fillStyle='#6b7280';ctx.font='10px sans-serif';ctx.fillText(desc.pun,cx-55,topY+65);
+  // Output
+  ctx.strokeStyle='#1a1a2e';ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(cx,topY+80);ctx.lineTo(cx,topY+100);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(cx,topY+90);ctx.lineTo(cx+80,topY+90);ctx.stroke();
+  ctx.fillStyle='#3fb950';ctx.font='bold 12px sans-serif';ctx.fillText('Out',cx+85,topY+94);
+  // PDN box
+  ctx.fillStyle='rgba(88,166,255,.15)';ctx.strokeStyle='#58a6ff';ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.roundRect(cx-60,topY+100,120,60,6);ctx.fill();ctx.stroke();
+  ctx.fillStyle='#58a6ff';ctx.font='11px sans-serif';ctx.fillText('PDN (NMOS)',cx-35,topY+125);
+  ctx.fillStyle='#6b7280';ctx.font='10px sans-serif';ctx.fillText(desc.pdn,cx-55,topY+145);
+  // GND
+  ctx.strokeStyle='#6b7280';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(cx,topY+160);ctx.lineTo(cx,topY+175);ctx.stroke();
+  ctx.fillStyle='#6b7280';ctx.font='bold 12px sans-serif';ctx.fillText('GND',cx-15,topY+190);
+  // Function
+  document.getElementById('cmosGateLabel').textContent=desc.name+': '+desc.fn;
+}
+setCmosGate('nand2');
+
+// ===== RC CHARGING ANIMATION =====
+let rcAnim=null,rcT=0;
+function drawRC(t){
+  const c=document.getElementById('rcCanvas'),ctx=c.getContext('2d');
+  ctx.clearRect(0,0,c.width,c.height);
+  const w=c.width,h=c.height,pad=40;
+  // Axes
+  ctx.strokeStyle='#e2e4ea';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(pad,pad);ctx.lineTo(pad,h-pad);ctx.lineTo(w-pad,h-pad);ctx.stroke();
+  ctx.fillStyle='#6b7280';ctx.font='10px sans-serif';
+  ctx.fillText('V(t)',pad-30,pad+10);ctx.fillText('time',w-pad-20,h-pad+15);
+  ctx.fillText('V_DD',pad-35,pad+25);ctx.fillText('50%',pad-28,pad+(h-2*pad)/2+5);
+  // Horizontal lines
+  ctx.strokeStyle='#e2e4ea44';ctx.setLineDash([4,4]);
+  ctx.beginPath();ctx.moveTo(pad,pad+10);ctx.lineTo(w-pad,pad+10);ctx.stroke(); // VDD
+  ctx.beginPath();ctx.moveTo(pad,pad+(h-2*pad)/2);ctx.lineTo(w-pad,pad+(h-2*pad)/2);ctx.stroke(); // 50%
+  ctx.setLineDash([]);
+  // Curve
+  ctx.strokeStyle='#3fb950';ctx.lineWidth=2.5;ctx.beginPath();
+  for(let x=0;x<=t;x+=1){
+    const px=pad+x*(w-2*pad)/200;
+    const vy=1-Math.exp(-x/40); // RC ~ 40 units
+    const py=(h-pad)-vy*(h-2*pad);
+    if(x===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+  }
+  ctx.stroke();
+  // Mark ln(2)*RC
+  if(t>28){
+    const markX=pad+28*(w-2*pad)/200;
+    ctx.strokeStyle='#d29922';ctx.lineWidth=1;ctx.setLineDash([3,3]);
+    ctx.beginPath();ctx.moveTo(markX,pad);ctx.lineTo(markX,h-pad);ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle='#d29922';ctx.font='10px sans-serif';ctx.fillText('t = ln(2)RC',markX+3,pad+40);
+  }
+}
+function startRC(){
+  if(rcAnim) return;
+  rcT=0;
+  rcAnim=setInterval(()=>{rcT+=2;drawRC(rcT);if(rcT>=200){clearInterval(rcAnim);rcAnim=null;}},20);
+}
+function resetRC(){if(rcAnim){clearInterval(rcAnim);rcAnim=null;}rcT=0;drawRC(0);}
+drawRC(0);
+
+// ===== VOLTAGE SCALING =====
+function updateVScale(){
+  const v=parseFloat(document.getElementById('vddSlider').value);
+  document.getElementById('vddVal').textContent=v.toFixed(2);
+  const f0=200,c=10e-9,a=0.1;
+  const f=f0*v/1.0;
+  const p=a*c*v*v*f*1e6*1e3; // mW
+  const e=1000*a*c*v*v*1e6; // uJ
+  document.getElementById('vsF').textContent=f.toFixed(0);
+  document.getElementById('vsP').textContent=p.toFixed(1);
+  document.getElementById('vsE').textContent=e.toFixed(2);
+}
+
+// ===== ADDER ANIMATION =====
+function animAdder(type){
+  const c=document.getElementById('adderCanvas'),ctx=c.getContext('2d');
+  const w=c.width,h=c.height,n=8,bw=55,bh=40,gap=10;
+  let delay=0;
+  const bits=[];for(let i=0;i<n;i++) bits.push({x:20+i*(bw+gap),y:40,lit:false,t:-1});
+  if(type==='rca'){
+    for(let i=0;i<n;i++) bits[i].t=i*300;
+    delay=n*300;
+    document.getElementById('adderLabel').textContent='Ripple-Carry: carry propagates through each bit sequentially. Delay = O(N) = '+n+' stages';
+  } else if(type==='cba'){
+    bits[0].t=0;bits[1].t=300;bits[2].t=600;bits[3].t=900; // first group ripple
+    bits[4].t=1000;bits[5].t=1100; // bypass middle
+    bits[6].t=1200;bits[7].t=1500; // last group ripple
+    delay=1500;
+    document.getElementById('adderLabel').textContent='Carry-Bypass: ripple first group, skip middle groups, ripple last. Delay = O(sqrt N)';
+  } else {
+    for(let i=0;i<n;i++) bits[i].t=Math.floor(Math.log2(i+1))*250;
+    delay=Math.floor(Math.log2(n))*250;
+    document.getElementById('adderLabel').textContent='Carry-Lookahead: parallel G/P computation. Delay = O(log N) = '+Math.ceil(Math.log2(n))+' levels';
+  }
+  let start=performance.now();
+  function frame(ts){
+    const elapsed=ts-start;
+    ctx.clearRect(0,0,w,h);
+    ctx.fillStyle='#6b7280';ctx.font='10px sans-serif';ctx.fillText('C_in',5,65);
+    for(let i=0;i<n;i++){
+      const b=bits[i];
+      const lit=elapsed>=b.t;
+      ctx.fillStyle=lit?'rgba(63,185,80,.25)':'rgba(88,166,255,.1)';
+      ctx.strokeStyle=lit?'#3fb950':'#58a6ff';
+      ctx.lineWidth=1.5;
+      ctx.beginPath();ctx.roundRect(b.x,b.y,bw,bh,5);ctx.fill();ctx.stroke();
+      ctx.fillStyle=lit?'#3fb950':'#58a6ff';ctx.font='bold 11px sans-serif';
+      ctx.fillText('Bit '+i,b.x+10,b.y+25);
+      // Carry arrow
+      if(i<n-1){ctx.strokeStyle='#e2e4ea';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(b.x+bw,b.y+bh/2);ctx.lineTo(b.x+bw+gap,b.y+bh/2);ctx.stroke();}
+    }
+    ctx.fillStyle='#3fb950';ctx.font='11px sans-serif';
+    const done=bits.every(b=>elapsed>=b.t);
+    if(done) ctx.fillText('C_out ready!',20+n*(bw+gap)-60,65);
+    if(elapsed<delay+500) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+
+// ===== FLASHCARDS =====
+const allFC=[
+  {q:"De Morgan's Law?",a:"(AB)'=A'+B' and (A+B)'=A'B'",cat:'mt1'},
+  {q:"What does always_ff infer?",a:"Flip-flops (edge-triggered registers). Use non-blocking (<=) assignments.",cat:'mt1'},
+  {q:"Moore vs Mealy FSM?",a:"Moore: output = f(state). Mealy: output = f(state, input).",cat:'mt1'},
+  {q:"RISC-V R-type format?",a:"funct7 | rs2 | rs1 | funct3 | rd | opcode. Used for ADD, SUB, AND, OR, XOR, SLT.",cat:'mt1'},
+  {q:"Three types of pipeline hazards?",a:"Structural (resource conflict), Data (dependency), Control (branch/jump).",cat:'mt1'},
+  {q:"Max clock frequency formula?",a:"f = 1/(t_cq + t_logic,max + t_setup)",cat:'mt1'},
+  {q:"JAL instruction does what?",a:"rd = PC+4 (save return address), PC = PC + offset (jump). J-format.",cat:'mt1'},
+  {q:"Blocking vs non-blocking?",a:"Blocking (=): sequential, for comb logic. Non-blocking (<=): parallel update, for flip-flops.",cat:'mt1'},
+  {q:"Two's complement negation?",a:"Flip all bits and add 1. Range for N bits: [-2^(N-1), 2^(N-1)-1].",cat:'mt1'},
+  {q:"Sign extension rule?",a:"Replicate MSB to fill wider register. Preserves value in two's complement.",cat:'mt1'},
+  {q:"NMOS turns ON when?",a:"V_GS > V_th (gate HIGH). Passes strong 0, weak 1.",cat:'mt2'},
+  {q:"PUN and PDN relationship?",a:"Duals: series in PDN = parallel in PUN and vice versa. Same inputs, NMOS<->PMOS.",cat:'mt2'},
+  {q:"Static CMOS gates are always...?",a:"Inverting. Can build NAND/NOR directly, not AND/OR.",cat:'mt2'},
+  {q:"Inverter delay formula?",a:"t_p = ln(2) * R_eq * (C_parasitic + C_load)",cat:'mt2'},
+  {q:"Elmore delay rule for off-path?",a:"Include off-path CAPACITANCES, exclude off-path RESISTANCES.",cat:'mt2'},
+  {q:"Logical effort of NAND2?",a:"g = 4/3, p = 2 (gamma=1). NAND always better than NOR.",cat:'mt2'},
+  {q:"Gate delay formula (logical effort)?",a:"d = g*h + p. Where g=logical effort, h=C_out/C_in, p=parasitic.",cat:'mt2'},
+  {q:"Optimal stage effort?",a:"f_hat = F^(1/N) where F = G*B*H (path effort).",cat:'mt2'},
+  {q:"Dynamic power formula?",a:"P = alpha * C_L * V_DD^2 * f_clk",cat:'mt2'},
+  {q:"Activity factor formula?",a:"alpha = 2*p*(1-p) where p = probability output is 1.",cat:'mt2'},
+  {q:"Carry-bypass optimal group size?",a:"b = sqrt(N/2). Delay = 2b + N/b - 2 = O(sqrt N).",cat:'mt2'},
+  {q:"CSA (Carry-Save Adder) does what?",a:"Takes 3 numbers, produces 2 (sum + carry vector) in O(1) time.",cat:'mt2'},
+  {q:"Booth recoding benefit?",a:"Reduces N partial products to N/2. Uses trick: 3A = 4A - A.",cat:'mt2'},
+  {q:"Setup time constraint with skew?",a:"T >= t_cq + t_logic,max + t_setup + t_skew + t_jitter",cat:'final'},
+  {q:"Hold time constraint?",a:"t_cq + t_logic,min >= t_hold + t_skew + t_jitter",cat:'final'},
+  {q:"Latch vs flip-flop?",a:"Latch: level-sensitive (transparent when CLK high). FF: edge-triggered (samples at edge only).",cat:'final'},
+  {q:"Clock skew vs jitter?",a:"Skew: spatial (different arrival at different FFs). Jitter: temporal (variation between consecutive edges).",cat:'final'},
+  {q:"SRAM 6T cell read stability?",a:"Pull-down must be stronger than access transistor so stored value isn't flipped during read.",cat:'final'},
+  {q:"SRAM write mechanism?",a:"Force one bitline low through access transistor. Access must be stronger than pull-up to flip the cell.",cat:'final'},
+  {q:"What determines SRAM read speed?",a:"Both access transistors M5 and M1 (pull-down) create the differential on bitlines. Sense amp detects.",cat:'final'},
+  {q:"Positive clock skew effect?",a:"Receiving clock arrives LATER. Helps setup (more time for data), hurts hold (data might change too late).",cat:'final'},
+  {q:"Voltage scaling: if V drops 10%?",a:"f drops 10% (prop V). Power drops ~27% (prop V^3). Energy/op drops ~19% (prop V^2).",cat:'mt2'},
+  {q:"What is DVFS?",a:"Dynamic Voltage and Frequency Scaling. Adjust V_DD and f together based on workload to save power.",cat:'final'},
+  {q:"Clock gating saves what?",a:"Dynamic power. Disables clock to idle blocks so alpha -> 0, no switching activity.",cat:'final'},
+  {q:"Power gating saves what?",a:"Static (leakage) power. Cuts V_DD entirely to idle blocks using sleep transistors.",cat:'final'},
+  {q:"Energy per operation formula?",a:"E_op = alpha * C_L * V_DD^2. Independent of frequency! Only voltage scaling reduces it.",cat:'final'},
+  {q:"Barrel shifter: stages for 32-bit?",a:"5 stages (log2(32)=5). Each stage shifts by 1,2,4,8,16 positions using 2:1 muxes.",cat:'final'},
+  {q:"Funnel shifter key idea?",a:"Concatenate two copies [A|A], select N consecutive bits. Unifies left/right shift and rotate.",cat:'final'},
+  {q:"Restoring vs non-restoring division?",a:"Restoring: undo subtract if negative. Non-restoring: add next step instead. Non-restoring is faster.",cat:'final'},
+  {q:"SRT division key feature?",a:"Higher radix (radix-4), redundant digit set {-2,-1,0,1,2}, lookup table for quotient selection.",cat:'final'},
+  {q:"Why is division slower than multiplication?",a:"Division is inherently sequential (each step depends on previous remainder). Cannot parallelize iterations.",cat:'final'},
+  {q:"FPGA LUT does what?",a:"Small SRAM implementing any N-input boolean function. Universal gate. Typically 4-6 inputs.",cat:'final'},
+  {q:"FPGA vs ASIC: performance?",a:"FPGA: ~100-500MHz. ASIC: ~1-5GHz. ASIC is 10-100x more power efficient.",cat:'final'},
+  {q:"FPGA vs ASIC: when to use which?",a:"FPGA: prototyping, low volume, reconfigurable. ASIC: high volume, max perf/efficiency.",cat:'final'},
+  {q:"Crossbar switch area?",a:"O(N*M) for N inputs, M outputs. Each output has an N:1 mux. Grows quadratically.",cat:'final'},
+];
+let fcList=[...allFC],fcIdx=0;
+function renderFC(){
+  document.getElementById('fc').classList.remove('flip');
+  document.getElementById('fcF').innerHTML='<div>'+fcList[fcIdx].q+'</div>';
+  document.getElementById('fcB').innerHTML='<div>'+fcList[fcIdx].a+'</div>';
+  document.getElementById('fcC').textContent=(fcIdx+1)+'/'+fcList.length;
+}
+function fcN(){fcIdx=(fcIdx+1)%fcList.length;renderFC();}
+function fcP(){fcIdx=(fcIdx-1+fcList.length)%fcList.length;renderFC();}
+function fcSh(){for(let i=fcList.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[fcList[i],fcList[j]]=[fcList[j],fcList[i]];}fcIdx=0;renderFC();}
+function fcFilter(cat){fcList=cat==='all'?[...allFC]:allFC.filter(f=>f.cat===cat);fcIdx=0;renderFC();}
+renderFC();
+
+// ===== QUIZ =====
+const qData=[
+  {q:"NMOS transistor turns ON when:",o:["V_GS < V_th","V_GS > V_th","V_DS > V_th","V_GD > V_th"],a:1},
+  {q:"In a NAND gate, NMOS transistors are in:",o:["Parallel","Series","Ring","Star"],a:1},
+  {q:"Static CMOS gates are always:",o:["Non-inverting","Inverting","Both","Depends on sizing"],a:1},
+  {q:"Logical effort of NAND2 (gamma=1):",o:["1","4/3","5/3","2"],a:1},
+  {q:"Dynamic power is proportional to:",o:["V_DD","V_DD^2","V_DD^3","V_DD^4"],a:1},
+  {q:"Activity factor for P(out=1)=0.25:",o:["0.25","0.375","0.5","0.75"],a:1},
+  {q:"Off-path capacitances in Elmore delay:",o:["Ignored","Included","Only PMOS","Only at output"],a:1},
+  {q:"CSA takes 3 numbers and produces:",o:["1 in O(N)","2 in O(1)","2 in O(N)","1 in O(logN)"],a:1},
+  {q:"CLA adder delay:",o:["O(N)","O(sqrt N)","O(log N)","O(1)"],a:2},
+  {q:"Booth radix-4 reduces partial products to:",o:["N/4","N/2","N-1","log N"],a:1},
+  {q:"Short-circuit current peaks at V_in =",o:["0V","V_th","V_DD/2","V_DD"],a:2},
+  {q:"Optimal inverter chain fanout ~=",o:["1","e (2.718)","4","10"],a:1},
+  {q:"Moore FSM output depends on:",o:["State only","State + input","Input only","Clock"],a:0},
+  {q:"Setup time violation fix:",o:["Add buffers","Reduce logic/pipeline","Lower voltage","Increase clock"],a:1},
+  {q:"Hold time violation fix:",o:["Add buffers","Speed up logic","Reduce clock","Pipeline"],a:0},
+  {q:"Latch is transparent when:",o:["Clock edge","Clock HIGH (or LOW)","Always","Never"],a:1},
+  {q:"SRAM read stability requires:",o:["PD > Access","Access > PD","PU > Access","All equal"],a:0},
+  {q:"Positive clock skew:",o:["Helps setup, hurts hold","Hurts setup, helps hold","Hurts both","Helps both"],a:0},
+  {q:"Generate signal G for full adder:",o:["A XOR B","A AND B","A OR B","A XNOR B"],a:1},
+  {q:"NOR2 sizing: each PMOS width (Wp/Wn=2):",o:["2","4","1","3"],a:1},
+  {q:"DVFS stands for:",o:["Dynamic Voltage Frequency Scaling","Direct Voltage Feedback System","Digital Voltage Flip Selector","Dual Voltage Frequency Selector"],a:0},
+  {q:"Power gating eliminates:",o:["Dynamic power","Static (leakage) power","Short-circuit power","All power"],a:1},
+  {q:"Barrel shifter for 32-bit needs how many stages?",o:["32","16","5","4"],a:2},
+  {q:"Restoring division: if trial subtract is negative?",o:["Keep result, set Q=0","Restore remainder, set Q=0","Keep result, set Q=1","Restore remainder, set Q=1"],a:1},
+  {q:"SRT divider uses what digit set (radix-4)?",o:["{0,1}","{0,1,2,3}","{-2,-1,0,1,2}","{-1,0,1}"],a:2},
+  {q:"FPGA LUT with 4 inputs has how many SRAM bits?",o:["4","8","16","32"],a:2},
+  {q:"Which is cheaper per unit at high volume?",o:["FPGA","ASIC","Same cost","Depends on size"],a:1},
+  {q:"Crossbar switch N inputs to M outputs: area?",o:["O(N+M)","O(N*M)","O(N log M)","O(max(N,M))"],a:1},
+  {q:"Funnel shifter combines left/right shift by:",o:["Using two barrel shifters","Concatenating [A|A] and selecting N bits","Reversing bits before shifting","Using carry chains"],a:1},
+  {q:"Sign extension copies which bit?",o:["LSB","Bit 0","MSB (sign bit)","Random bit"],a:2},
+];
+const uAns={};
+function buildQ(){
+  Object.keys(uAns).forEach(k=>delete uAns[k]);
+  let h='';
+  qData.forEach((q,i)=>{
+    h+=`<div class="card q-item" id="qi${i}"><p class="q-text">Q${i+1}: ${q.q}</p><div class="q-opts">`;
+    q.o.forEach((o,j)=>{h+=`<label id="ql${i}_${j}" onclick="pickA(${i},${j})"><input type="radio" name="q${i}">${o}</label>`;});
+    h+=`</div><div class="q-fb" id="qf${i}"></div></div>`;
+  });
+  document.getElementById('quizBox').innerHTML=h;
+}
+function pickA(qi,oi){
+  uAns[qi]=oi;
+  qData[qi].o.forEach((_,j)=>{document.getElementById(`ql${qi}_${j}`).className='';});
+  const fb=document.getElementById(`qf${qi}`);
+  if(oi===qData[qi].a){
+    document.getElementById(`ql${qi}_${oi}`).className='ok';
+    fb.style.display='block';fb.style.color='var(--accent2)';fb.textContent='Correct!';
+  } else {
+    document.getElementById(`ql${qi}_${oi}`).className='no';
+    document.getElementById(`ql${qi}_${qData[qi].a}`).className='ok';
+    fb.style.display='block';fb.style.color='var(--warn)';fb.textContent='Wrong. Answer: '+qData[qi].o[qData[qi].a];
+  }
+}
+function scoreQ(){
+  let c=0;qData.forEach((q,i)=>{if(uAns[i]===q.a)c++;});
+  alert(`Score: ${c}/${qData.length} (${Math.round(c/qData.length*100)}%)`);
+}
+buildQ();
+</script>
+</body>
+</html>

@@ -1,0 +1,2491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EECS 151 Interactive Study Guide</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+  * { font-family: 'Inter', 'PingFang SC', 'Microsoft YaHei', sans-serif; }
+  body { background: #fafafa; }
+  .zh { font-family: 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', sans-serif; color: #7c3aed; font-style: italic; }
+  .tab-btn { transition: all 0.2s; }
+  .tab-btn.active { background: #7c3aed; color: white; }
+  .tab-btn:not(.active):hover { background: #ede9fe; }
+  .concept-card { background: white; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 24px; margin-bottom: 20px; border-left: 4px solid #7c3aed; }
+  .formula-box { background: #f5f3ff; border-radius: 8px; padding: 16px; margin: 12px 0; border: 1px solid #e9e5f5; }
+  .interactive-box { background: #f0fdf4; border-radius: 12px; padding: 20px; margin: 16px 0; border: 2px solid #bbf7d0; }
+  .flashcard { perspective: 1000px; cursor: pointer; width: 100%; height: 220px; }
+  .flashcard-inner { position: relative; width: 100%; height: 100%; transition: transform 0.6s; transform-style: preserve-3d; }
+  .flashcard.flipped .flashcard-inner { transform: rotateY(180deg); }
+  .flashcard-front, .flashcard-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 12px; display: flex; align-items: center; justify-content: center; padding: 20px; text-align: center; }
+  .flashcard-front { background: white; border: 2px solid #7c3aed; }
+  .flashcard-back { background: #7c3aed; color: white; transform: rotateY(180deg); }
+  .step-reveal { overflow: hidden; max-height: 0; transition: max-height 0.4s ease; }
+  .step-reveal.open { max-height: 500px; }
+  .hazard-red { background: #fecaca; border: 2px solid #dc2626; }
+  .forward-green { background: #bbf7d0; border: 2px solid #059669; }
+  .stall-gray { background: #e5e7eb; border: 2px solid #9ca3af; }
+  .pipeline-cell { width: 80px; height: 40px; display: flex; align-items: center; justify-content: center; border: 1px solid #d1d5db; font-size: 12px; font-weight: 600; border-radius: 4px; }
+  .node-circle { cursor: pointer; transition: all 0.2s; }
+  .node-circle:hover { filter: brightness(0.9); transform: scale(1.1); }
+  canvas { border-radius: 8px; }
+  .gate-canvas { background: #fefefe; border: 2px solid #e5e7eb; }
+  .toggle-input { cursor: pointer; user-select: none; }
+  .toggle-input:hover { opacity: 0.8; }
+  .tab-scroll::-webkit-scrollbar { height: 4px; }
+  .tab-scroll::-webkit-scrollbar-thumb { background: #c4b5fd; border-radius: 2px; }
+  .progress-ring { transition: stroke-dashoffset 0.35s; transform: rotate(-90deg); transform-origin: 50% 50%; }
+  .katex { font-size: 1em; }
+  .section-content { display: none; }
+  .section-content.active { display: block; }
+  .transistor-on { fill: #059669; stroke: #059669; }
+  .transistor-off { fill: #dc2626; stroke: #dc2626; }
+  .quiz-option { cursor: pointer; padding: 10px 16px; border: 2px solid #e5e7eb; border-radius: 8px; margin: 6px 0; transition: all 0.2s; }
+  .quiz-option:hover { border-color: #7c3aed; background: #f5f3ff; }
+  .quiz-option.correct { border-color: #059669; background: #f0fdf4; }
+  .quiz-option.wrong { border-color: #dc2626; background: #fef2f2; }
+</style>
+</head>
+<body class="min-h-screen bg-white text-gray-800">
+
+<!-- Header -->
+<header class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+  <div class="max-w-7xl mx-auto px-4 py-3">
+    <div class="flex items-center justify-between mb-3">
+      <div>
+        <h1 class="text-2xl font-bold text-purple-700">EECS 151 Interactive Study Guide</h1>
+        <p class="text-sm text-gray-500">UC Berkeley &middot; Digital Design &amp; ICs &middot; 全面复习指南</p>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="text-right">
+          <div class="text-sm font-medium text-gray-700">Study Progress</div>
+          <div class="flex items-center gap-2">
+            <div class="w-32 bg-gray-200 rounded-full h-2">
+              <div id="globalProgress" class="bg-purple-600 h-2 rounded-full transition-all" style="width:0%"></div>
+            </div>
+            <span id="globalProgressText" class="text-xs text-gray-500">0%</span>
+          </div>
+        </div>
+        <button onclick="openFlashcardModal()" class="px-4 py-2 bg-purple-600 text-white rounded-lg text-sm font-medium hover:bg-purple-700 transition">
+          Flashcards
+        </button>
+        <button onclick="openConceptMap()" class="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-medium hover:bg-emerald-700 transition">
+          Concept Map
+        </button>
+      </div>
+    </div>
+    <!-- Tab Navigation -->
+    <div class="tab-scroll flex gap-1 overflow-x-auto pb-1">
+      <button class="tab-btn active px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap" onclick="switchTab(0)">1. Prerequisites</button>
+      <button class="tab-btn px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap" onclick="switchTab(1)">2. Boolean Logic</button>
+      <button class="tab-btn px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap" onclick="switchTab(2)">3. Combinational</button>
+      <button class="tab-btn px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap" onclick="switchTab(3)">4. SystemVerilog</button>
+      <button class="tab-btn px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap" onclick="switchTab(4)">5. Sequential/FSM</button>
+      <button class="tab-btn px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap" onclick="switchTab(5)">6. RISC-V Datapath</button>
+      <button class="tab-btn px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap" onclick="switchTab(6)">7. Pipelining</button>
+      <button class="tab-btn px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap" onclick="switchTab(7)">8. CMOS</button>
+      <button class="tab-btn px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap" onclick="switchTab(8)">9. Logical Effort</button>
+      <button class="tab-btn px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap" onclick="switchTab(9)">10. Wires</button>
+      <button class="tab-btn px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap" onclick="switchTab(10)">11. Adders</button>
+      <button class="tab-btn px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap" onclick="switchTab(11)">12. Multipliers</button>
+      <button class="tab-btn px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap" onclick="switchTab(12)">13. Shifters</button>
+      <button class="tab-btn px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap" onclick="switchTab(13)">14. Timing</button>
+      <button class="tab-btn px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap" onclick="switchTab(14)">15. SRAM</button>
+      <button class="tab-btn px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap" onclick="switchTab(15)">16. Power</button>
+      <button class="tab-btn px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap" onclick="switchTab(16)">17. FPGA/ASIC</button>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 py-6">
+
+<!-- ========== SECTION 0: Prerequisites ========== -->
+<div class="section-content active" id="section-0">
+  <div class="concept-card">
+    <p class="zh text-lg mb-2">中文总结：这是61C的基础回顾——数字怎么在计算机里表示，二进制补码怎么处理负数，以及RISC-V指令集。就像盖房子前要先打地基。</p>
+    <h2 class="text-xl font-bold text-purple-700 mb-3">61C Prerequisites Review</h2>
+
+    <h3 class="font-semibold text-lg mb-2">Number Representation</h3>
+    <p class="mb-2">Computers represent everything in binary. Key systems:</p>
+    <ul class="list-disc ml-6 mb-4 space-y-1">
+      <li><strong>Unsigned:</strong> Range [0, 2<sup>n</sup>-1]. Direct binary-to-decimal.</li>
+      <li><strong>Sign-magnitude:</strong> MSB is sign. Two zeros problem. Range [-(2<sup>n-1</sup>-1), 2<sup>n-1</sup>-1]</li>
+      <li><strong>Two's complement:</strong> MSB has weight -2<sup>n-1</sup>. Range [-2<sup>n-1</sup>, 2<sup>n-1</sup>-1]. One representation of zero.</li>
+    </ul>
+
+    <div class="formula-box">
+      <p class="font-semibold mb-1">Key Formulas:</p>
+      <p>Two's complement value: <span class="katex-render">-b_{n-1} \cdot 2^{n-1} + \sum_{i=0}^{n-2} b_i \cdot 2^i</span></p>
+      <p class="mt-1">Negation trick: flip all bits, add 1</p>
+      <p class="mt-1">Sign extension: copy MSB to fill new upper bits</p>
+    </div>
+
+    <h3 class="font-semibold text-lg mt-4 mb-2">RISC-V ISA Review</h3>
+    <p class="mb-2">RISC-V is a load-store architecture with 32 registers (x0-x31, x0 always 0).</p>
+    <ul class="list-disc ml-6 mb-4 space-y-1">
+      <li><strong>R-type:</strong> add, sub, and, or, xor, sll, srl, sra, slt, sltu</li>
+      <li><strong>I-type:</strong> addi, lw, jalr, loads</li>
+      <li><strong>S-type:</strong> sw, sb, sh (stores)</li>
+      <li><strong>B-type:</strong> beq, bne, blt, bge (branches)</li>
+      <li><strong>U-type:</strong> lui, auipc</li>
+      <li><strong>J-type:</strong> jal</li>
+    </ul>
+
+    <div class="interactive-box">
+      <h3 class="font-semibold text-green-700 mb-3">Interactive: Two's Complement Converter</h3>
+      <p class="zh text-sm mb-2">输入十进制数，查看它的二进制补码表示（8位）</p>
+      <div class="flex items-center gap-4 mb-3">
+        <label class="font-medium">Decimal value (-128 to 127):</label>
+        <input type="number" id="tcInput" value="42" min="-128" max="127" class="border rounded px-3 py-1 w-24" onchange="convertTC()">
+        <button onclick="convertTC()" class="bg-purple-600 text-white px-4 py-1 rounded hover:bg-purple-700">Convert</button>
+      </div>
+      <div id="tcOutput" class="font-mono text-lg"></div>
+    </div>
+
+    <!-- Quiz -->
+    <div class="mt-4 p-4 bg-gray-50 rounded-lg">
+      <h4 class="font-semibold mb-2">Quick Check</h4>
+      <p class="mb-2">What is -5 in 8-bit two's complement?</p>
+      <div class="quiz-option" onclick="checkQuiz(this,'wrong')">0b10000101</div>
+      <div class="quiz-option" onclick="checkQuiz(this,'correct')">0b11111011</div>
+      <div class="quiz-option" onclick="checkQuiz(this,'wrong')">0b01111011</div>
+      <p class="quiz-explain hidden mt-2 text-sm text-gray-600 zh">解释：5 = 00000101，取反得 11111010，加1得 11111011。</p>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SECTION 1: Boolean Logic ========== -->
+<div class="section-content" id="section-1">
+  <div class="concept-card">
+    <p class="zh text-lg mb-2">中文总结：布尔逻辑是数字电路的语言。就像搭积木，用AND、OR、NOT这些"逻辑门"组合出任何功能。德摩根定律是最重要的变换工具，K-map（卡诺图）帮你化简表达式。</p>
+    <h2 class="text-xl font-bold text-purple-700 mb-3">Boolean Algebra & Logic</h2>
+
+    <h3 class="font-semibold text-lg mb-2">Key Laws</h3>
+    <div class="grid grid-cols-2 gap-4 mb-4">
+      <div class="formula-box">
+        <p class="font-semibold">De Morgan's Laws:</p>
+        <p class="katex-render">\overline{A \cdot B} = \bar{A} + \bar{B}</p>
+        <p class="katex-render mt-1">\overline{A + B} = \bar{A} \cdot \bar{B}</p>
+      </div>
+      <div class="formula-box">
+        <p class="font-semibold">Other Important Laws:</p>
+        <p>Distributive: A(B+C) = AB + AC</p>
+        <p>Consensus: AB + A'C + BC = AB + A'C</p>
+        <p>Shannon expansion: f = x&middot;f(x=1) + x'&middot;f(x=0)</p>
+      </div>
+    </div>
+
+    <h3 class="font-semibold text-lg mb-2">Canonical Forms</h3>
+    <ul class="list-disc ml-6 mb-4 space-y-1">
+      <li><strong>SOP (Sum of Products / 最小项之和):</strong> OR of AND terms (minterms). Each minterm = 1 row of truth table.</li>
+      <li><strong>POS (Product of Sums / 最大项之积):</strong> AND of OR terms (maxterms). Each maxterm = 0 row of truth table.</li>
+    </ul>
+
+    <h3 class="font-semibold text-lg mb-2">Noise Margins</h3>
+    <p class="zh text-sm mb-2">噪声容限就像"安全距离"——信号在传输中可以有多少噪声而不出错。</p>
+    <div class="formula-box">
+      <p>NM<sub>H</sub> = V<sub>OH</sub> - V<sub>IH</sub> (high noise margin)</p>
+      <p>NM<sub>L</sub> = V<sub>IL</sub> - V<sub>OL</sub> (low noise margin)</p>
+      <p class="mt-1 text-sm text-gray-600">For valid logic: NM<sub>H</sub> > 0 and NM<sub>L</sub> > 0</p>
+    </div>
+  </div>
+
+  <!-- Gate Simulator -->
+  <div class="concept-card">
+    <h2 class="text-xl font-bold text-purple-700 mb-3">Interactive: Gate Simulator</h2>
+    <p class="zh text-sm mb-3">点击输入（A/B）切换0和1，观察不同逻辑门的输出变化。这就是数字电路最基本的运算！</p>
+    <div class="flex gap-4 mb-3">
+      <button onclick="setGateType('AND')" class="gate-type-btn px-3 py-1 rounded bg-purple-100 text-purple-700 font-medium text-sm">AND</button>
+      <button onclick="setGateType('OR')" class="gate-type-btn px-3 py-1 rounded bg-purple-100 text-purple-700 font-medium text-sm">OR</button>
+      <button onclick="setGateType('NOT')" class="gate-type-btn px-3 py-1 rounded bg-purple-100 text-purple-700 font-medium text-sm">NOT</button>
+      <button onclick="setGateType('NAND')" class="gate-type-btn px-3 py-1 rounded bg-purple-100 text-purple-700 font-medium text-sm">NAND</button>
+      <button onclick="setGateType('NOR')" class="gate-type-btn px-3 py-1 rounded bg-purple-100 text-purple-700 font-medium text-sm">NOR</button>
+      <button onclick="setGateType('XOR')" class="gate-type-btn px-3 py-1 rounded bg-purple-100 text-purple-700 font-medium text-sm">XOR</button>
+    </div>
+    <canvas id="gateCanvas" width="500" height="250" class="gate-canvas"></canvas>
+    <p class="text-sm text-gray-500 mt-2">Click on input circles (A, B) to toggle between 0 and 1</p>
+
+    <div class="mt-4">
+      <h4 class="font-semibold mb-1">Truth Table for <span id="gateTruthTitle">AND</span>:</h4>
+      <div id="gateTruthTable" class="font-mono text-sm"></div>
+    </div>
+  </div>
+
+  <!-- K-map -->
+  <div class="concept-card">
+    <h3 class="font-semibold text-lg mb-2">Karnaugh Maps (卡诺图)</h3>
+    <p class="zh text-sm mb-2">K-map是化简布尔表达式的图形工具。把真值表画成网格，圈出相邻的1来合并项。记住：相邻格子只差一个变量！</p>
+    <div class="interactive-box">
+      <h4 class="font-semibold text-green-700 mb-2">Interactive 2-Variable K-Map</h4>
+      <p class="text-sm mb-3">Click cells to toggle 0/1, see the simplified expression update.</p>
+      <div class="flex items-start gap-8">
+        <div>
+          <table class="border-collapse">
+            <tr><td class="p-2"></td><td class="p-2 font-mono font-bold text-center">B=0</td><td class="p-2 font-mono font-bold text-center">B=1</td></tr>
+            <tr>
+              <td class="p-2 font-mono font-bold">A=0</td>
+              <td class="p-2"><button id="kmap00" class="w-12 h-12 border-2 rounded font-mono text-lg font-bold" onclick="toggleKmap(0,0)">0</button></td>
+              <td class="p-2"><button id="kmap01" class="w-12 h-12 border-2 rounded font-mono text-lg font-bold" onclick="toggleKmap(0,1)">0</button></td>
+            </tr>
+            <tr>
+              <td class="p-2 font-mono font-bold">A=1</td>
+              <td class="p-2"><button id="kmap10" class="w-12 h-12 border-2 rounded font-mono text-lg font-bold" onclick="toggleKmap(1,0)">0</button></td>
+              <td class="p-2"><button id="kmap11" class="w-12 h-12 border-2 rounded font-mono text-lg font-bold" onclick="toggleKmap(1,1)">0</button></td>
+            </tr>
+          </table>
+        </div>
+        <div id="kmapResult" class="font-mono text-lg mt-4">F = 0</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quiz -->
+  <div class="concept-card">
+    <h4 class="font-semibold mb-2">Active Recall</h4>
+    <p class="mb-2">Apply De Morgan's to: NOT(A AND B OR C)</p>
+    <button class="text-purple-600 text-sm font-medium" onclick="this.nextElementSibling.classList.toggle('hidden')">Show Answer</button>
+    <div class="hidden mt-2 p-3 bg-purple-50 rounded">
+      <p class="font-mono">NOT(AB + C) = NOT(AB) &middot; NOT(C) = (A'+B') &middot; C'</p>
+      <p class="zh text-sm mt-1">先对整体用德摩根：OR变AND，取反各项。再对AB用德摩根。</p>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SECTION 2: Combinational Logic ========== -->
+<div class="section-content" id="section-2">
+  <div class="concept-card">
+    <p class="zh text-lg mb-2">中文总结：组合逻辑是"无记忆"的电路——输出只取决于当前输入。MUX（多路选择器）像个开关，选择哪个输入传到输出。解码器把二进制代码变成独热码。ALU是处理器的"计算引擎"。</p>
+    <h2 class="text-xl font-bold text-purple-700 mb-3">Combinational Logic</h2>
+
+    <h3 class="font-semibold text-lg mb-2">Multiplexers (MUX)</h3>
+    <ul class="list-disc ml-6 mb-4 space-y-1">
+      <li>2:1 MUX: Y = S ? I1 : I0 = S'I0 + SI1</li>
+      <li>4:1 MUX: 2 select bits, 4 data inputs</li>
+      <li><strong>Any Boolean function</strong> can be implemented with a MUX (connect truth table outputs to data inputs)</li>
+    </ul>
+
+    <h3 class="font-semibold text-lg mb-2">Decoders & Encoders</h3>
+    <ul class="list-disc ml-6 mb-4 space-y-1">
+      <li><strong>Decoder:</strong> n inputs &rarr; 2<sup>n</sup> outputs (one-hot). Used for memory address decoding.</li>
+      <li><strong>Encoder:</strong> 2<sup>n</sup> inputs &rarr; n outputs. Priority encoder handles multiple active inputs.</li>
+    </ul>
+
+    <h3 class="font-semibold text-lg mb-2">ALU (Arithmetic Logic Unit)</h3>
+    <p class="zh text-sm mb-2">ALU就像处理器的计算器——根据控制信号选择做加法、减法、AND、OR等运算。</p>
+    <ul class="list-disc ml-6 mb-4 space-y-1">
+      <li>Combines adder + logic operations via MUX</li>
+      <li>ALU control signals select operation</li>
+      <li>Flags: zero, negative, overflow, carry</li>
+    </ul>
+
+    <div class="interactive-box">
+      <h3 class="font-semibold text-green-700 mb-3">Interactive: 4-bit ALU Simulator</h3>
+      <p class="zh text-sm mb-2">输入两个4位数和操作类型，查看ALU运算结果</p>
+      <div class="grid grid-cols-3 gap-4">
+        <div>
+          <label class="text-sm font-medium">Input A (0-15):</label>
+          <input type="number" id="aluA" value="5" min="0" max="15" class="border rounded px-2 py-1 w-full" onchange="computeALU()">
+        </div>
+        <div>
+          <label class="text-sm font-medium">Operation:</label>
+          <select id="aluOp" class="border rounded px-2 py-1 w-full" onchange="computeALU()">
+            <option value="add">ADD</option>
+            <option value="sub">SUB</option>
+            <option value="and">AND</option>
+            <option value="or">OR</option>
+            <option value="xor">XOR</option>
+            <option value="sll">SLL (shift left)</option>
+            <option value="srl">SRL (shift right)</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-sm font-medium">Input B (0-15):</label>
+          <input type="number" id="aluB" value="3" min="0" max="15" class="border rounded px-2 py-1 w-full" onchange="computeALU()">
+        </div>
+      </div>
+      <div id="aluResult" class="mt-3 font-mono text-lg"></div>
+    </div>
+  </div>
+
+  <div class="concept-card">
+    <h4 class="font-semibold mb-2">Active Recall</h4>
+    <p class="mb-2">How many select bits does a 16:1 MUX need?</p>
+    <div class="quiz-option" onclick="checkQuiz(this,'wrong')">3</div>
+    <div class="quiz-option" onclick="checkQuiz(this,'correct')">4</div>
+    <div class="quiz-option" onclick="checkQuiz(this,'wrong')">16</div>
+    <p class="quiz-explain hidden mt-2 text-sm zh">因为 2^4 = 16，需要4个选择位来选16个输入之一。</p>
+  </div>
+</div>
+
+<!-- ========== SECTION 3: SystemVerilog ========== -->
+<div class="section-content" id="section-3">
+  <div class="concept-card">
+    <p class="zh text-lg mb-2">中文总结：SystemVerilog是描述硬件的语言，不是软件编程！always @(*)描述组合逻辑，always @(posedge clk)描述时序逻辑。用 = 做阻塞赋值（组合），用 &lt;= 做非阻塞赋值（时序）。搞混了电路就会出bug！</p>
+    <h2 class="text-xl font-bold text-purple-700 mb-3">SystemVerilog for Digital Design</h2>
+
+    <h3 class="font-semibold text-lg mb-2">always Blocks</h3>
+    <div class="grid grid-cols-2 gap-4 mb-4">
+      <div class="formula-box">
+        <p class="font-semibold text-green-700">Combinational (always @(*) or always_comb)</p>
+        <pre class="text-sm mt-2 bg-white p-2 rounded">always @(*) begin
+  // Use blocking (=)
+  if (sel)
+    y = a;
+  else
+    y = b;
+end</pre>
+        <p class="zh text-xs mt-1">组合逻辑用 always @(*) + 阻塞赋值 =</p>
+      </div>
+      <div class="formula-box">
+        <p class="font-semibold text-blue-700">Sequential (always @(posedge clk))</p>
+        <pre class="text-sm mt-2 bg-white p-2 rounded">always @(posedge clk) begin
+  // Use non-blocking (<=)
+  if (rst)
+    q <= 0;
+  else
+    q <= d;
+end</pre>
+        <p class="zh text-xs mt-1">时序逻辑用 posedge clk + 非阻塞赋值 <=</p>
+      </div>
+    </div>
+
+    <h3 class="font-semibold text-lg mb-2">Parameterized Modules & Generate</h3>
+    <pre class="bg-gray-100 rounded p-3 text-sm mb-4">module adder #(parameter WIDTH=32) (
+  input  [WIDTH-1:0] a, b,
+  output [WIDTH-1:0] sum
+);
+  assign sum = a + b;
+endmodule
+
+// Generate for repeated structures
+genvar i;
+generate
+  for (i = 0; i < N; i = i + 1) begin : gen_block
+    // instantiate modules here
+  end
+endgenerate</pre>
+
+    <h3 class="font-semibold text-lg mb-2">Common Pitfalls</h3>
+    <ul class="list-disc ml-6 mb-4 space-y-1">
+      <li><span class="text-red-600 font-medium">Latch inference:</span> Missing else or missing default in case &rarr; infers latch (bad!)</li>
+      <li><span class="text-red-600 font-medium">Mixing = and <=:</span> Never mix in same always block</li>
+      <li><span class="text-red-600 font-medium">Incomplete sensitivity list:</span> Use always @(*) to avoid this</li>
+    </ul>
+
+    <div class="interactive-box">
+      <h3 class="font-semibold text-green-700 mb-3">Interactive: Spot the Bug</h3>
+      <p class="zh text-sm mb-2">看下面的Verilog代码，找出错误！</p>
+      <div id="verilogBugs">
+        <div class="bg-white p-3 rounded border mb-3">
+          <pre class="text-sm font-mono">always @(posedge clk) begin
+  if (enable)
+    count = count + 1;  // Bug here!
+end</pre>
+          <button class="text-purple-600 text-sm mt-2" onclick="this.nextElementSibling.classList.toggle('hidden')">Reveal Bug</button>
+          <div class="hidden mt-2 p-2 bg-red-50 rounded text-sm">
+            <p class="text-red-700 font-medium">Should use non-blocking assignment (<=) in sequential always block!</p>
+            <p class="zh text-xs">时序逻辑块中应该用 <= 而不是 =</p>
+          </div>
+        </div>
+        <div class="bg-white p-3 rounded border mb-3">
+          <pre class="text-sm font-mono">always @(*) begin
+  case(sel)
+    2'b00: y = a;
+    2'b01: y = b;
+    2'b10: y = c;
+    // Missing 2'b11!
+  endcase
+end</pre>
+          <button class="text-purple-600 text-sm mt-2" onclick="this.nextElementSibling.classList.toggle('hidden')">Reveal Bug</button>
+          <div class="hidden mt-2 p-2 bg-red-50 rounded text-sm">
+            <p class="text-red-700 font-medium">Missing default case &rarr; infers a latch! Add: default: y = 0;</p>
+            <p class="zh text-xs">缺少default分支会推断出锁存器（latch），这是组合逻辑中的大忌！</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="concept-card">
+    <h4 class="font-semibold mb-2">Active Recall</h4>
+    <p class="mb-2">What type of assignment should you use in a combinational always block?</p>
+    <div class="quiz-option" onclick="checkQuiz(this,'correct')">Blocking (=)</div>
+    <div class="quiz-option" onclick="checkQuiz(this,'wrong')">Non-blocking (<=)</div>
+    <div class="quiz-option" onclick="checkQuiz(this,'wrong')">Either one works</div>
+    <p class="quiz-explain hidden mt-2 text-sm zh">组合逻辑用阻塞赋值(=)，时序逻辑用非阻塞赋值(<=)。这是铁律！</p>
+  </div>
+</div>
+
+<!-- ========== SECTION 4: Sequential Logic & FSMs ========== -->
+<div class="section-content" id="section-4">
+  <div class="concept-card">
+    <p class="zh text-lg mb-2">中文总结：时序逻辑有"记忆"——输出取决于当前输入和过去的状态。触发器（Flip-Flop）是最基本的存储单元，在时钟边沿才更新。FSM（有限状态机）就像流程图，根据当前状态和输入决定下一个状态。Moore机输出只看状态，Mealy机输出还看输入。</p>
+    <h2 class="text-xl font-bold text-purple-700 mb-3">Sequential Logic & Finite State Machines</h2>
+
+    <h3 class="font-semibold text-lg mb-2">Flip-Flops</h3>
+    <ul class="list-disc ml-6 mb-4 space-y-1">
+      <li><strong>D Flip-Flop:</strong> Q(next) = D. Captures input on clock edge.</li>
+      <li><strong>Register:</strong> Array of flip-flops, stores multi-bit value.</li>
+      <li><strong>Enable:</strong> Q(next) = en ? D : Q</li>
+      <li><strong>Reset:</strong> Synchronous (checked at clock edge) vs Asynchronous (immediate)</li>
+    </ul>
+
+    <h3 class="font-semibold text-lg mb-2">Moore vs Mealy</h3>
+    <div class="grid grid-cols-2 gap-4 mb-4">
+      <div class="formula-box">
+        <p class="font-semibold">Moore Machine</p>
+        <p>Output = f(state only)</p>
+        <p class="text-sm text-gray-600">Output on states, changes only at clock edge</p>
+        <p class="zh text-xs">输出只看当前状态，更稳定但可能多一个周期延迟</p>
+      </div>
+      <div class="formula-box">
+        <p class="font-semibold">Mealy Machine</p>
+        <p>Output = f(state, input)</p>
+        <p class="text-sm text-gray-600">Output on transitions, can react faster</p>
+        <p class="zh text-xs">输出同时看状态和输入，反应更快但可能有毛刺</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FSM Animator -->
+  <div class="concept-card">
+    <h2 class="text-xl font-bold text-purple-700 mb-3">Interactive: FSM Animator</h2>
+    <p class="zh text-sm mb-3">这是一个2位计数器FSM。点击"Clock Tick"或按输入按钮，观察状态如何转换！当前状态会高亮显示。</p>
+    <div class="flex gap-4 items-start">
+      <div>
+        <canvas id="fsmCanvas" width="450" height="350" class="gate-canvas"></canvas>
+      </div>
+      <div class="flex-1">
+        <p class="font-medium mb-2">2-bit Up/Down Counter</p>
+        <p class="text-sm mb-1">Current State: <span id="fsmState" class="font-mono font-bold text-purple-700 text-lg">S0 (00)</span></p>
+        <p class="text-sm mb-1">Output: <span id="fsmOutput" class="font-mono font-bold text-lg">00</span></p>
+        <p class="text-sm mb-3">Direction: <span id="fsmDir" class="font-mono font-bold">UP</span></p>
+        <div class="flex gap-2 mb-3">
+          <button onclick="fsmTick()" class="bg-purple-600 text-white px-4 py-2 rounded font-medium hover:bg-purple-700">Clock Tick</button>
+          <button onclick="fsmToggleDir()" class="bg-gray-200 px-4 py-2 rounded font-medium hover:bg-gray-300">Toggle Direction</button>
+          <button onclick="fsmReset()" class="bg-red-100 text-red-700 px-4 py-2 rounded font-medium hover:bg-red-200">Reset</button>
+        </div>
+        <div class="text-sm bg-gray-50 p-3 rounded">
+          <p class="font-medium mb-1">State Transition History:</p>
+          <div id="fsmHistory" class="font-mono text-xs max-h-32 overflow-y-auto"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="concept-card">
+    <h4 class="font-semibold mb-2">Active Recall</h4>
+    <p class="mb-2">In a Moore machine, when does the output change?</p>
+    <div class="quiz-option" onclick="checkQuiz(this,'wrong')">Immediately when input changes</div>
+    <div class="quiz-option" onclick="checkQuiz(this,'correct')">Only at clock edges (when state updates)</div>
+    <div class="quiz-option" onclick="checkQuiz(this,'wrong')">Between clock edges</div>
+    <p class="quiz-explain hidden mt-2 text-sm zh">Moore机的输出只取决于状态，状态只在时钟边沿更新，所以输出也只在时钟边沿变化。</p>
+  </div>
+</div>
+
+<!-- ========== SECTION 5: RISC-V Datapath ========== -->
+<div class="section-content" id="section-5">
+  <div class="concept-card">
+    <p class="zh text-lg mb-2">中文总结：数据通路是CPU的"管道系统"，数据在其中流动。单周期CPU一个时钟周期执行一条指令。关键部件：PC（指向当前指令）、指令存储器、寄存器文件、ALU、数据存储器。控制信号就像阀门，决定数据怎么流。</p>
+    <h2 class="text-xl font-bold text-purple-700 mb-3">RISC-V Single-Cycle Datapath</h2>
+
+    <h3 class="font-semibold text-lg mb-2">Datapath Components</h3>
+    <ul class="list-disc ml-6 mb-4 space-y-1">
+      <li><strong>PC (Program Counter):</strong> Holds address of current instruction</li>
+      <li><strong>Instruction Memory:</strong> ROM, outputs 32-bit instruction</li>
+      <li><strong>Register File:</strong> 32 registers, 2 read ports, 1 write port</li>
+      <li><strong>Immediate Generator:</strong> Extracts and sign-extends immediate from instruction</li>
+      <li><strong>ALU:</strong> Performs computation (add, sub, and, or, etc.)</li>
+      <li><strong>Data Memory:</strong> For load/store instructions</li>
+    </ul>
+
+    <h3 class="font-semibold text-lg mb-2">Control Signals</h3>
+    <div class="overflow-x-auto mb-4">
+      <table class="text-sm border-collapse w-full">
+        <tr class="bg-purple-50"><th class="border p-2 text-left">Signal</th><th class="border p-2">R-type</th><th class="border p-2">Load</th><th class="border p-2">Store</th><th class="border p-2">Branch</th><th class="border p-2">JAL</th></tr>
+        <tr><td class="border p-2 font-medium">RegWrite</td><td class="border p-2 text-center">1</td><td class="border p-2 text-center">1</td><td class="border p-2 text-center">0</td><td class="border p-2 text-center">0</td><td class="border p-2 text-center">1</td></tr>
+        <tr><td class="border p-2 font-medium">MemRead</td><td class="border p-2 text-center">0</td><td class="border p-2 text-center">1</td><td class="border p-2 text-center">0</td><td class="border p-2 text-center">0</td><td class="border p-2 text-center">0</td></tr>
+        <tr><td class="border p-2 font-medium">MemWrite</td><td class="border p-2 text-center">0</td><td class="border p-2 text-center">0</td><td class="border p-2 text-center">1</td><td class="border p-2 text-center">0</td><td class="border p-2 text-center">0</td></tr>
+        <tr><td class="border p-2 font-medium">ALUSrc</td><td class="border p-2 text-center">reg</td><td class="border p-2 text-center">imm</td><td class="border p-2 text-center">imm</td><td class="border p-2 text-center">reg</td><td class="border p-2 text-center">-</td></tr>
+        <tr><td class="border p-2 font-medium">MemToReg</td><td class="border p-2 text-center">ALU</td><td class="border p-2 text-center">Mem</td><td class="border p-2 text-center">-</td><td class="border p-2 text-center">-</td><td class="border p-2 text-center">PC+4</td></tr>
+      </table>
+    </div>
+
+    <div class="interactive-box">
+      <h3 class="font-semibold text-green-700 mb-3">Interactive: Instruction Decoder</h3>
+      <p class="zh text-sm mb-2">输入一条RISC-V指令，查看它的类型、控制信号和数据流向</p>
+      <div class="flex gap-2 mb-3">
+        <select id="instrSelect" class="border rounded px-3 py-1 flex-1" onchange="decodeInstruction()">
+          <option value="add">add x1, x2, x3</option>
+          <option value="lw">lw x1, 0(x2)</option>
+          <option value="sw">sw x1, 0(x2)</option>
+          <option value="beq">beq x1, x2, label</option>
+          <option value="addi">addi x1, x2, 5</option>
+          <option value="jal">jal x1, label</option>
+        </select>
+      </div>
+      <div id="instrDecode" class="font-mono text-sm bg-white p-3 rounded border"></div>
+    </div>
+  </div>
+
+  <div class="concept-card">
+    <h4 class="font-semibold mb-2">Active Recall</h4>
+    <p class="mb-2">For a store instruction (sw), is RegWrite 0 or 1?</p>
+    <div class="quiz-option" onclick="checkQuiz(this,'correct')">0 (store doesn't write to register file)</div>
+    <div class="quiz-option" onclick="checkQuiz(this,'wrong')">1 (store writes data)</div>
+    <p class="quiz-explain hidden mt-2 text-sm zh">Store指令把寄存器的值存到内存，不需要写回寄存器文件，所以RegWrite=0。</p>
+  </div>
+</div>
+
+<!-- ========== SECTION 6: Pipelining ========== -->
+<div class="section-content" id="section-6">
+  <div class="concept-card">
+    <p class="zh text-lg mb-2">中文总结：流水线就像洗衣服——不用等一批全洗完烘干叠好，而是同时有衣服在洗、在烘、在叠。5级流水线把指令分成：取指(IF)、译码(ID)、执行(EX)、访存(MEM)、写回(WB)。但会有冲突(hazard)：结构冲突、数据冲突、控制冲突。前递(forwarding)和暂停(stall)是解决方案。</p>
+    <h2 class="text-xl font-bold text-purple-700 mb-3">Pipelining</h2>
+
+    <h3 class="font-semibold text-lg mb-2">5-Stage Pipeline</h3>
+    <div class="flex gap-2 mb-4 flex-wrap">
+      <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded font-medium">IF (Instruction Fetch)</span>
+      <span class="px-3 py-1 bg-green-100 text-green-800 rounded font-medium">ID (Instruction Decode)</span>
+      <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded font-medium">EX (Execute)</span>
+      <span class="px-3 py-1 bg-orange-100 text-orange-800 rounded font-medium">MEM (Memory)</span>
+      <span class="px-3 py-1 bg-red-100 text-red-800 rounded font-medium">WB (Write Back)</span>
+    </div>
+
+    <h3 class="font-semibold text-lg mb-2">Hazards</h3>
+    <div class="grid grid-cols-3 gap-4 mb-4">
+      <div class="formula-box">
+        <p class="font-semibold">Structural</p>
+        <p class="text-sm">Two instructions need same hardware. Fix: duplicate resource or separate memories.</p>
+        <p class="zh text-xs">两条指令抢同一个硬件资源</p>
+      </div>
+      <div class="formula-box">
+        <p class="font-semibold">Data</p>
+        <p class="text-sm">RAW: read-after-write. Fix: forwarding from EX/MEM or stall.</p>
+        <p class="zh text-xs">后面的指令需要前面还没算完的结果</p>
+      </div>
+      <div class="formula-box">
+        <p class="font-semibold">Control</p>
+        <p class="text-sm">Branch outcome unknown. Fix: predict, flush if wrong, branch delay slot.</p>
+        <p class="zh text-xs">分支指令还没决定跳不跳，后面的指令不知道该不该执行</p>
+      </div>
+    </div>
+
+    <div class="formula-box">
+      <p class="font-semibold">Pipeline Performance:</p>
+      <p class="katex-render">\text{Speedup} = \frac{n \cdot k}{n + k - 1} \approx k \text{ for large } n</p>
+      <p class="text-sm text-gray-600 mt-1">k = pipeline stages, n = number of instructions. Ideal speedup = k, but hazards reduce it.</p>
+    </div>
+  </div>
+
+  <!-- Pipeline Hazard Simulator -->
+  <div class="concept-card">
+    <h2 class="text-xl font-bold text-purple-700 mb-3">Interactive: Pipeline Hazard Simulator</h2>
+    <p class="zh text-sm mb-3">输入指令序列，模拟器会显示流水线时序图、标出数据冲突（红色）、前递路径（绿色）和气泡/暂停（灰色）。</p>
+    <div class="mb-3">
+      <label class="font-medium text-sm">Instructions (one per line):</label>
+      <textarea id="pipelineInput" class="w-full border rounded p-2 font-mono text-sm mt-1" rows="5">add x1, x2, x3
+sub x4, x1, x5
+and x6, x1, x7
+or x8, x4, x9
+lw x10, 0(x1)</textarea>
+    </div>
+    <div class="flex gap-2 mb-3">
+      <label class="flex items-center gap-1"><input type="checkbox" id="forwardingEnabled" checked onchange="runPipelineSim()"> <span class="text-sm">Enable Forwarding</span></label>
+      <button onclick="runPipelineSim()" class="bg-purple-600 text-white px-4 py-2 rounded font-medium hover:bg-purple-700">Simulate</button>
+    </div>
+    <div id="pipelineOutput" class="overflow-x-auto"></div>
+    <div id="pipelineStats" class="mt-2 text-sm"></div>
+  </div>
+
+  <div class="concept-card">
+    <h4 class="font-semibold mb-2">Active Recall</h4>
+    <p class="mb-2">A load instruction is followed by an instruction that uses the loaded value. With forwarding, how many stall cycles are needed?</p>
+    <div class="quiz-option" onclick="checkQuiz(this,'wrong')">0 (forwarding handles it)</div>
+    <div class="quiz-option" onclick="checkQuiz(this,'correct')">1 (load-use hazard requires 1 stall even with forwarding)</div>
+    <div class="quiz-option" onclick="checkQuiz(this,'wrong')">2 (need to wait for WB)</div>
+    <p class="quiz-explain hidden mt-2 text-sm zh">Load指令在MEM阶段才拿到数据，即使有前递，下一条指令在EX阶段就需要数据，所以必须暂停1个周期。这就是"load-use hazard"。</p>
+  </div>
+</div>
+
+<!-- ========== SECTION 7: CMOS Fundamentals ========== -->
+<div class="section-content" id="section-7">
+  <div class="concept-card">
+    <p class="zh text-lg mb-2">中文总结：CMOS用两种晶体管——NMOS（接地的拉下网络）和PMOS（接电源的拉上网络）。它们互补工作：当输出该为1时PMOS导通、NMOS截止；输出为0时反过来。这样就不会有直接从电源到地的通路（除了切换瞬间），所以静态功耗极低。尺寸(sizing)影响速度和功耗。</p>
+    <h2 class="text-xl font-bold text-purple-700 mb-3">CMOS Fundamentals</h2>
+
+    <h3 class="font-semibold text-lg mb-2">NMOS vs PMOS</h3>
+    <div class="grid grid-cols-2 gap-4 mb-4">
+      <div class="formula-box">
+        <p class="font-semibold">NMOS</p>
+        <ul class="text-sm list-disc ml-4">
+          <li>ON when gate = 1 (V<sub>GS</sub> > V<sub>th</sub>)</li>
+          <li>Good at pulling DOWN (passing 0)</li>
+          <li>Bad at pulling up (weak 1)</li>
+          <li>In pull-down network (connected to GND)</li>
+        </ul>
+        <p class="zh text-xs mt-1">NMOS：高电平打开，擅长拉低输出</p>
+      </div>
+      <div class="formula-box">
+        <p class="font-semibold">PMOS</p>
+        <ul class="text-sm list-disc ml-4">
+          <li>ON when gate = 0 (V<sub>GS</sub> < -|V<sub>tp</sub>|)</li>
+          <li>Good at pulling UP (passing 1)</li>
+          <li>Bad at pulling down (weak 0)</li>
+          <li>In pull-up network (connected to V<sub>DD</sub>)</li>
+        </ul>
+        <p class="zh text-xs mt-1">PMOS：低电平打开，擅长拉高输出</p>
+      </div>
+    </div>
+
+    <h3 class="font-semibold text-lg mb-2">CMOS Design Rules</h3>
+    <ul class="list-disc ml-6 mb-4 space-y-1">
+      <li>Pull-up network (PUN) is <strong>complement</strong> of pull-down network (PDN)</li>
+      <li>Series NMOS &harr; Parallel PMOS (AND function in PDN &harr; OR function in PUN)</li>
+      <li>Parallel NMOS &harr; Series PMOS (OR function in PDN &harr; AND function in PUN)</li>
+      <li>CMOS gates are inherently <strong>inverting</strong> (NAND, NOR, NOT — not AND, OR)</li>
+    </ul>
+
+    <div class="formula-box">
+      <p class="font-semibold">Transistor Sizing:</p>
+      <p class="katex-render">I_{DS} \propto \frac{W}{L} \cdot \mu \cdot C_{ox}</p>
+      <p class="text-sm mt-1">PMOS is ~2-3x wider than NMOS for equal drive strength (because &mu;<sub>p</sub> &lt; &mu;<sub>n</sub>)</p>
+    </div>
+  </div>
+
+  <!-- CMOS Gate Builder -->
+  <div class="concept-card">
+    <h2 class="text-xl font-bold text-purple-700 mb-3">Interactive: CMOS Gate Builder</h2>
+    <p class="zh text-sm mb-3">切换输入A和B，观察NMOS和PMOS晶体管的通断状态。绿色=导通(ON)，红色=截止(OFF)。看看输出如何由拉上和拉下网络决定！</p>
+    <div class="flex gap-2 mb-3">
+      <button onclick="setCMOSGate('inv')" class="cmos-gate-btn px-3 py-1 rounded bg-purple-600 text-white font-medium text-sm">INV</button>
+      <button onclick="setCMOSGate('nand')" class="cmos-gate-btn px-3 py-1 rounded bg-purple-100 text-purple-700 font-medium text-sm">NAND</button>
+      <button onclick="setCMOSGate('nor')" class="cmos-gate-btn px-3 py-1 rounded bg-purple-100 text-purple-700 font-medium text-sm">NOR</button>
+    </div>
+    <canvas id="cmosCanvas" width="500" height="400" class="gate-canvas"></canvas>
+    <p class="text-sm text-gray-500 mt-2">Click on A or B labels to toggle inputs</p>
+  </div>
+
+  <div class="concept-card">
+    <h4 class="font-semibold mb-2">Active Recall</h4>
+    <p class="mb-2">In a CMOS NAND gate, the NMOS transistors are in _____ and PMOS transistors are in _____.</p>
+    <div class="quiz-option" onclick="checkQuiz(this,'correct')">Series, Parallel</div>
+    <div class="quiz-option" onclick="checkQuiz(this,'wrong')">Parallel, Series</div>
+    <div class="quiz-option" onclick="checkQuiz(this,'wrong')">Series, Series</div>
+    <p class="quiz-explain hidden mt-2 text-sm zh">NAND门：NMOS串联（两个都导通才拉低），PMOS并联（任一导通就拉高）。这是对偶关系！</p>
+  </div>
+</div>
+
+<!-- ========== SECTION 8: Logical Effort ========== -->
+<div class="section-content" id="section-8">
+  <div class="concept-card">
+    <p class="zh text-lg mb-2">中文总结：逻辑努力(Logical Effort)是分析和优化门延迟的方法。每个门有"固有延迟"(parasitic delay)和"努力延迟"(effort delay)。逻辑努力g衡量门比反相器慢多少，电气努力h是负载与输入电容的比。最优设计让每级的努力相等。就像分配工作——让每个人承担相同的任务量最高效。</p>
+    <h2 class="text-xl font-bold text-purple-700 mb-3">CMOS Delay & Logical Effort</h2>
+
+    <h3 class="font-semibold text-lg mb-2">Delay Model</h3>
+    <div class="formula-box">
+      <p class="font-semibold">Gate Delay:</p>
+      <p class="katex-render">d = g \cdot h + p = g \cdot \frac{C_{out}}{C_{in}} + p</p>
+      <p class="mt-2">Where:</p>
+      <ul class="text-sm list-disc ml-4">
+        <li><strong>g</strong> = logical effort (how much worse than inverter)</li>
+        <li><strong>h</strong> = electrical effort = C<sub>out</sub> / C<sub>in</sub></li>
+        <li><strong>p</strong> = parasitic delay (intrinsic)</li>
+        <li><strong>f = g &middot; h</strong> = stage effort</li>
+      </ul>
+    </div>
+
+    <h3 class="font-semibold text-lg mt-4 mb-2">Logical Effort of Common Gates</h3>
+    <div class="overflow-x-auto mb-4">
+      <table class="text-sm border-collapse">
+        <tr class="bg-purple-50"><th class="border p-2">Gate</th><th class="border p-2">g (n=1)</th><th class="border p-2">g (n=2)</th><th class="border p-2">g (n=3)</th><th class="border p-2">g (n=4)</th><th class="border p-2">p</th></tr>
+        <tr><td class="border p-2">Inverter</td><td class="border p-2">1</td><td class="border p-2">-</td><td class="border p-2">-</td><td class="border p-2">-</td><td class="border p-2">1</td></tr>
+        <tr><td class="border p-2">NAND</td><td class="border p-2">-</td><td class="border p-2">4/3</td><td class="border p-2">5/3</td><td class="border p-2">6/3</td><td class="border p-2">n</td></tr>
+        <tr><td class="border p-2">NOR</td><td class="border p-2">-</td><td class="border p-2">5/3</td><td class="border p-2">7/3</td><td class="border p-2">9/3</td><td class="border p-2">n</td></tr>
+      </table>
+    </div>
+
+    <div class="formula-box">
+      <p class="font-semibold">Multi-Stage Path Optimization:</p>
+      <p class="katex-render">F = G \cdot B \cdot H = \prod f_i \quad \text{(path effort)}</p>
+      <p class="katex-render mt-1">\hat{f} = F^{1/N} \quad \text{(optimal stage effort)}</p>
+      <p class="katex-render mt-1">D = N \cdot F^{1/N} + P \quad \text{(minimum delay)}</p>
+      <p class="text-sm mt-2">G = product of logical efforts, H = C<sub>out</sub>/C<sub>in</sub> of path, B = branching effort, N = number of stages</p>
+    </div>
+  </div>
+
+  <!-- Logical Effort Calculator -->
+  <div class="concept-card">
+    <h2 class="text-xl font-bold text-purple-700 mb-3">Interactive: Logical Effort Calculator</h2>
+    <p class="zh text-sm mb-3">输入门的参数，自动计算延迟。也可以计算多级路径的最优设计。</p>
+
+    <div class="grid grid-cols-2 gap-6">
+      <div>
+        <h4 class="font-semibold mb-2">Single Gate Delay</h4>
+        <div class="space-y-2">
+          <div>
+            <label class="text-sm font-medium">Gate Type:</label>
+            <select id="leGateType" class="border rounded px-2 py-1 w-full" onchange="calcLE()">
+              <option value="inv">Inverter (g=1, p=1)</option>
+              <option value="nand2">2-input NAND (g=4/3, p=2)</option>
+              <option value="nand3">3-input NAND (g=5/3, p=3)</option>
+              <option value="nor2">2-input NOR (g=5/3, p=2)</option>
+              <option value="nor3">3-input NOR (g=7/3, p=3)</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-sm font-medium">C_out (load capacitance, in units of C_inv):</label>
+            <input type="number" id="leCout" value="8" min="1" class="border rounded px-2 py-1 w-full" onchange="calcLE()">
+          </div>
+          <div>
+            <label class="text-sm font-medium">C_in (input capacitance, in units of C_inv):</label>
+            <input type="number" id="leCin" value="1" min="1" class="border rounded px-2 py-1 w-full" onchange="calcLE()">
+          </div>
+        </div>
+        <div id="leResult" class="mt-3 p-3 bg-purple-50 rounded font-mono text-sm"></div>
+      </div>
+
+      <div>
+        <h4 class="font-semibold mb-2">Multi-Stage Path Optimizer</h4>
+        <div class="space-y-2">
+          <div>
+            <label class="text-sm font-medium">Path logical effort G (product of g's):</label>
+            <input type="number" id="leG" value="1.78" step="0.01" class="border rounded px-2 py-1 w-full" onchange="calcLEPath()">
+          </div>
+          <div>
+            <label class="text-sm font-medium">Path electrical effort H (C_out/C_in):</label>
+            <input type="number" id="leH" value="64" step="1" class="border rounded px-2 py-1 w-full" onchange="calcLEPath()">
+          </div>
+          <div>
+            <label class="text-sm font-medium">Branching effort B:</label>
+            <input type="number" id="leB" value="1" step="0.1" class="border rounded px-2 py-1 w-full" onchange="calcLEPath()">
+          </div>
+          <div>
+            <label class="text-sm font-medium">Number of stages N:</label>
+            <input type="number" id="leN" value="4" min="1" max="20" class="border rounded px-2 py-1 w-full" onchange="calcLEPath()">
+          </div>
+          <div>
+            <label class="text-sm font-medium">Total parasitic delay P:</label>
+            <input type="number" id="leP" value="6" step="1" class="border rounded px-2 py-1 w-full" onchange="calcLEPath()">
+          </div>
+        </div>
+        <div id="lePathResult" class="mt-3 p-3 bg-green-50 rounded font-mono text-sm"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="concept-card">
+    <h4 class="font-semibold mb-2">Practice Problem</h4>
+    <p class="mb-2">Design a path from C_in=1 to C_out=64 using NAND2-INV-NAND2-INV. Calculate minimum delay.</p>
+    <button class="text-sm text-purple-600 font-medium" onclick="this.nextElementSibling.classList.toggle('open')">Show Step 1: Calculate G</button>
+    <div class="step-reveal p-3 bg-gray-50 rounded mt-1">
+      <p>G = g<sub>NAND2</sub> &times; g<sub>INV</sub> &times; g<sub>NAND2</sub> &times; g<sub>INV</sub> = (4/3)(1)(4/3)(1) = 16/9 &approx; 1.78</p>
+    </div>
+    <button class="text-sm text-purple-600 font-medium mt-2" onclick="this.nextElementSibling.classList.toggle('open')">Show Step 2: Calculate F and f-hat</button>
+    <div class="step-reveal p-3 bg-gray-50 rounded mt-1">
+      <p>H = 64/1 = 64, B = 1</p>
+      <p>F = G &times; H &times; B = 1.78 &times; 64 = 113.8</p>
+      <p>f-hat = F^(1/4) = 113.8^0.25 &approx; 3.27</p>
+    </div>
+    <button class="text-sm text-purple-600 font-medium mt-2" onclick="this.nextElementSibling.classList.toggle('open')">Show Step 3: Calculate Delay</button>
+    <div class="step-reveal p-3 bg-gray-50 rounded mt-1">
+      <p>P = 2 + 1 + 2 + 1 = 6</p>
+      <p>D = 4 &times; 3.27 + 6 = 13.07 + 6 = 19.07 &tau;</p>
+      <p class="zh text-sm mt-1">最小延迟约19个tau单位。每级的最优努力(f-hat)约3.27。</p>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SECTION 9: Wires & Interconnect ========== -->
+<div class="section-content" id="section-9">
+  <div class="concept-card">
+    <p class="zh text-lg mb-2">中文总结：导线不是理想的——它有电阻(R)和电容(C)，会产生延迟。长导线的延迟与长度的平方成正比(RC延迟)。解决方案是插入中继器(repeater)，把长线分成短段。导线也消耗能量，在现代芯片中，导线延迟可能比门延迟更大！</p>
+    <h2 class="text-xl font-bold text-purple-700 mb-3">Wires & Interconnect</h2>
+
+    <h3 class="font-semibold text-lg mb-2">Wire Delay Model</h3>
+    <div class="formula-box">
+      <p class="font-semibold">Lumped RC Model:</p>
+      <p class="katex-render">t_{wire} = 0.69 \cdot R_{wire} \cdot C_{wire}</p>
+      <p class="mt-2 font-semibold">Distributed RC (Elmore delay):</p>
+      <p class="katex-render">t_{wire} = 0.38 \cdot R_{wire} \cdot C_{wire} \quad \text{(for distributed RC)}</p>
+      <p class="mt-2">Since R and C both scale with length L:</p>
+      <p class="katex-render">t_{wire} \propto L^2</p>
+    </div>
+
+    <h3 class="font-semibold text-lg mt-4 mb-2">Repeaters</h3>
+    <ul class="list-disc ml-6 mb-4 space-y-1">
+      <li>Break long wire into k segments with buffers</li>
+      <li>Delay becomes proportional to L (instead of L&sup2;)</li>
+      <li>Optimal number of repeaters minimizes total delay</li>
+    </ul>
+
+    <div class="formula-box">
+      <p class="font-semibold">Wire Energy:</p>
+      <p class="katex-render">E_{wire} = C_{wire} \cdot V_{DD}^2 \quad \text{(per transition)}</p>
+      <p class="text-sm mt-1">In modern chips, wire energy can dominate gate energy!</p>
+    </div>
+  </div>
+
+  <div class="concept-card">
+    <h4 class="font-semibold mb-2">Active Recall</h4>
+    <p class="mb-2">Why does wire delay scale as L&sup2; without repeaters?</p>
+    <button class="text-purple-600 text-sm font-medium" onclick="this.nextElementSibling.classList.toggle('hidden')">Show Answer</button>
+    <div class="hidden mt-2 p-3 bg-purple-50 rounded">
+      <p>Because both R and C are proportional to L. Delay = RC &prop; L &times; L = L&sup2;.</p>
+      <p class="zh text-sm mt-1">电阻和电容都和长度成正比，延迟=RC正比于L&times;L=L的平方。加中继器后每段的R和C都变小，总延迟变成线性。</p>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SECTION 10: Adders ========== -->
+<div class="section-content" id="section-10">
+  <div class="concept-card">
+    <p class="zh text-lg mb-2">中文总结：加法器是最基本的算术电路。行波进位加法器(RCA)最简单但最慢——进位要一级一级传。超前进位加法器(CLA)提前计算进位，快得多但更复杂。进位选择加法器同时计算两种情况(carry=0和carry=1)，等进位来了直接选。还有更高级的前缀加法器(Kogge-Stone, Brent-Kung)。</p>
+    <h2 class="text-xl font-bold text-purple-700 mb-3">Adder Architectures</h2>
+
+    <h3 class="font-semibold text-lg mb-2">Full Adder (基本单元)</h3>
+    <div class="formula-box">
+      <p class="katex-render">S = A \oplus B \oplus C_{in}</p>
+      <p class="katex-render mt-1">C_{out} = AB + C_{in}(A \oplus B) = AB + AC_{in} + BC_{in}</p>
+      <p class="mt-1">Generate: G = AB, Propagate: P = A &oplus; B</p>
+    </div>
+
+    <h3 class="font-semibold text-lg mt-4 mb-2">Adder Comparison</h3>
+    <div class="overflow-x-auto mb-4">
+      <table class="text-sm border-collapse w-full">
+        <tr class="bg-purple-50"><th class="border p-2">Type</th><th class="border p-2">Delay</th><th class="border p-2">Area</th><th class="border p-2">Key Idea</th></tr>
+        <tr><td class="border p-2">Ripple Carry</td><td class="border p-2">O(n)</td><td class="border p-2">O(n)</td><td class="border p-2">Chain full adders, carry ripples through</td></tr>
+        <tr><td class="border p-2">Carry Lookahead</td><td class="border p-2">O(log n)</td><td class="border p-2">O(n log n)</td><td class="border p-2">Pre-compute carries using G, P</td></tr>
+        <tr><td class="border p-2">Carry Select</td><td class="border p-2">O(&radic;n)</td><td class="border p-2">O(n)</td><td class="border p-2">Compute both results, MUX select</td></tr>
+        <tr><td class="border p-2">Prefix (KS/BK)</td><td class="border p-2">O(log n)</td><td class="border p-2">O(n log n)</td><td class="border p-2">Tree structure for parallel prefix</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- Adder Comparison Visualizer -->
+  <div class="concept-card">
+    <h2 class="text-xl font-bold text-purple-700 mb-3">Interactive: Adder Comparison Visualizer</h2>
+    <p class="zh text-sm mb-3">选择位宽，观察行波进位加法器和超前进位加法器的进位传播速度对比！蓝色方块表示进位到达该位。</p>
+    <div class="flex items-center gap-4 mb-4">
+      <label class="font-medium text-sm">Bit width:</label>
+      <input type="range" id="adderBits" min="4" max="32" value="8" oninput="document.getElementById('adderBitsVal').textContent=this.value" class="w-48">
+      <span id="adderBitsVal" class="font-mono font-bold">8</span>
+      <button onclick="animateAdders()" class="bg-purple-600 text-white px-4 py-2 rounded font-medium hover:bg-purple-700">Animate!</button>
+      <button onclick="resetAdders()" class="bg-gray-200 px-3 py-2 rounded font-medium hover:bg-gray-300">Reset</button>
+    </div>
+    <div class="grid grid-cols-2 gap-6">
+      <div>
+        <h4 class="font-semibold text-center mb-2">Ripple Carry (O(n))</h4>
+        <div id="rcaViz" class="flex flex-wrap gap-1 justify-center"></div>
+        <p id="rcaTime" class="text-center mt-2 text-sm font-mono"></p>
+      </div>
+      <div>
+        <h4 class="font-semibold text-center mb-2">Carry Lookahead (O(log n))</h4>
+        <div id="claViz" class="flex flex-wrap gap-1 justify-center"></div>
+        <p id="claTime" class="text-center mt-2 text-sm font-mono"></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="concept-card">
+    <h4 class="font-semibold mb-2">Active Recall</h4>
+    <p class="mb-2">What is the critical path delay (in gate delays) of a 32-bit ripple carry adder?</p>
+    <div class="quiz-option" onclick="checkQuiz(this,'wrong')">32 gate delays</div>
+    <div class="quiz-option" onclick="checkQuiz(this,'correct')">~64 gate delays (2 per bit for carry chain)</div>
+    <div class="quiz-option" onclick="checkQuiz(this,'wrong')">~5 gate delays (log2(32))</div>
+    <p class="quiz-explain hidden mt-2 text-sm zh">每个全加器的进位链有~2个门延迟，32位连起来就是~64个门延迟。CLA只需要log2(32)=5级。</p>
+  </div>
+</div>
+
+<!-- ========== SECTION 11: Multipliers ========== -->
+<div class="section-content" id="section-11">
+  <div class="concept-card">
+    <p class="zh text-lg mb-2">中文总结：乘法器比加法器复杂得多。最简单的阵列乘法器就是小学竖式乘法的硬件版——生成部分积然后加起来。Booth编码减少部分积数量，Wallace树用进位保存加法器(CSA)并行压缩部分积。除法器就更慢了——需要逐位迭代。SRT除法每次可以产生多位商。</p>
+    <h2 class="text-xl font-bold text-purple-700 mb-3">Multipliers & Dividers</h2>
+
+    <h3 class="font-semibold text-lg mb-2">Array Multiplier</h3>
+    <ul class="list-disc ml-6 mb-4 space-y-1">
+      <li>Partial products: PP<sub>i</sub> = A &times; B[i], shifted left by i</li>
+      <li>For n-bit &times; n-bit: n partial products, each n bits</li>
+      <li>Result: 2n bits wide</li>
+      <li>Delay: O(n) through carry chain of final adder</li>
+    </ul>
+
+    <h3 class="font-semibold text-lg mb-2">Booth Encoding</h3>
+    <div class="formula-box">
+      <p>Radix-2 Booth: examine pairs of multiplier bits to encode {-1, 0, +1}</p>
+      <p>Radix-4 (Modified Booth): examine triplets, encode {-2, -1, 0, +1, +2}</p>
+      <p class="mt-1 font-semibold">Benefit: Reduces number of partial products by half (radix-4)</p>
+      <p class="zh text-xs mt-1">Booth编码通过合并相邻位减少部分积数量，加速乘法运算</p>
+    </div>
+
+    <h3 class="font-semibold text-lg mt-4 mb-2">Wallace Tree</h3>
+    <ul class="list-disc ml-6 mb-4 space-y-1">
+      <li>Uses Carry-Save Adders (CSA) to compress partial products</li>
+      <li>3:2 compressors (full adders) reduce 3 rows to 2</li>
+      <li>Delay: O(log n) compression stages + final CPA</li>
+      <li>Much faster than sequential addition of partial products</li>
+    </ul>
+
+    <h3 class="font-semibold text-lg mb-2">Binary Division</h3>
+    <ul class="list-disc ml-6 mb-4 space-y-1">
+      <li>Restoring division: subtract divisor, if negative, add back (restore)</li>
+      <li>Non-restoring: don't add back, adjust in next step</li>
+      <li>SRT division: produces quotient bits from lookup table, can generate multiple bits per cycle</li>
+    </ul>
+
+    <div class="interactive-box">
+      <h3 class="font-semibold text-green-700 mb-3">Interactive: Binary Multiplication Visualizer</h3>
+      <p class="zh text-sm mb-2">输入两个4位数，查看部分积生成过程</p>
+      <div class="flex gap-4 mb-3">
+        <div>
+          <label class="text-sm font-medium">A (0-15):</label>
+          <input type="number" id="multA" value="13" min="0" max="15" class="border rounded px-2 py-1 w-20">
+        </div>
+        <div>
+          <label class="text-sm font-medium">B (0-15):</label>
+          <input type="number" id="multB" value="11" min="0" max="15" class="border rounded px-2 py-1 w-20">
+        </div>
+        <button onclick="showMultiplication()" class="bg-purple-600 text-white px-4 py-1 rounded font-medium hover:bg-purple-700 self-end">Multiply</button>
+      </div>
+      <div id="multResult" class="font-mono text-sm"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SECTION 12: Shifters ========== -->
+<div class="section-content" id="section-12">
+  <div class="concept-card">
+    <p class="zh text-lg mb-2">中文总结：移位器用于数据的位移操作。桶形移位器(Barrel Shifter)可以在一个周期内完成任意位数的移位，用多级MUX实现。漏斗移位器(Funnel Shifter)把左移、右移、旋转统一处理。交叉开关(Crossbar)是通用的互连网络，任何输入可以连到任何输出。</p>
+    <h2 class="text-xl font-bold text-purple-700 mb-3">Shifters & Crossbars</h2>
+
+    <h3 class="font-semibold text-lg mb-2">Barrel Shifter</h3>
+    <ul class="list-disc ml-6 mb-4 space-y-1">
+      <li>N-bit barrel shifter uses log<sub>2</sub>(N) stages of MUXes</li>
+      <li>Each stage shifts by 2<sup>i</sup> positions (controlled by shift amount bit i)</li>
+      <li>Example: 8-bit barrel shifter = 3 MUX stages (shift by 1, 2, 4)</li>
+      <li>Delay: O(log n) MUX delays</li>
+    </ul>
+
+    <h3 class="font-semibold text-lg mb-2">Funnel Shifter</h3>
+    <ul class="list-disc ml-6 mb-4 space-y-1">
+      <li>Concatenate {A, B} into 2n-bit value, shift right, take lower n bits</li>
+      <li>Handles left shift, right shift, and rotate with one structure</li>
+      <li>Left shift by k = right shift by (n-k) of {input, 0...0}</li>
+    </ul>
+
+    <h3 class="font-semibold text-lg mb-2">Crossbar Switch</h3>
+    <ul class="list-disc ml-6 mb-4 space-y-1">
+      <li>N inputs &times; N outputs, any permutation possible</li>
+      <li>N&sup2; switches (MUXes), expensive but fully flexible</li>
+      <li>Used in network switches, FPGA routing</li>
+    </ul>
+
+    <div class="interactive-box">
+      <h3 class="font-semibold text-green-700 mb-3">Interactive: Barrel Shifter Simulator</h3>
+      <p class="zh text-sm mb-2">输入一个8位值和移位量，观察每级MUX如何逐步完成移位</p>
+      <div class="flex gap-4 items-end mb-3">
+        <div>
+          <label class="text-sm font-medium">8-bit Input (binary):</label>
+          <input type="text" id="shiftInput" value="10110100" maxlength="8" class="border rounded px-2 py-1 w-28 font-mono">
+        </div>
+        <div>
+          <label class="text-sm font-medium">Shift amount (0-7):</label>
+          <input type="number" id="shiftAmt" value="3" min="0" max="7" class="border rounded px-2 py-1 w-16">
+        </div>
+        <div>
+          <label class="text-sm font-medium">Direction:</label>
+          <select id="shiftDir" class="border rounded px-2 py-1">
+            <option value="right">Right (logical)</option>
+            <option value="left">Left</option>
+          </select>
+        </div>
+        <button onclick="animateShifter()" class="bg-purple-600 text-white px-4 py-1 rounded font-medium hover:bg-purple-700">Shift!</button>
+      </div>
+      <div id="shifterResult" class="font-mono text-sm"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SECTION 13: Timing ========== -->
+<div class="section-content" id="section-13">
+  <div class="concept-card">
+    <p class="zh text-lg mb-2">中文总结：时序约束是数字设计中最关键的概念之一。Setup time（建立时间）：数据必须在时钟边沿之前稳定多长时间。Hold time（保持时间）：数据在时钟边沿之后必须保持稳定多长时间。违反这些约束会导致亚稳态(metastability)——输出在0和1之间"犹豫不决"，可能导致系统崩溃。</p>
+    <h2 class="text-xl font-bold text-purple-700 mb-3">Timing Constraints</h2>
+
+    <h3 class="font-semibold text-lg mb-2">Key Timing Parameters</h3>
+    <div class="formula-box">
+      <p class="font-semibold">Setup Time Constraint (determines max frequency):</p>
+      <p class="katex-render">t_{clk} \geq t_{clk \to q} + t_{comb,max} + t_{setup}</p>
+      <p class="mt-2 font-semibold">Hold Time Constraint (determines correctness):</p>
+      <p class="katex-render">t_{clk \to q} + t_{comb,min} \geq t_{hold}</p>
+      <p class="mt-2 font-semibold">With Clock Skew:</p>
+      <p class="katex-render">t_{clk} \geq t_{clk \to q} + t_{comb,max} + t_{setup} + t_{skew}</p>
+      <p class="katex-render mt-1">t_{clk \to q} + t_{comb,min} \geq t_{hold} + t_{skew}</p>
+    </div>
+
+    <h3 class="font-semibold text-lg mt-4 mb-2">Metastability</h3>
+    <ul class="list-disc ml-6 mb-4 space-y-1">
+      <li>When setup/hold violated, FF enters metastable state</li>
+      <li>Output is undefined for some time (MTBF = mean time between failures)</li>
+      <li>Solution for async inputs: use synchronizer (2+ flip-flops in series)</li>
+    </ul>
+  </div>
+
+  <!-- Timing Diagram Tool -->
+  <div class="concept-card">
+    <h2 class="text-xl font-bold text-purple-700 mb-3">Interactive: Setup/Hold Time Visualizer</h2>
+    <p class="zh text-sm mb-3">拖动数据信号的变化时间点，查看是否满足建立时间和保持时间约束。绿色=满足，红色=违反。</p>
+    <canvas id="timingCanvas" width="700" height="300" class="gate-canvas w-full"></canvas>
+    <div class="flex gap-4 mt-3 items-center">
+      <div>
+        <label class="text-sm font-medium">Data transition time (drag on canvas or use slider):</label>
+        <input type="range" id="dataTransSlider" min="0" max="100" value="30" class="w-48" oninput="updateTimingDiagram()">
+      </div>
+      <div>
+        <label class="text-sm font-medium">t_setup (ns):</label>
+        <input type="number" id="tSetup" value="2" min="0" max="10" step="0.5" class="border rounded px-2 py-1 w-16" onchange="updateTimingDiagram()">
+      </div>
+      <div>
+        <label class="text-sm font-medium">t_hold (ns):</label>
+        <input type="number" id="tHold" value="1" min="0" max="10" step="0.5" class="border rounded px-2 py-1 w-16" onchange="updateTimingDiagram()">
+      </div>
+    </div>
+    <div id="timingStatus" class="mt-2 text-sm font-medium"></div>
+  </div>
+
+  <div class="concept-card">
+    <h4 class="font-semibold mb-2">Practice Problem</h4>
+    <p class="mb-2">Given: t_clk-to-q = 1ns, t_setup = 0.5ns, t_hold = 0.3ns, t_comb = 4ns. What is the minimum clock period?</p>
+    <button class="text-sm text-purple-600 font-medium" onclick="this.nextElementSibling.classList.toggle('open')">Show Solution</button>
+    <div class="step-reveal p-3 bg-gray-50 rounded mt-1">
+      <p>t_clk &ge; t_clk-to-q + t_comb + t_setup = 1 + 4 + 0.5 = <strong>5.5 ns</strong></p>
+      <p>f_max = 1/5.5ns &approx; <strong>181.8 MHz</strong></p>
+      <p>Hold check: t_clk-to-q + t_comb,min &ge; t_hold &rarr; 1 + 0 &ge; 0.3 &check; (assume t_comb,min &ge; 0)</p>
+      <p class="zh text-sm mt-1">最小时钟周期=1+4+0.5=5.5ns，最大频率约182MHz。保持时间约束也满足。</p>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SECTION 14: SRAM & Memory ========== -->
+<div class="section-content" id="section-14">
+  <div class="concept-card">
+    <p class="zh text-lg mb-2">中文总结：SRAM（静态随机存储器）是缓存的核心。经典6T SRAM单元用6个晶体管存储1位——两个交叉耦合的反相器保持数据，两个访问晶体管连接位线。读操作会干扰存储的数据（所以要小心设计比例），写操作要用强信号覆盖原有值。感应放大器(Sense Amplifier)检测位线上的微小电压差来加速读取。</p>
+    <h2 class="text-xl font-bold text-purple-700 mb-3">SRAM & Memory</h2>
+
+    <h3 class="font-semibold text-lg mb-2">6T SRAM Cell</h3>
+    <ul class="list-disc ml-6 mb-4 space-y-1">
+      <li>2 cross-coupled inverters (4 transistors) = storage</li>
+      <li>2 access transistors (NMOS) = controlled by word line (WL)</li>
+      <li>Connected to bit line (BL) and complement bit line (BLB)</li>
+    </ul>
+
+    <div class="formula-box">
+      <p class="font-semibold">Read Operation:</p>
+      <ol class="text-sm list-decimal ml-4">
+        <li>Pre-charge BL and BLB to V<sub>DD</sub></li>
+        <li>Assert word line (WL = 1)</li>
+        <li>Cell pulls one bit line slightly lower</li>
+        <li>Sense amplifier detects small voltage difference</li>
+      </ol>
+      <p class="mt-2 font-semibold">Write Operation:</p>
+      <ol class="text-sm list-decimal ml-4">
+        <li>Drive BL and BLB to desired values (one to V<sub>DD</sub>, other to GND)</li>
+        <li>Assert word line — strong bit line drivers overpower cell</li>
+      </ol>
+    </div>
+
+    <h3 class="font-semibold text-lg mt-4 mb-2">SRAM Sizing Constraints</h3>
+    <ul class="list-disc ml-6 mb-4 space-y-1">
+      <li><strong>Read stability:</strong> Cell ratio (pull-down / access) > 1 (typically ~1.5). Prevents read disturb.</li>
+      <li><strong>Write-ability:</strong> Pull-up ratio (pull-up / access) < 1 (typically ~0.8). Allows bit line to flip cell.</li>
+    </ul>
+
+    <h3 class="font-semibold text-lg mb-2">Memory Hierarchy</h3>
+    <p class="zh text-sm mb-2">存储器层次：寄存器 > L1缓存 > L2缓存 > L3缓存 > 主存(DRAM) > 磁盘/SSD。越靠上越快越小越贵。</p>
+    <div class="grid grid-cols-4 gap-2 text-center text-sm mb-4">
+      <div class="bg-red-100 p-2 rounded"><strong>Registers</strong><br>~1 cycle<br>~1KB</div>
+      <div class="bg-orange-100 p-2 rounded"><strong>L1 Cache</strong><br>~2-4 cycles<br>~64KB</div>
+      <div class="bg-yellow-100 p-2 rounded"><strong>L2 Cache</strong><br>~10 cycles<br>~256KB</div>
+      <div class="bg-green-100 p-2 rounded"><strong>DRAM</strong><br>~100 cycles<br>~GBs</div>
+    </div>
+  </div>
+
+  <div class="concept-card">
+    <h4 class="font-semibold mb-2">Active Recall</h4>
+    <p class="mb-2">Why must the cell ratio (pull-down / access transistor width) be > 1 in 6T SRAM?</p>
+    <button class="text-purple-600 text-sm font-medium" onclick="this.nextElementSibling.classList.toggle('hidden')">Show Answer</button>
+    <div class="hidden mt-2 p-3 bg-purple-50 rounded">
+      <p>During read, the access transistor tries to charge the internal node storing '0'. If the access transistor is too strong relative to pull-down, it can flip the cell (read disturb). Cell ratio > 1 ensures pull-down is stronger, keeping the stored '0' stable.</p>
+      <p class="zh text-sm mt-1">读操作时，访问管会给存储"0"的节点充电。如果访问管太强（相对于下拉管），可能把单元翻转（读干扰）。cell ratio > 1确保下拉管更强，保持数据稳定。</p>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SECTION 15: Power & Energy ========== -->
+<div class="section-content" id="section-15">
+  <div class="concept-card">
+    <p class="zh text-lg mb-2">中文总结：功耗是现代芯片设计的头号问题。动态功耗来自电容充放电(开关活动)，与频率和电压的平方成正比。静态功耗来自漏电流，即使不切换也在消耗。DVFS（动态电压频率调节）降低电压和频率来省电。时钟门控(Clock Gating)关闭不需要的模块时钟来减少无用切换。</p>
+    <h2 class="text-xl font-bold text-purple-700 mb-3">Power & Energy</h2>
+
+    <div class="formula-box">
+      <p class="font-semibold">Dynamic Power (switching):</p>
+      <p class="katex-render">P_{dynamic} = \alpha \cdot C \cdot V_{DD}^2 \cdot f</p>
+      <p class="text-sm">&alpha; = activity factor, C = capacitance, f = frequency</p>
+
+      <p class="font-semibold mt-3">Static Power (leakage):</p>
+      <p class="katex-render">P_{static} = I_{leak} \cdot V_{DD}</p>
+
+      <p class="font-semibold mt-3">Total Power:</p>
+      <p class="katex-render">P_{total} = P_{dynamic} + P_{static} + P_{short-circuit}</p>
+    </div>
+
+    <h3 class="font-semibold text-lg mt-4 mb-2">Power Reduction Techniques</h3>
+    <ul class="list-disc ml-6 mb-4 space-y-1">
+      <li><strong>DVFS:</strong> Reduce V<sub>DD</sub> and f together. Power drops as V<sub>DD</sub>&sup2;!</li>
+      <li><strong>Clock Gating:</strong> Gate the clock to idle modules. Eliminates switching power.</li>
+      <li><strong>Power Gating:</strong> Cut off V<sub>DD</sub> to idle blocks. Eliminates leakage too.</li>
+      <li><strong>Multi-V<sub>th</sub>:</strong> Use high-V<sub>th</sub> (low leakage) for non-critical paths.</li>
+    </ul>
+
+    <div class="interactive-box">
+      <h3 class="font-semibold text-green-700 mb-3">Interactive: Power Calculator</h3>
+      <p class="zh text-sm mb-2">调整参数，观察动态功耗和静态功耗如何变化</p>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="space-y-2">
+          <div>
+            <label class="text-sm font-medium">V_DD (V): <span id="vddVal" class="font-mono">1.0</span></label>
+            <input type="range" id="vddSlider" min="0.3" max="1.2" step="0.05" value="1.0" class="w-full" oninput="calcPower()">
+          </div>
+          <div>
+            <label class="text-sm font-medium">Frequency (GHz): <span id="freqVal" class="font-mono">1.0</span></label>
+            <input type="range" id="freqSlider" min="0.1" max="5" step="0.1" value="1.0" class="w-full" oninput="calcPower()">
+          </div>
+          <div>
+            <label class="text-sm font-medium">Activity factor &alpha;: <span id="alphaVal" class="font-mono">0.3</span></label>
+            <input type="range" id="alphaSlider" min="0.01" max="1" step="0.01" value="0.3" class="w-full" oninput="calcPower()">
+          </div>
+          <div>
+            <label class="text-sm font-medium">Capacitance (pF): <span id="capVal" class="font-mono">100</span></label>
+            <input type="range" id="capSlider" min="10" max="500" step="10" value="100" class="w-full" oninput="calcPower()">
+          </div>
+        </div>
+        <div id="powerResult" class="p-4 bg-white rounded border"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SECTION 16: FPGA vs ASIC ========== -->
+<div class="section-content" id="section-16">
+  <div class="concept-card">
+    <p class="zh text-lg mb-2">中文总结：FPGA和ASIC是两种实现数字电路的方式。FPGA（现场可编程门阵列）像乐高积木——通过编程配置LUT（查找表）和连线来实现任何功能，可以反复修改，但速度慢、功耗高、面积大。ASIC（专用集成电路）是定制芯片——性能最优但不能改，设计周期长、成本高。我们151的项目就是先在FPGA上验证，真正的芯片用ASIC流程。</p>
+    <h2 class="text-xl font-bold text-purple-700 mb-3">FPGA vs ASIC</h2>
+
+    <h3 class="font-semibold text-lg mb-2">FPGA Architecture</h3>
+    <ul class="list-disc ml-6 mb-4 space-y-1">
+      <li><strong>LUT (Look-Up Table):</strong> k-input truth table stored in SRAM. A k-LUT can implement ANY k-input Boolean function.</li>
+      <li><strong>CLB (Configurable Logic Block):</strong> Contains LUTs + flip-flops + MUXes + carry chain</li>
+      <li><strong>Routing:</strong> Programmable interconnect (switch boxes, connection boxes)</li>
+      <li><strong>I/O Blocks:</strong> Interface with external world</li>
+      <li><strong>Block RAM:</strong> Dedicated SRAM blocks</li>
+      <li><strong>DSP Slices:</strong> Hardened multiply-accumulate units</li>
+    </ul>
+
+    <h3 class="font-semibold text-lg mb-2">FPGA vs ASIC Comparison</h3>
+    <div class="overflow-x-auto mb-4">
+      <table class="text-sm border-collapse w-full">
+        <tr class="bg-purple-50"><th class="border p-2"></th><th class="border p-2">FPGA</th><th class="border p-2">ASIC</th></tr>
+        <tr><td class="border p-2 font-medium">Reconfigurable</td><td class="border p-2 text-green-700">Yes</td><td class="border p-2 text-red-700">No (fixed)</td></tr>
+        <tr><td class="border p-2 font-medium">Design Time</td><td class="border p-2">Days-Weeks</td><td class="border p-2">Months-Years</td></tr>
+        <tr><td class="border p-2 font-medium">NRE Cost</td><td class="border p-2 text-green-700">Low ($100s)</td><td class="border p-2 text-red-700">Very High ($Ms)</td></tr>
+        <tr><td class="border p-2 font-medium">Per-unit Cost</td><td class="border p-2 text-red-700">High</td><td class="border p-2 text-green-700">Low at volume</td></tr>
+        <tr><td class="border p-2 font-medium">Performance</td><td class="border p-2">~3-10x slower</td><td class="border p-2 text-green-700">Fastest</td></tr>
+        <tr><td class="border p-2 font-medium">Power</td><td class="border p-2 text-red-700">~10x more</td><td class="border p-2 text-green-700">Most efficient</td></tr>
+        <tr><td class="border p-2 font-medium">Area</td><td class="border p-2 text-red-700">~20-40x larger</td><td class="border p-2 text-green-700">Smallest</td></tr>
+      </table>
+    </div>
+
+    <h3 class="font-semibold text-lg mb-2">ASIC Design Flow</h3>
+    <div class="flex gap-2 flex-wrap mb-4">
+      <span class="px-2 py-1 bg-purple-100 rounded text-sm">&rarr; RTL Design</span>
+      <span class="px-2 py-1 bg-purple-100 rounded text-sm">&rarr; Synthesis</span>
+      <span class="px-2 py-1 bg-purple-100 rounded text-sm">&rarr; Place & Route</span>
+      <span class="px-2 py-1 bg-purple-100 rounded text-sm">&rarr; Timing Closure</span>
+      <span class="px-2 py-1 bg-purple-100 rounded text-sm">&rarr; DRC/LVS</span>
+      <span class="px-2 py-1 bg-purple-100 rounded text-sm">&rarr; Tapeout</span>
+      <span class="px-2 py-1 bg-purple-100 rounded text-sm">&rarr; Fabrication</span>
+    </div>
+
+    <div class="interactive-box">
+      <h3 class="font-semibold text-green-700 mb-3">Interactive: LUT Truth Table Builder</h3>
+      <p class="zh text-sm mb-2">设置一个3-input LUT的真值表，查看它实现的布尔函数。FPGA中的每个LUT就是这样工作的！</p>
+      <table class="border-collapse text-sm font-mono mb-3">
+        <tr class="bg-gray-100"><th class="border p-2">A</th><th class="border p-2">B</th><th class="border p-2">C</th><th class="border p-2">Out (click to toggle)</th></tr>
+        <tr><td class="border p-2 text-center">0</td><td class="border p-2 text-center">0</td><td class="border p-2 text-center">0</td><td class="border p-2 text-center"><button class="lut-btn w-8 h-8 rounded bg-gray-200 font-bold" onclick="toggleLUT(this,0)">0</button></td></tr>
+        <tr><td class="border p-2 text-center">0</td><td class="border p-2 text-center">0</td><td class="border p-2 text-center">1</td><td class="border p-2 text-center"><button class="lut-btn w-8 h-8 rounded bg-gray-200 font-bold" onclick="toggleLUT(this,1)">0</button></td></tr>
+        <tr><td class="border p-2 text-center">0</td><td class="border p-2 text-center">1</td><td class="border p-2 text-center">0</td><td class="border p-2 text-center"><button class="lut-btn w-8 h-8 rounded bg-gray-200 font-bold" onclick="toggleLUT(this,2)">0</button></td></tr>
+        <tr><td class="border p-2 text-center">0</td><td class="border p-2 text-center">1</td><td class="border p-2 text-center">1</td><td class="border p-2 text-center"><button class="lut-btn w-8 h-8 rounded bg-gray-200 font-bold" onclick="toggleLUT(this,3)">0</button></td></tr>
+        <tr><td class="border p-2 text-center">1</td><td class="border p-2 text-center">0</td><td class="border p-2 text-center">0</td><td class="border p-2 text-center"><button class="lut-btn w-8 h-8 rounded bg-gray-200 font-bold" onclick="toggleLUT(this,4)">0</button></td></tr>
+        <tr><td class="border p-2 text-center">1</td><td class="border p-2 text-center">0</td><td class="border p-2 text-center">1</td><td class="border p-2 text-center"><button class="lut-btn w-8 h-8 rounded bg-gray-200 font-bold" onclick="toggleLUT(this,5)">0</button></td></tr>
+        <tr><td class="border p-2 text-center">1</td><td class="border p-2 text-center">1</td><td class="border p-2 text-center">0</td><td class="border p-2 text-center"><button class="lut-btn w-8 h-8 rounded bg-gray-200 font-bold" onclick="toggleLUT(this,6)">0</button></td></tr>
+        <tr><td class="border p-2 text-center">1</td><td class="border p-2 text-center">1</td><td class="border p-2 text-center">1</td><td class="border p-2 text-center"><button class="lut-btn w-8 h-8 rounded bg-gray-200 font-bold" onclick="toggleLUT(this,7)">0</button></td></tr>
+      </table>
+      <div id="lutResult" class="text-sm font-mono">Function: F = 0 (constant zero)</div>
+      <div id="lutSRAM" class="text-sm mt-1 text-gray-500">SRAM contents: 00000000</div>
+    </div>
+  </div>
+
+  <div class="concept-card">
+    <h4 class="font-semibold mb-2">Active Recall</h4>
+    <p class="mb-2">A 4-input LUT can implement how many different Boolean functions?</p>
+    <div class="quiz-option" onclick="checkQuiz(this,'wrong')">16</div>
+    <div class="quiz-option" onclick="checkQuiz(this,'correct')">65536 (2^16)</div>
+    <div class="quiz-option" onclick="checkQuiz(this,'wrong')">4</div>
+    <p class="quiz-explain hidden mt-2 text-sm zh">4-input LUT有2^4=16行真值表，每行可以是0或1，所以有2^16=65536种可能的函数。</p>
+  </div>
+</div>
+
+</main>
+
+<!-- ========== FLASHCARD MODAL ========== -->
+<div id="flashcardModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+  <div class="bg-white rounded-xl shadow-2xl max-w-lg w-full mx-4 p-6">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-xl font-bold text-purple-700">Flashcards</h3>
+      <button onclick="closeFlashcardModal()" class="text-gray-400 hover:text-gray-700 text-2xl">&times;</button>
+    </div>
+    <div class="flex items-center justify-between mb-3">
+      <span id="fcProgress" class="text-sm text-gray-500">Card 1 / 20</span>
+      <span id="fcScore" class="text-sm font-medium">Correct: 0 / 0</span>
+    </div>
+    <div class="w-full bg-gray-200 rounded-full h-2 mb-4">
+      <div id="fcProgressBar" class="bg-purple-600 h-2 rounded-full transition-all" style="width:5%"></div>
+    </div>
+    <div class="flashcard" id="currentFlashcard" onclick="flipFlashcard()">
+      <div class="flashcard-inner">
+        <div class="flashcard-front">
+          <p id="fcFront" class="text-lg"></p>
+        </div>
+        <div class="flashcard-back">
+          <div>
+            <p id="fcBack" class="text-base mb-2"></p>
+            <p id="fcBackZh" class="text-sm opacity-80"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="flex gap-2 mt-4 justify-center">
+      <button onclick="fcMark(false)" class="px-4 py-2 bg-red-100 text-red-700 rounded-lg font-medium hover:bg-red-200">Didn't Know</button>
+      <button onclick="fcMark(true)" class="px-4 py-2 bg-green-100 text-green-700 rounded-lg font-medium hover:bg-green-200">Got It!</button>
+      <button onclick="fcShuffle()" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200">Shuffle</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== CONCEPT MAP MODAL ========== -->
+<div id="conceptMapModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+  <div class="bg-white rounded-xl shadow-2xl max-w-4xl w-full mx-4 p-6" style="max-height:90vh">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-xl font-bold text-purple-700">EECS 151 Concept Map</h3>
+      <button onclick="closeConceptMap()" class="text-gray-400 hover:text-gray-700 text-2xl">&times;</button>
+    </div>
+    <p class="zh text-sm mb-3">点击节点跳转到对应章节。线条表示概念之间的联系。</p>
+    <canvas id="conceptMapCanvas" width="900" height="550" class="w-full border rounded-lg"></canvas>
+  </div>
+</div>
+
+<!-- ========== JAVASCRIPT ========== -->
+<script>
+// ====== GLOBAL STATE ======
+let visitedSections = new Set();
+const totalSections = 17;
+
+function updateGlobalProgress() {
+  const pct = Math.round((visitedSections.size / totalSections) * 100);
+  document.getElementById('globalProgress').style.width = pct + '%';
+  document.getElementById('globalProgressText').textContent = pct + '%';
+}
+
+// ====== TAB SWITCHING ======
+function switchTab(idx) {
+  document.querySelectorAll('.section-content').forEach((s, i) => {
+    s.classList.toggle('active', i === idx);
+  });
+  document.querySelectorAll('.tab-btn').forEach((b, i) => {
+    b.classList.toggle('active', i === idx);
+  });
+  visitedSections.add(idx);
+  updateGlobalProgress();
+  // Re-render section-specific items
+  if (idx === 1) drawGateSimulator();
+  if (idx === 4) drawFSM();
+  if (idx === 7) drawCMOS();
+  if (idx === 8) { calcLE(); calcLEPath(); }
+  if (idx === 13) updateTimingDiagram();
+  if (idx === 0) convertTC();
+  if (idx === 2) computeALU();
+  if (idx === 5) decodeInstruction();
+  if (idx === 15) calcPower();
+}
+
+// ====== QUIZ SYSTEM ======
+function checkQuiz(el, result) {
+  const parent = el.parentElement;
+  parent.querySelectorAll('.quiz-option').forEach(o => {
+    o.style.pointerEvents = 'none';
+  });
+  if (result === 'correct') {
+    el.classList.add('correct');
+  } else {
+    el.classList.add('wrong');
+    parent.querySelectorAll('.quiz-option').forEach(o => {
+      if (o.getAttribute('onclick').includes('correct')) o.classList.add('correct');
+    });
+  }
+  const explain = parent.querySelector('.quiz-explain');
+  if (explain) explain.classList.remove('hidden');
+}
+
+// ====== TWO'S COMPLEMENT CONVERTER ======
+function convertTC() {
+  const val = parseInt(document.getElementById('tcInput').value);
+  if (isNaN(val) || val < -128 || val > 127) {
+    document.getElementById('tcOutput').innerHTML = '<span class="text-red-600">Out of range!</span>';
+    return;
+  }
+  const unsigned = val < 0 ? 256 + val : val;
+  const bin = unsigned.toString(2).padStart(8, '0');
+  const hex = unsigned.toString(16).toUpperCase().padStart(2, '0');
+  let html = `<div class="grid grid-cols-8 gap-1 mb-2">`;
+  for (let i = 0; i < 8; i++) {
+    const bit = bin[i];
+    const weight = i === 0 ? -128 : Math.pow(2, 7 - i);
+    const bg = bit === '1' ? (i === 0 && val < 0 ? 'bg-red-200' : 'bg-purple-200') : 'bg-gray-100';
+    html += `<div class="text-center"><div class="text-xs text-gray-400">${i===0?'-128':Math.pow(2,7-i)}</div><div class="${bg} rounded p-2 font-mono text-xl font-bold">${bit}</div></div>`;
+  }
+  html += `</div>`;
+  html += `<p>Decimal: <strong>${val}</strong> | Binary: <strong>0b${bin}</strong> | Hex: <strong>0x${hex}</strong></p>`;
+  if (val < 0) {
+    const pos = (-val).toString(2).padStart(8, '0');
+    const flipped = pos.split('').map(b => b === '0' ? '1' : '0').join('');
+    html += `<p class="text-sm text-gray-600 mt-1">Steps: ${-val} = ${pos} → flip: ${flipped} → +1: ${bin}</p>`;
+  }
+  document.getElementById('tcOutput').innerHTML = html;
+}
+
+// ====== GATE SIMULATOR ======
+let gateType = 'AND';
+let gateInputA = 0, gateInputB = 0;
+
+function setGateType(type) {
+  gateType = type;
+  document.querySelectorAll('.gate-type-btn').forEach(b => {
+    b.className = 'gate-type-btn px-3 py-1 rounded font-medium text-sm ' +
+      (b.textContent === type ? 'bg-purple-600 text-white' : 'bg-purple-100 text-purple-700');
+  });
+  drawGateSimulator();
+  updateGateTruthTable();
+}
+
+function computeGateOutput(a, b) {
+  switch(gateType) {
+    case 'AND': return a & b;
+    case 'OR': return a | b;
+    case 'NOT': return a ? 0 : 1;
+    case 'NAND': return (a & b) ? 0 : 1;
+    case 'NOR': return (a | b) ? 0 : 1;
+    case 'XOR': return a ^ b;
+  }
+}
+
+function drawGateSimulator() {
+  const canvas = document.getElementById('gateCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, 500, 250);
+
+  const output = computeGateOutput(gateInputA, gateInputB);
+  const isNot = gateType === 'NOT';
+
+  // Draw input A
+  ctx.fillStyle = gateInputA ? '#059669' : '#dc2626';
+  ctx.beginPath(); ctx.arc(60, 80, 24, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = 'white'; ctx.font = 'bold 16px Inter'; ctx.textAlign = 'center';
+  ctx.fillText('A=' + gateInputA, 60, 85);
+
+  // Draw input B (if not NOT gate)
+  if (!isNot) {
+    ctx.fillStyle = gateInputB ? '#059669' : '#dc2626';
+    ctx.beginPath(); ctx.arc(60, 170, 24, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = 'white';
+    ctx.fillText('B=' + gateInputB, 60, 175);
+  }
+
+  // Draw wires
+  ctx.strokeStyle = '#6b7280'; ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.moveTo(84, 80); ctx.lineTo(180, 80); ctx.stroke();
+  if (!isNot) {
+    ctx.beginPath(); ctx.moveTo(84, 170); ctx.lineTo(180, 170); ctx.stroke();
+  }
+
+  // Draw gate body
+  ctx.fillStyle = '#f5f3ff'; ctx.strokeStyle = '#7c3aed'; ctx.lineWidth = 3;
+  const gx = 180, gy = isNot ? 55 : 60, gw = 120, gh = isNot ? 50 : 130;
+
+  if (gateType === 'AND' || gateType === 'NAND') {
+    ctx.beginPath();
+    ctx.moveTo(gx, gy); ctx.lineTo(gx + gw*0.5, gy);
+    ctx.arc(gx + gw*0.5, gy + gh/2, gh/2, -Math.PI/2, Math.PI/2);
+    ctx.lineTo(gx, gy + gh); ctx.closePath();
+    ctx.fill(); ctx.stroke();
+  } else if (gateType === 'OR' || gateType === 'NOR' || gateType === 'XOR') {
+    ctx.beginPath();
+    ctx.moveTo(gx, gy);
+    ctx.quadraticCurveTo(gx + gw*0.7, gy, gx + gw, gy + gh/2);
+    ctx.quadraticCurveTo(gx + gw*0.7, gy + gh, gx, gy + gh);
+    ctx.quadraticCurveTo(gx + gw*0.3, gy + gh/2, gx, gy);
+    ctx.fill(); ctx.stroke();
+    if (gateType === 'XOR') {
+      ctx.beginPath();
+      ctx.moveTo(gx - 10, gy);
+      ctx.quadraticCurveTo(gx + gw*0.3 - 10, gy + gh/2, gx - 10, gy + gh);
+      ctx.stroke();
+    }
+  } else if (gateType === 'NOT') {
+    ctx.beginPath();
+    ctx.moveTo(gx, gy); ctx.lineTo(gx + gw, gy + gh/2); ctx.lineTo(gx, gy + gh); ctx.closePath();
+    ctx.fill(); ctx.stroke();
+  }
+
+  // Bubble for NAND/NOR/NOT
+  if (gateType === 'NAND' || gateType === 'NOR' || gateType === 'NOT') {
+    const bx = gateType === 'NOT' ? gx + gw + 8 : gx + gw + 8;
+    const by = isNot ? gy + gh/2 : gy + gh/2;
+    ctx.fillStyle = 'white'; ctx.beginPath(); ctx.arc(bx, by, 8, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+  }
+
+  // Gate label
+  ctx.fillStyle = '#7c3aed'; ctx.font = 'bold 14px Inter'; ctx.textAlign = 'center';
+  ctx.fillText(gateType, gx + gw*0.4, (isNot ? gy + gh/2 + 5 : gy + gh/2 + 5));
+
+  // Wire to output
+  const outX = (gateType === 'NAND' || gateType === 'NOR' || gateType === 'NOT') ? gx + gw + 16 : gx + gw;
+  const outY = isNot ? gy + gh/2 : gy + gh/2;
+  ctx.strokeStyle = '#6b7280'; ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.moveTo(outX, outY); ctx.lineTo(400, outY); ctx.stroke();
+
+  // Draw output
+  ctx.fillStyle = output ? '#059669' : '#dc2626';
+  ctx.beginPath(); ctx.arc(430, outY, 28, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = 'white'; ctx.font = 'bold 18px Inter';
+  ctx.fillText('Y=' + output, 430, outY + 6);
+
+  // Click areas
+  canvas.onclick = function(e) {
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left, y = e.clientY - rect.top;
+    if (Math.hypot(x-60, y-80) < 24) { gateInputA = 1 - gateInputA; drawGateSimulator(); }
+    if (!isNot && Math.hypot(x-60, y-170) < 24) { gateInputB = 1 - gateInputB; drawGateSimulator(); }
+  };
+}
+
+function updateGateTruthTable() {
+  document.getElementById('gateTruthTitle').textContent = gateType;
+  let html = '<table class="border-collapse"><tr class="bg-gray-100"><th class="border px-3 py-1">A</th>';
+  if (gateType !== 'NOT') html += '<th class="border px-3 py-1">B</th>';
+  html += '<th class="border px-3 py-1">Y</th></tr>';
+  if (gateType === 'NOT') {
+    for (let a = 0; a <= 1; a++) {
+      html += `<tr><td class="border px-3 py-1 text-center">${a}</td><td class="border px-3 py-1 text-center font-bold">${computeGateOutput(a,0)}</td></tr>`;
+    }
+  } else {
+    for (let a = 0; a <= 1; a++) for (let b = 0; b <= 1; b++) {
+      const y = computeGateOutput(a, b);
+      html += `<tr><td class="border px-3 py-1 text-center">${a}</td><td class="border px-3 py-1 text-center">${b}</td><td class="border px-3 py-1 text-center font-bold">${y}</td></tr>`;
+    }
+  }
+  html += '</table>';
+  document.getElementById('gateTruthTable').innerHTML = html;
+}
+
+// ====== K-MAP ======
+let kmapVals = [[0,0],[0,0]];
+function toggleKmap(r,c) {
+  kmapVals[r][c] = 1 - kmapVals[r][c];
+  const btn = document.getElementById(`kmap${r}${c}`);
+  btn.textContent = kmapVals[r][c];
+  btn.style.background = kmapVals[r][c] ? '#ddd6fe' : 'white';
+  btn.style.borderColor = kmapVals[r][c] ? '#7c3aed' : '#d1d5db';
+  updateKmapResult();
+}
+
+function updateKmapResult() {
+  const v = kmapVals;
+  let terms = [];
+  // SOP minimization for 2-var
+  if (v[0][0]&&v[0][1]&&v[1][0]&&v[1][1]) { terms = ['1']; }
+  else {
+    if (v[0][0]&&v[0][1]) terms.push("A'");
+    if (v[1][0]&&v[1][1]) terms.push("A");
+    if (v[0][0]&&v[1][0]) terms.push("B'");
+    if (v[0][1]&&v[1][1]) terms.push("B");
+    // individual minterms not covered
+    let covered = new Set();
+    terms.forEach(t => {
+      if (t === "A'") { covered.add('00'); covered.add('01'); }
+      if (t === "A") { covered.add('10'); covered.add('11'); }
+      if (t === "B'") { covered.add('00'); covered.add('10'); }
+      if (t === "B") { covered.add('01'); covered.add('11'); }
+    });
+    if (v[0][0] && !covered.has('00')) terms.push("A'B'");
+    if (v[0][1] && !covered.has('01')) terms.push("A'B");
+    if (v[1][0] && !covered.has('10')) terms.push("AB'");
+    if (v[1][1] && !covered.has('11')) terms.push("AB");
+  }
+  // Deduplicate / simplify
+  if (terms.length === 0) terms = ['0'];
+  document.getElementById('kmapResult').innerHTML = `F = ${terms.join(' + ')}`;
+}
+
+// ====== ALU SIMULATOR ======
+function computeALU() {
+  let a = parseInt(document.getElementById('aluA').value) & 0xF;
+  let b = parseInt(document.getElementById('aluB').value) & 0xF;
+  const op = document.getElementById('aluOp').value;
+  let result, desc;
+  switch(op) {
+    case 'add': result = (a + b) & 0xFF; desc = `${a} + ${b} = ${result}`; break;
+    case 'sub': result = (a - b) & 0xFF; desc = `${a} - ${b} = ${(a-b)}`; break;
+    case 'and': result = a & b; desc = `${a.toString(2).padStart(4,'0')} AND ${b.toString(2).padStart(4,'0')} = ${result.toString(2).padStart(4,'0')}`; break;
+    case 'or': result = a | b; desc = `${a.toString(2).padStart(4,'0')} OR ${b.toString(2).padStart(4,'0')} = ${result.toString(2).padStart(4,'0')}`; break;
+    case 'xor': result = a ^ b; desc = `${a.toString(2).padStart(4,'0')} XOR ${b.toString(2).padStart(4,'0')} = ${result.toString(2).padStart(4,'0')}`; break;
+    case 'sll': result = (a << (b & 0x3)) & 0xFF; desc = `${a.toString(2).padStart(4,'0')} << ${b&3} = ${result.toString(2).padStart(8,'0')}`; break;
+    case 'srl': result = a >>> (b & 0x3); desc = `${a.toString(2).padStart(4,'0')} >> ${b&3} = ${result.toString(2).padStart(4,'0')}`; break;
+  }
+  const zero = result === 0 ? 1 : 0;
+  document.getElementById('aluResult').innerHTML =
+    `<p class="font-bold text-lg">${desc}</p>
+     <p>Result: ${result} (0b${result.toString(2).padStart(8,'0')}) | Zero flag: ${zero}</p>`;
+}
+
+// ====== FSM ANIMATOR ======
+let fsmCurrentState = 0;
+let fsmDirection = 1; // 1=up, -1=down
+let fsmHistoryArr = [];
+
+function drawFSM() {
+  const canvas = document.getElementById('fsmCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, 450, 350);
+
+  const states = [
+    {x: 120, y: 80, label: 'S0\n(00)'},
+    {x: 330, y: 80, label: 'S1\n(01)'},
+    {x: 330, y: 270, label: 'S2\n(10)'},
+    {x: 120, y: 270, label: 'S3\n(11)'}
+  ];
+
+  // Draw arrows
+  const arrows = [
+    {from:0,to:1,label:'UP',curve:0}, {from:1,to:2,label:'UP',curve:0},
+    {from:2,to:3,label:'UP',curve:0}, {from:3,to:0,label:'UP',curve:0},
+    {from:1,to:0,label:'DN',curve:30}, {from:2,to:1,label:'DN',curve:30},
+    {from:3,to:2,label:'DN',curve:30}, {from:0,to:3,label:'DN',curve:30}
+  ];
+
+  ctx.lineWidth = 2;
+  arrows.forEach(ar => {
+    const f = states[ar.from], t = states[ar.to];
+    ctx.strokeStyle = ar.label === 'UP' ? '#7c3aed' : '#6b7280';
+    ctx.beginPath();
+    const mx = (f.x+t.x)/2, my = (f.y+t.y)/2;
+    const dx = t.x-f.x, dy = t.y-f.y;
+    const len = Math.sqrt(dx*dx+dy*dy);
+    const nx = -dy/len * ar.curve, ny = dx/len * ar.curve;
+    ctx.moveTo(f.x, f.y);
+    ctx.quadraticCurveTo(mx+nx, my+ny, t.x, t.y);
+    ctx.stroke();
+    // Arrowhead
+    const angle = Math.atan2(t.y-(my+ny), t.x-(mx+nx));
+    ctx.fillStyle = ctx.strokeStyle;
+    ctx.beginPath();
+    ctx.moveTo(t.x - 30*Math.cos(angle), t.y - 30*Math.sin(angle));
+    ctx.lineTo(t.x - 30*Math.cos(angle) - 10*Math.cos(angle-0.4), t.y - 30*Math.sin(angle) - 10*Math.sin(angle-0.4));
+    ctx.lineTo(t.x - 30*Math.cos(angle) - 10*Math.cos(angle+0.4), t.y - 30*Math.sin(angle) - 10*Math.sin(angle+0.4));
+    ctx.fill();
+  });
+
+  // Draw state circles
+  states.forEach((s, i) => {
+    ctx.beginPath(); ctx.arc(s.x, s.y, 35, 0, Math.PI*2);
+    ctx.fillStyle = i === fsmCurrentState ? '#7c3aed' : 'white';
+    ctx.fill();
+    ctx.strokeStyle = i === fsmCurrentState ? '#7c3aed' : '#d1d5db';
+    ctx.lineWidth = 3; ctx.stroke();
+    ctx.fillStyle = i === fsmCurrentState ? 'white' : '#374151';
+    ctx.font = 'bold 14px Inter'; ctx.textAlign = 'center';
+    const lines = s.label.split('\n');
+    ctx.fillText(lines[0], s.x, s.y - 5);
+    ctx.font = '12px Inter';
+    ctx.fillText(lines[1], s.x, s.y + 12);
+  });
+
+  // Legend
+  ctx.font = '12px Inter'; ctx.fillStyle = '#7c3aed'; ctx.textAlign = 'left';
+  ctx.fillText('Purple arrows = UP', 10, 340);
+  ctx.fillStyle = '#6b7280';
+  ctx.fillText('Gray arrows = DOWN', 180, 340);
+}
+
+function fsmTick() {
+  const prev = fsmCurrentState;
+  if (fsmDirection === 1) fsmCurrentState = (fsmCurrentState + 1) % 4;
+  else fsmCurrentState = (fsmCurrentState + 3) % 4;
+  const binState = fsmCurrentState.toString(2).padStart(2, '0');
+  document.getElementById('fsmState').textContent = `S${fsmCurrentState} (${binState})`;
+  document.getElementById('fsmOutput').textContent = binState;
+  fsmHistoryArr.push(`S${prev} → S${fsmCurrentState} (${fsmDirection>0?'UP':'DN'})`);
+  document.getElementById('fsmHistory').innerHTML = fsmHistoryArr.slice(-8).join('<br>');
+  drawFSM();
+}
+
+function fsmToggleDir() {
+  fsmDirection *= -1;
+  document.getElementById('fsmDir').textContent = fsmDirection > 0 ? 'UP' : 'DOWN';
+}
+
+function fsmReset() {
+  fsmCurrentState = 0; fsmHistoryArr = [];
+  document.getElementById('fsmState').textContent = 'S0 (00)';
+  document.getElementById('fsmOutput').textContent = '00';
+  document.getElementById('fsmHistory').innerHTML = '';
+  drawFSM();
+}
+
+// ====== INSTRUCTION DECODER ======
+function decodeInstruction() {
+  const instr = document.getElementById('instrSelect').value;
+  const info = {
+    add: { type: 'R-type', opcode: '0110011', funct3: '000', funct7: '0000000', regWrite:1, memRead:0, memWrite:0, aluSrc:'reg', memToReg:'ALU', branch:0, desc:'rd = rs1 + rs2' },
+    lw: { type: 'I-type', opcode: '0000011', funct3: '010', funct7: '-', regWrite:1, memRead:1, memWrite:0, aluSrc:'imm', memToReg:'Mem', branch:0, desc:'rd = Mem[rs1 + imm]' },
+    sw: { type: 'S-type', opcode: '0100011', funct3: '010', funct7: '-', regWrite:0, memRead:0, memWrite:1, aluSrc:'imm', memToReg:'-', branch:0, desc:'Mem[rs1 + imm] = rs2' },
+    beq: { type: 'B-type', opcode: '1100011', funct3: '000', funct7: '-', regWrite:0, memRead:0, memWrite:0, aluSrc:'reg', memToReg:'-', branch:1, desc:'if rs1==rs2, PC+=imm' },
+    addi: { type: 'I-type', opcode: '0010011', funct3: '000', funct7: '-', regWrite:1, memRead:0, memWrite:0, aluSrc:'imm', memToReg:'ALU', branch:0, desc:'rd = rs1 + imm' },
+    jal: { type: 'J-type', opcode: '1101111', funct3: '-', funct7: '-', regWrite:1, memRead:0, memWrite:0, aluSrc:'-', memToReg:'PC+4', branch:1, desc:'rd = PC+4; PC += imm' }
+  }[instr];
+
+  let html = `<p class="font-bold text-purple-700">${info.type}: ${info.desc}</p>`;
+  html += `<table class="mt-2 text-xs"><tr><td class="pr-4">Opcode: ${info.opcode}</td><td class="pr-4">Funct3: ${info.funct3}</td><td>Funct7: ${info.funct7}</td></tr></table>`;
+  html += `<div class="mt-2 grid grid-cols-3 gap-2 text-sm">`;
+  html += `<div class="p-1 rounded ${info.regWrite?'bg-green-100':'bg-gray-100'}">RegWrite: ${info.regWrite}</div>`;
+  html += `<div class="p-1 rounded ${info.memRead?'bg-green-100':'bg-gray-100'}">MemRead: ${info.memRead}</div>`;
+  html += `<div class="p-1 rounded ${info.memWrite?'bg-green-100':'bg-gray-100'}">MemWrite: ${info.memWrite}</div>`;
+  html += `<div class="p-1 rounded bg-purple-50">ALUSrc: ${info.aluSrc}</div>`;
+  html += `<div class="p-1 rounded bg-purple-50">MemToReg: ${info.memToReg}</div>`;
+  html += `<div class="p-1 rounded ${info.branch?'bg-yellow-100':'bg-gray-100'}">Branch: ${info.branch}</div>`;
+  html += `</div>`;
+  document.getElementById('instrDecode').innerHTML = html;
+}
+
+// ====== PIPELINE HAZARD SIMULATOR ======
+function runPipelineSim() {
+  const input = document.getElementById('pipelineInput').value.trim();
+  const lines = input.split('\n').filter(l => l.trim());
+  const forwarding = document.getElementById('forwardingEnabled').checked;
+  const stages = ['IF','ID','EX','MEM','WB'];
+
+  // Parse instructions
+  const instrs = lines.map(line => {
+    const parts = line.trim().replace(/,/g,' ').split(/\s+/);
+    const op = parts[0];
+    const rd = parts[1] || '';
+    const rs1 = parts[2] || '';
+    const rs2 = parts[3] || '';
+    // Handle load format: lw rd, offset(rs1)
+    let src1 = rs1, src2 = rs2;
+    if (op === 'lw' || op === 'sw') {
+      const m = (rs1 + ' ' + rs2).match(/(\d+)\((\w+)\)/);
+      if (m) { src1 = m[2]; src2 = ''; }
+    }
+    const isLoad = op === 'lw';
+    return { op, rd, rs1: src1, rs2: src2, isLoad, raw: line.trim() };
+  });
+
+  // Simulate pipeline scheduling
+  let schedule = []; // [instr_idx] = start_cycle
+  let totalCycles = 0;
+  let stalls = 0;
+  let hazards = [];
+  let forwards = [];
+
+  for (let i = 0; i < instrs.length; i++) {
+    let earliest = i > 0 ? schedule[i-1] + 1 : 0;
+
+    // Check data hazards with all prior instructions
+    for (let j = Math.max(0, i-3); j < i; j++) {
+      const prev = instrs[j];
+      const curr = instrs[i];
+      const prevFinishEX = schedule[j] + 2; // cycle when EX finishes
+      const prevFinishMEM = schedule[j] + 3;
+
+      // Check if current instruction reads what prev writes
+      if (prev.rd && (curr.rs1 === prev.rd || curr.rs2 === prev.rd)) {
+        if (forwarding) {
+          if (prev.isLoad) {
+            // Load-use: need 1 stall (data available after MEM)
+            const needed = schedule[j] + 3; // MEM stage end
+            const currEX = earliest + 2;
+            if (earliest + 2 <= needed) {
+              earliest = Math.max(earliest, schedule[j] + 2);
+              hazards.push({from: j, to: i, type: 'load-use'});
+            }
+            forwards.push({from: j, to: i, stage: 'MEM→EX'});
+          } else {
+            // EX-EX forwarding, no stall needed
+            forwards.push({from: j, to: i, stage: 'EX→EX'});
+          }
+        } else {
+          // No forwarding: need to wait until WB
+          const needed = schedule[j] + 4; // WB
+          if (earliest + 1 < needed) {
+            earliest = needed - 1;
+            hazards.push({from: j, to: i, type: 'RAW'});
+          }
+        }
+      }
+    }
+    schedule.push(earliest);
+  }
+
+  totalCycles = schedule[instrs.length-1] + 5;
+  stalls = totalCycles - instrs.length - 4;
+
+  // Render pipeline diagram
+  let html = '<table class="text-xs font-mono border-collapse">';
+  html += '<tr><td class="p-1 font-bold text-right pr-3 border-r" style="max-width:140px">Instruction</td>';
+  for (let c = 0; c < totalCycles; c++) {
+    html += `<td class="p-1 text-center border-b" style="min-width:46px">CC${c+1}</td>`;
+  }
+  html += '</tr>';
+
+  for (let i = 0; i < instrs.length; i++) {
+    html += `<tr><td class="p-1 font-bold text-right pr-3 border-r text-xs" style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${instrs[i].raw}">${instrs[i].raw}</td>`;
+    for (let c = 0; c < totalCycles; c++) {
+      const stageIdx = c - schedule[i];
+      if (stageIdx >= 0 && stageIdx < 5) {
+        // Check if this cell is a hazard
+        const isHazard = hazards.some(h => h.to === i && stageIdx === 2);
+        const isForward = forwards.some(f => f.to === i && stageIdx === 2);
+        const colors = ['bg-blue-200','bg-green-200','bg-yellow-200','bg-orange-200','bg-red-200'];
+        let cls = colors[stageIdx];
+        if (isHazard) cls = 'hazard-red';
+        if (isForward && !isHazard) cls = 'forward-green';
+        html += `<td class="p-1 text-center ${cls} font-bold">${stages[stageIdx]}</td>`;
+      } else if (stageIdx < 0 && c >= (i > 0 ? schedule[i-1]+1 : 0) && c < schedule[i]) {
+        html += `<td class="p-1 text-center stall-gray">---</td>`;
+      } else {
+        html += '<td class="p-1"></td>';
+      }
+    }
+    html += '</tr>';
+  }
+  html += '</table>';
+
+  // Legend
+  html += '<div class="flex gap-4 mt-2 text-xs">';
+  html += '<span class="flex items-center gap-1"><span class="w-4 h-3 rounded hazard-red inline-block"></span> Hazard</span>';
+  html += '<span class="flex items-center gap-1"><span class="w-4 h-3 rounded forward-green inline-block"></span> Forwarded</span>';
+  html += '<span class="flex items-center gap-1"><span class="w-4 h-3 rounded stall-gray inline-block"></span> Stall/Bubble</span>';
+  html += '</div>';
+
+  document.getElementById('pipelineOutput').innerHTML = html;
+  document.getElementById('pipelineStats').innerHTML =
+    `<strong>Total cycles:</strong> ${totalCycles} | <strong>Instructions:</strong> ${instrs.length} | <strong>CPI:</strong> ${(totalCycles/instrs.length).toFixed(2)} | <strong>Stall cycles:</strong> ${Math.max(0, totalCycles - instrs.length - 4)}`;
+}
+
+// ====== CMOS GATE BUILDER ======
+let cmosGateType = 'inv';
+let cmosInputA = 0, cmosInputB = 0;
+
+function setCMOSGate(type) {
+  cmosGateType = type;
+  document.querySelectorAll('.cmos-gate-btn').forEach(b => {
+    const t = b.textContent.toLowerCase();
+    b.className = 'cmos-gate-btn px-3 py-1 rounded font-medium text-sm ' +
+      (t === type ? 'bg-purple-600 text-white' : 'bg-purple-100 text-purple-700');
+  });
+  drawCMOS();
+}
+
+function drawCMOS() {
+  const canvas = document.getElementById('cmosCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, 500, 400);
+
+  const isInv = cmosGateType === 'inv';
+  const isNand = cmosGateType === 'nand';
+  const isNor = cmosGateType === 'nor';
+
+  // Compute transistor states and output
+  let pmosA_on, pmosB_on, nmosA_on, nmosB_on, output;
+  if (isInv) {
+    pmosA_on = !cmosInputA; nmosA_on = !!cmosInputA;
+    output = cmosInputA ? 0 : 1;
+  } else if (isNand) {
+    pmosA_on = !cmosInputA; pmosB_on = !cmosInputB;
+    nmosA_on = !!cmosInputA; nmosB_on = !!cmosInputB;
+    output = (cmosInputA && cmosInputB) ? 0 : 1;
+  } else {
+    pmosA_on = !cmosInputA; pmosB_on = !cmosInputB;
+    nmosA_on = !!cmosInputA; nmosB_on = !!cmosInputB;
+    output = (cmosInputA || cmosInputB) ? 0 : 1;
+  }
+
+  ctx.font = 'bold 14px Inter'; ctx.textAlign = 'center';
+
+  // VDD
+  ctx.fillStyle = '#dc2626';
+  ctx.fillRect(150, 10, 200, 3);
+  ctx.fillStyle = '#dc2626'; ctx.fillText('VDD', 250, 8);
+
+  // GND
+  ctx.fillStyle = '#2563eb';
+  ctx.fillRect(150, 387, 200, 3);
+  ctx.fillStyle = '#2563eb'; ctx.fillText('GND', 250, 400);
+
+  // Output node
+  const outY = 200;
+  ctx.fillStyle = output ? '#059669' : '#dc2626';
+  ctx.beginPath(); ctx.arc(380, outY, 20, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = 'white'; ctx.font = 'bold 14px Inter';
+  ctx.fillText('Y=' + output, 380, outY + 5);
+
+  // Wire to output
+  ctx.strokeStyle = '#6b7280'; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(300, outY); ctx.lineTo(360, outY); ctx.stroke();
+
+  function drawTransistor(x, y, type, on, label) {
+    ctx.save();
+    ctx.strokeStyle = on ? '#059669' : '#dc2626';
+    ctx.fillStyle = on ? '#dcfce7' : '#fef2f2';
+    ctx.lineWidth = 3;
+    // Body
+    ctx.fillRect(x-15, y-20, 30, 40);
+    ctx.strokeRect(x-15, y-20, 30, 40);
+    // Gate line
+    ctx.beginPath(); ctx.moveTo(x-30, y); ctx.lineTo(x-15, y); ctx.stroke();
+    // Type label
+    ctx.font = 'bold 11px Inter'; ctx.textAlign = 'center';
+    ctx.fillStyle = on ? '#059669' : '#dc2626';
+    ctx.fillText(type, x, y + 4);
+    ctx.fillText(on ? 'ON' : 'OFF', x, y + 16);
+    if (label) {
+      ctx.fillStyle = '#374151'; ctx.font = '11px Inter';
+      ctx.fillText(label, x - 35, y + 4);
+    }
+    ctx.restore();
+  }
+
+  if (isInv) {
+    // PMOS on top
+    drawTransistor(250, 80, 'P', pmosA_on, 'A');
+    ctx.strokeStyle = '#6b7280'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(250, 13); ctx.lineTo(250, 60); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(250, 100); ctx.lineTo(250, outY); ctx.stroke();
+    // NMOS on bottom
+    drawTransistor(250, 310, 'N', nmosA_on, 'A');
+    ctx.beginPath(); ctx.moveTo(250, outY); ctx.lineTo(250, 290); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(250, 330); ctx.lineTo(250, 387); ctx.stroke();
+  } else if (isNand) {
+    // PMOS parallel (on top)
+    drawTransistor(200, 80, 'P', pmosA_on, 'A');
+    drawTransistor(300, 80, 'P', pmosB_on, 'B');
+    ctx.strokeStyle = '#6b7280'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(200, 13); ctx.lineTo(200, 60); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(300, 13); ctx.lineTo(300, 60); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(200, 100); ctx.lineTo(200, outY); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(300, 100); ctx.lineTo(300, outY); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(200, outY); ctx.lineTo(300, outY); ctx.stroke();
+    // NMOS series (on bottom)
+    drawTransistor(250, 270, 'N', nmosA_on, 'A');
+    drawTransistor(250, 340, 'N', nmosB_on, 'B');
+    ctx.beginPath(); ctx.moveTo(250, outY); ctx.lineTo(250, 250); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(250, 290); ctx.lineTo(250, 320); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(250, 360); ctx.lineTo(250, 387); ctx.stroke();
+    // Labels
+    ctx.fillStyle = '#7c3aed'; ctx.font = '12px Inter'; ctx.textAlign = 'left';
+    ctx.fillText('PUN: Parallel (OR)', 350, 80);
+    ctx.fillText('PDN: Series (AND)', 350, 310);
+  } else { // NOR
+    // PMOS series (on top)
+    drawTransistor(250, 55, 'P', pmosA_on, 'A');
+    drawTransistor(250, 125, 'P', pmosB_on, 'B');
+    ctx.strokeStyle = '#6b7280'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(250, 13); ctx.lineTo(250, 35); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(250, 75); ctx.lineTo(250, 105); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(250, 145); ctx.lineTo(250, outY); ctx.stroke();
+    // NMOS parallel (on bottom)
+    drawTransistor(200, 310, 'N', nmosA_on, 'A');
+    drawTransistor(300, 310, 'N', nmosB_on, 'B');
+    ctx.beginPath(); ctx.moveTo(200, outY); ctx.lineTo(200, 290); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(300, outY); ctx.lineTo(300, 290); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(200, outY); ctx.lineTo(300, outY); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(200, 330); ctx.lineTo(200, 387); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(300, 330); ctx.lineTo(300, 387); ctx.stroke();
+    ctx.fillStyle = '#7c3aed'; ctx.font = '12px Inter'; ctx.textAlign = 'left';
+    ctx.fillText('PUN: Series (AND)', 350, 90);
+    ctx.fillText('PDN: Parallel (OR)', 350, 310);
+  }
+
+  // Input labels
+  ctx.font = 'bold 16px Inter'; ctx.textAlign = 'center';
+  ctx.fillStyle = cmosInputA ? '#059669' : '#dc2626';
+  ctx.fillRect(15, 175, 60, 30);
+  ctx.fillStyle = 'white';
+  ctx.fillText('A=' + cmosInputA, 45, 196);
+
+  if (!isInv) {
+    ctx.fillStyle = cmosInputB ? '#059669' : '#dc2626';
+    ctx.fillRect(15, 220, 60, 30);
+    ctx.fillStyle = 'white';
+    ctx.fillText('B=' + cmosInputB, 45, 241);
+  }
+
+  canvas.onclick = function(e) {
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left, y = e.clientY - rect.top;
+    if (x >= 15 && x <= 75 && y >= 175 && y <= 205) { cmosInputA = 1 - cmosInputA; drawCMOS(); }
+    if (!isInv && x >= 15 && x <= 75 && y >= 220 && y <= 250) { cmosInputB = 1 - cmosInputB; drawCMOS(); }
+  };
+}
+
+// ====== LOGICAL EFFORT CALCULATOR ======
+function calcLE() {
+  const type = document.getElementById('leGateType').value;
+  const cout = parseFloat(document.getElementById('leCout').value);
+  const cin = parseFloat(document.getElementById('leCin').value);
+  const gates = { inv: {g:1,p:1}, nand2: {g:4/3,p:2}, nand3: {g:5/3,p:3}, nor2: {g:5/3,p:2}, nor3: {g:7/3,p:3} };
+  const gate = gates[type];
+  const h = cout / cin;
+  const f = gate.g * h;
+  const d = f + gate.p;
+  document.getElementById('leResult').innerHTML =
+    `g = ${gate.g.toFixed(3)}<br>` +
+    `h = C_out/C_in = ${h.toFixed(2)}<br>` +
+    `f = g*h = ${f.toFixed(3)}<br>` +
+    `p = ${gate.p}<br>` +
+    `<strong>d = f + p = ${d.toFixed(3)} tau</strong>`;
+}
+
+function calcLEPath() {
+  const G = parseFloat(document.getElementById('leG').value);
+  const H = parseFloat(document.getElementById('leH').value);
+  const B = parseFloat(document.getElementById('leB').value);
+  const N = parseInt(document.getElementById('leN').value);
+  const P = parseFloat(document.getElementById('leP').value);
+  const F = G * H * B;
+  const fhat = Math.pow(F, 1/N);
+  const D = N * fhat + P;
+  // Optimal N
+  const optN = Math.round(Math.log(F) / Math.log(4)); // ~4 is optimal stage effort
+  document.getElementById('lePathResult').innerHTML =
+    `F = G*H*B = ${F.toFixed(2)}<br>` +
+    `f_hat = F^(1/N) = ${fhat.toFixed(3)}<br>` +
+    `<strong>D = N*f_hat + P = ${D.toFixed(2)} tau</strong><br>` +
+    `<br>Suggested optimal N &approx; ${Math.max(1,optN)} (for f_hat &approx; 4)`;
+}
+
+// ====== ADDER COMPARISON VISUALIZER ======
+let adderAnimId = null;
+function animateAdders() {
+  if (adderAnimId) { clearInterval(adderAnimId); adderAnimId = null; }
+  const n = parseInt(document.getElementById('adderBits').value);
+
+  // Create bit blocks
+  let rcaHtml = '', claHtml = '';
+  for (let i = n-1; i >= 0; i--) {
+    rcaHtml += `<div id="rca-${i}" class="w-8 h-8 bg-gray-200 rounded text-xs flex items-center justify-center font-mono border">${i}</div>`;
+    claHtml += `<div id="cla-${i}" class="w-8 h-8 bg-gray-200 rounded text-xs flex items-center justify-center font-mono border">${i}</div>`;
+  }
+  document.getElementById('rcaViz').innerHTML = rcaHtml;
+  document.getElementById('claViz').innerHTML = claHtml;
+  document.getElementById('rcaTime').textContent = '';
+  document.getElementById('claTime').textContent = '';
+
+  let rcaStep = 0;
+  const claDelay = Math.ceil(Math.log2(n));
+  let claStep = 0;
+  let rcaDone = false, claDone = false;
+
+  adderAnimId = setInterval(() => {
+    // RCA: one bit at a time
+    if (rcaStep < n) {
+      document.getElementById(`rca-${rcaStep}`).className = 'w-8 h-8 bg-purple-500 text-white rounded text-xs flex items-center justify-center font-mono border border-purple-600';
+      rcaStep++;
+      document.getElementById('rcaTime').textContent = `Step ${rcaStep} / ${n}`;
+    } else if (!rcaDone) {
+      document.getElementById('rcaTime').textContent = `Done! ${n} steps (O(n))`;
+      rcaDone = true;
+    }
+
+    // CLA: log2(n) steps, multiple bits light up
+    if (claStep < claDelay) {
+      const bitsPerStep = Math.pow(2, claStep + 1);
+      for (let i = 0; i < n; i++) {
+        if (i < bitsPerStep) {
+          document.getElementById(`cla-${i}`).className = 'w-8 h-8 bg-emerald-500 text-white rounded text-xs flex items-center justify-center font-mono border border-emerald-600';
+        }
+      }
+      claStep++;
+      document.getElementById('claTime').textContent = `Step ${claStep} / ${claDelay}`;
+    } else if (!claDone) {
+      // Light up remaining
+      for (let i = 0; i < n; i++) {
+        document.getElementById(`cla-${i}`).className = 'w-8 h-8 bg-emerald-500 text-white rounded text-xs flex items-center justify-center font-mono border border-emerald-600';
+      }
+      document.getElementById('claTime').textContent = `Done! ${claDelay} steps (O(log n))`;
+      claDone = true;
+    }
+
+    if (rcaDone && claDone) { clearInterval(adderAnimId); adderAnimId = null; }
+  }, 200);
+}
+
+function resetAdders() {
+  if (adderAnimId) { clearInterval(adderAnimId); adderAnimId = null; }
+  document.getElementById('rcaViz').innerHTML = '';
+  document.getElementById('claViz').innerHTML = '';
+  document.getElementById('rcaTime').textContent = '';
+  document.getElementById('claTime').textContent = '';
+}
+
+// ====== MULTIPLIER VISUALIZER ======
+function showMultiplication() {
+  const a = parseInt(document.getElementById('multA').value) & 0xF;
+  const b = parseInt(document.getElementById('multB').value) & 0xF;
+  const aBin = a.toString(2).padStart(4, '0');
+  const bBin = b.toString(2).padStart(4, '0');
+  const product = a * b;
+
+  let html = `<div class="bg-white p-3 rounded border">`;
+  html += `<p class="font-bold mb-2">${a} (${aBin}) x ${b} (${bBin}) = ${product} (${product.toString(2).padStart(8,'0')})</p>`;
+  html += `<div class="space-y-1">`;
+  html += `<p class="text-right pr-4">&nbsp;&nbsp;${aBin}</p>`;
+  html += `<p class="text-right pr-4">x ${bBin}</p>`;
+  html += `<p class="text-right pr-4">--------</p>`;
+
+  for (let i = 0; i < 4; i++) {
+    const bit = parseInt(bBin[3 - i]);
+    const pp = bit ? a : 0;
+    const ppBin = pp.toString(2).padStart(4, '0');
+    const shifted = '&nbsp;'.repeat((3-i)*2) + ppBin + '0'.repeat(i);
+    const label = bit ? `(A x B[${i}])` : `(0, B[${i}]=0)`;
+    html += `<p class="text-right pr-4">${shifted} <span class="text-gray-400 text-xs ml-2">${label}</span></p>`;
+  }
+  html += `<p class="text-right pr-4">--------</p>`;
+  html += `<p class="text-right pr-4 font-bold">${product.toString(2).padStart(8,'0')} = ${product}</p>`;
+  html += `</div></div>`;
+  document.getElementById('multResult').innerHTML = html;
+}
+
+// ====== BARREL SHIFTER ======
+function animateShifter() {
+  let input = document.getElementById('shiftInput').value.replace(/[^01]/g, '').padStart(8, '0').slice(0, 8);
+  const amt = parseInt(document.getElementById('shiftAmt').value) & 7;
+  const dir = document.getElementById('shiftDir').value;
+  const amtBin = amt.toString(2).padStart(3, '0');
+
+  let html = `<div class="space-y-3">`;
+  html += `<p class="font-bold">Shift amount: ${amt} = ${amtBin} (binary)</p>`;
+  html += `<p>Input: <span class="bg-gray-100 px-2 py-1 rounded">${input}</span></p>`;
+
+  let current = input.split('');
+  const stages = [4, 2, 1];
+
+  for (let s = 0; s < 3; s++) {
+    const shiftBit = parseInt(amtBin[s]);
+    const shiftAmt = stages[s];
+    html += `<div class="ml-4">`;
+    html += `<p class="text-sm text-gray-600">Stage ${s+1}: shift by ${shiftAmt}? <span class="font-bold ${shiftBit ? 'text-green-700' : 'text-gray-400'}">${shiftBit ? 'YES' : 'NO'}</span></p>`;
+
+    if (shiftBit) {
+      let next = new Array(8).fill('0');
+      for (let i = 0; i < 8; i++) {
+        if (dir === 'right') {
+          if (i + shiftAmt < 8) next[i + shiftAmt] = current[i];
+        } else {
+          if (i - shiftAmt >= 0) next[i - shiftAmt] = current[i];
+        }
+      }
+      current = next;
+    }
+    html += `<p>After: <span class="bg-purple-50 px-2 py-1 rounded">${current.join('')}</span></p>`;
+    html += `</div>`;
+  }
+  html += `<p class="font-bold">Output: <span class="bg-green-100 px-2 py-1 rounded">${current.join('')}</span></p>`;
+  html += `</div>`;
+  document.getElementById('shifterResult').innerHTML = html;
+}
+
+// ====== TIMING DIAGRAM ======
+function updateTimingDiagram() {
+  const canvas = document.getElementById('timingCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  const tSetup = parseFloat(document.getElementById('tSetup').value);
+  const tHold = parseFloat(document.getElementById('tHold').value);
+  const sliderVal = parseInt(document.getElementById('dataTransSlider').value);
+
+  // Timeline params
+  const margin = 60;
+  const clkEdgeX = W * 0.55; // Clock rising edge position
+  const timeScale = 8; // pixels per ns
+
+  // Data transition position (mapped from slider)
+  const dataTransX = margin + (sliderVal / 100) * (W - 2*margin);
+
+  // Setup and hold windows
+  const setupStartX = clkEdgeX - tSetup * timeScale * 8;
+  const holdEndX = clkEdgeX + tHold * timeScale * 8;
+
+  // Check constraints
+  const setupOK = dataTransX <= setupStartX;
+  const holdOK = dataTransX <= clkEdgeX || dataTransX >= holdEndX;
+  const allOK = setupOK && holdOK;
+
+  // Draw setup window (shaded)
+  ctx.fillStyle = setupOK ? 'rgba(5,150,105,0.1)' : 'rgba(220,38,38,0.15)';
+  ctx.fillRect(setupStartX, 0, clkEdgeX - setupStartX, H);
+  ctx.strokeStyle = setupOK ? '#059669' : '#dc2626';
+  ctx.lineWidth = 2; ctx.setLineDash([5,3]);
+  ctx.beginPath(); ctx.moveTo(setupStartX, 0); ctx.lineTo(setupStartX, H); ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Draw hold window
+  ctx.fillStyle = holdOK ? 'rgba(5,150,105,0.1)' : 'rgba(220,38,38,0.15)';
+  ctx.fillRect(clkEdgeX, 0, holdEndX - clkEdgeX, H);
+  ctx.strokeStyle = holdOK ? '#059669' : '#dc2626';
+  ctx.setLineDash([5,3]);
+  ctx.beginPath(); ctx.moveTo(holdEndX, 0); ctx.lineTo(holdEndX, H); ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Labels for setup/hold windows
+  ctx.font = '12px Inter'; ctx.textAlign = 'center';
+  ctx.fillStyle = setupOK ? '#059669' : '#dc2626';
+  ctx.fillText('t_setup', (setupStartX + clkEdgeX)/2, 20);
+  ctx.fillStyle = holdOK ? '#059669' : '#dc2626';
+  ctx.fillText('t_hold', (clkEdgeX + holdEndX)/2, 20);
+
+  // Draw clock signal
+  const clkY = 80;
+  ctx.strokeStyle = '#2563eb'; ctx.lineWidth = 3; ctx.setLineDash([]);
+  ctx.beginPath();
+  ctx.moveTo(margin, clkY + 30);
+  // Low before edge
+  ctx.lineTo(clkEdgeX, clkY + 30);
+  // Rising edge
+  ctx.lineTo(clkEdgeX, clkY);
+  // High after
+  ctx.lineTo(clkEdgeX + 100, clkY);
+  ctx.stroke();
+  ctx.fillStyle = '#2563eb'; ctx.font = 'bold 14px Inter'; ctx.textAlign = 'left';
+  ctx.fillText('CLK', 10, clkY + 20);
+
+  // Clock edge arrow
+  ctx.strokeStyle = '#2563eb'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(clkEdgeX, 30); ctx.lineTo(clkEdgeX, H-20); ctx.stroke();
+  ctx.fillStyle = '#2563eb'; ctx.font = '11px Inter'; ctx.textAlign = 'center';
+  ctx.fillText('clock edge', clkEdgeX, H - 5);
+
+  // Draw data signal
+  const dataY = 180;
+  ctx.strokeStyle = '#7c3aed'; ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(margin, dataY + 30);
+  ctx.lineTo(dataTransX, dataY + 30);
+  ctx.lineTo(dataTransX, dataY);
+  ctx.lineTo(W - margin, dataY);
+  ctx.stroke();
+  ctx.fillStyle = '#7c3aed'; ctx.font = 'bold 14px Inter'; ctx.textAlign = 'left';
+  ctx.fillText('DATA', 10, dataY + 20);
+
+  // Data transition indicator
+  ctx.fillStyle = allOK ? '#059669' : '#dc2626';
+  ctx.beginPath(); ctx.arc(dataTransX, dataY + 15, 6, 0, Math.PI*2); ctx.fill();
+  ctx.font = '11px Inter'; ctx.textAlign = 'center';
+  ctx.fillText('drag slider to move', dataTransX, dataY + 55);
+
+  // Status
+  const status = document.getElementById('timingStatus');
+  if (allOK) {
+    status.innerHTML = '<span class="text-green-700">PASS: Both setup and hold constraints satisfied!</span>';
+    status.innerHTML += '<span class="zh text-sm ml-2">建立时间和保持时间约束都满足</span>';
+  } else if (!setupOK) {
+    status.innerHTML = '<span class="text-red-700">VIOLATION: Setup time violated! Data changes too close to clock edge.</span>';
+    status.innerHTML += '<span class="zh text-sm ml-2">建立时间违反！数据变化离时钟边沿太近。</span>';
+  } else {
+    status.innerHTML = '<span class="text-red-700">VIOLATION: Hold time violated! Data changes too soon after clock edge.</span>';
+    status.innerHTML += '<span class="zh text-sm ml-2">保持时间违反！数据在时钟边沿后变化太快。</span>';
+  }
+}
+
+// ====== POWER CALCULATOR ======
+function calcPower() {
+  const vdd = parseFloat(document.getElementById('vddSlider').value);
+  const freq = parseFloat(document.getElementById('freqSlider').value);
+  const alpha = parseFloat(document.getElementById('alphaSlider').value);
+  const cap = parseFloat(document.getElementById('capSlider').value);
+
+  document.getElementById('vddVal').textContent = vdd.toFixed(2);
+  document.getElementById('freqVal').textContent = freq.toFixed(1);
+  document.getElementById('alphaVal').textContent = alpha.toFixed(2);
+  document.getElementById('capVal').textContent = cap;
+
+  const pDyn = alpha * (cap * 1e-12) * vdd * vdd * (freq * 1e9) * 1e3; // in mW
+  const iLeak = 0.01 * Math.exp((vdd - 0.5) * 8); // rough model
+  const pStat = iLeak * vdd * 1e3; // mW
+  const pTotal = pDyn + pStat;
+
+  const el = document.getElementById('powerResult');
+  el.innerHTML = `
+    <div class="space-y-2">
+      <div class="flex justify-between"><span>Dynamic Power:</span><span class="font-bold text-purple-700">${pDyn.toFixed(2)} mW</span></div>
+      <div class="w-full bg-gray-200 rounded h-3"><div class="bg-purple-500 h-3 rounded" style="width:${Math.min(100,pDyn/pTotal*100)}%"></div></div>
+      <div class="flex justify-between"><span>Static Power:</span><span class="font-bold text-orange-600">${pStat.toFixed(2)} mW</span></div>
+      <div class="w-full bg-gray-200 rounded h-3"><div class="bg-orange-400 h-3 rounded" style="width:${Math.min(100,pStat/pTotal*100)}%"></div></div>
+      <hr>
+      <div class="flex justify-between font-bold"><span>Total Power:</span><span>${pTotal.toFixed(2)} mW</span></div>
+      <p class="text-xs text-gray-500 mt-2 zh">提示：降低VDD对动态功耗的影响最大（与V²成正比）！试试把电压从1.0V降到0.7V。</p>
+    </div>`;
+}
+
+// ====== LUT TRUTH TABLE ======
+let lutValues = [0,0,0,0,0,0,0,0];
+function toggleLUT(btn, idx) {
+  lutValues[idx] = 1 - lutValues[idx];
+  btn.textContent = lutValues[idx];
+  btn.style.background = lutValues[idx] ? '#ddd6fe' : '#e5e7eb';
+  updateLUTResult();
+}
+
+function updateLUTResult() {
+  const vars = ['A','B','C'];
+  let minterms = [];
+  for (let i = 0; i < 8; i++) {
+    if (lutValues[i]) minterms.push(i);
+  }
+  let sram = lutValues.join('');
+  document.getElementById('lutSRAM').textContent = `SRAM contents: ${sram}`;
+
+  if (minterms.length === 0) {
+    document.getElementById('lutResult').textContent = 'Function: F = 0 (constant zero)';
+  } else if (minterms.length === 8) {
+    document.getElementById('lutResult').textContent = 'Function: F = 1 (constant one)';
+  } else {
+    // Show as sum of minterms
+    let terms = minterms.map(m => {
+      let t = '';
+      for (let b = 2; b >= 0; b--) {
+        t += (m & (1 << b)) ? vars[2-b] : vars[2-b] + "'";
+      }
+      return t;
+    });
+    document.getElementById('lutResult').textContent = `Function: F = ${terms.join(' + ')} = Σm(${minterms.join(',')})`;
+  }
+}
+
+// ====== FLASHCARD SYSTEM ======
+const flashcards = [
+  {q: "What does CMOS stand for?", a: "Complementary Metal-Oxide-Semiconductor", zh: "互补金属氧化物半导体。用NMOS和PMOS互补配合工作。"},
+  {q: "In a 5-stage pipeline, what are the stages?", a: "IF (Fetch), ID (Decode), EX (Execute), MEM (Memory), WB (Write Back)", zh: "取指、译码、执行、访存、写回。像流水线工厂。"},
+  {q: "What is the logical effort (g) of an inverter?", a: "g = 1 (by definition, it's the reference gate)", zh: "反相器的逻辑努力是1，因为它是参考基准。"},
+  {q: "What is De Morgan's Law?", a: "NOT(A AND B) = NOT(A) OR NOT(B), and NOT(A OR B) = NOT(A) AND NOT(B)", zh: "德摩根定律：与的非等于非的或，或的非等于非的与。"},
+  {q: "Setup time violation causes...?", a: "Metastability — output of flip-flop is undefined", zh: "亚稳态——触发器输出不确定，可能长时间处于中间状态。"},
+  {q: "What is the cell ratio in 6T SRAM?", a: "Width of pull-down transistor / Width of access transistor. Must be > 1 for read stability.", zh: "下拉管宽度/访问管宽度，必须>1来保证读稳定性。"},
+  {q: "Ripple carry adder delay is?", a: "O(n) — linear in bit width", zh: "O(n)——和位宽成线性关系，因为进位一级一级传递。"},
+  {q: "NAND gate: NMOS are in ___, PMOS are in ___", a: "NMOS in series, PMOS in parallel", zh: "NMOS串联（都导通才拉低），PMOS并联（任一导通就拉高）。"},
+  {q: "What is the optimal stage effort (f-hat)?", a: "f-hat = F^(1/N), where F is path effort, N is number of stages. Approx 3.6-4.", zh: "最优级努力≈3.6-4。让每级承担相同的努力最高效。"},
+  {q: "Dynamic power formula?", a: "P = α · C · V_DD² · f", zh: "动态功耗 = 活动因子 × 电容 × 电压² × 频率。降电压效果最好！"},
+  {q: "What is a k-input LUT?", a: "A lookup table that stores 2^k bits in SRAM and can implement ANY k-input Boolean function", zh: "k输入查找表存储2^k个位，能实现任何k输入布尔函数。"},
+  {q: "Blocking vs non-blocking assignment?", a: "Blocking (=) for combinational logic, non-blocking (<=) for sequential logic", zh: "阻塞赋值(=)用于组合逻辑，非阻塞赋值(<=)用于时序逻辑。"},
+  {q: "What causes a load-use hazard?", a: "An instruction uses data loaded by the immediately preceding load instruction. Requires 1 stall even with forwarding.", zh: "紧跟load指令之后就使用加载的数据。即使有前递也需要暂停1周期。"},
+  {q: "PMOS turns ON when gate = ?", a: "Gate = 0 (V_GS < -|V_tp|). PMOS is good at pulling UP.", zh: "PMOS在栅极为0时导通，擅长拉高输出到VDD。"},
+  {q: "What is clock skew?", a: "Difference in clock arrival time at different flip-flops. Affects both setup and hold timing.", zh: "时钟偏移——时钟到达不同触发器的时间差。同时影响建立和保持时间。"},
+  {q: "FPGA advantage over ASIC?", a: "Reconfigurable, fast time-to-market, low NRE cost. But slower, more power, larger area.", zh: "FPGA可重编程、开发快、初始成本低。但比ASIC慢、功耗高、面积大。"},
+  {q: "What does a Wallace tree do?", a: "Compresses partial products using carry-save adders (3:2 compressors) in O(log n) stages", zh: "Wallace树用进位保存加法器并行压缩部分积，只需O(log n)级。"},
+  {q: "Wire delay scales as ___?", a: "L² (without repeaters), L (with repeaters)", zh: "无中继器：L²（因为R和C都正比于L）。有中继器：L。"},
+  {q: "Moore vs Mealy machine?", a: "Moore: output depends on state only. Mealy: output depends on state AND input.", zh: "Moore：输出只看状态。Mealy：输出看状态+输入。Mealy反应更快但可能有毛刺。"},
+  {q: "What is the consensus theorem?", a: "AB + A'C + BC = AB + A'C (BC is redundant)", zh: "AB + A'C + BC = AB + A'C。BC项是冗余的，可以消去。"},
+];
+
+let fcIdx = 0, fcCorrect = 0, fcTotal = 0, fcOrder = [];
+function initFlashcards() {
+  fcOrder = Array.from({length: flashcards.length}, (_, i) => i);
+  fcIdx = 0; fcCorrect = 0; fcTotal = 0;
+  showFlashcard();
+}
+function fcShuffle() {
+  for (let i = fcOrder.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [fcOrder[i], fcOrder[j]] = [fcOrder[j], fcOrder[i]];
+  }
+  fcIdx = 0; showFlashcard();
+}
+function showFlashcard() {
+  const card = flashcards[fcOrder[fcIdx]];
+  document.getElementById('fcFront').textContent = card.q;
+  document.getElementById('fcBack').textContent = card.a;
+  document.getElementById('fcBackZh').textContent = card.zh;
+  document.getElementById('fcProgress').textContent = `Card ${fcIdx+1} / ${flashcards.length}`;
+  document.getElementById('fcScore').textContent = `Correct: ${fcCorrect} / ${fcTotal}`;
+  document.getElementById('fcProgressBar').style.width = ((fcIdx+1)/flashcards.length*100) + '%';
+  document.getElementById('currentFlashcard').classList.remove('flipped');
+}
+function flipFlashcard() {
+  document.getElementById('currentFlashcard').classList.toggle('flipped');
+}
+function fcMark(correct) {
+  fcTotal++;
+  if (correct) fcCorrect++;
+  fcIdx = (fcIdx + 1) % flashcards.length;
+  showFlashcard();
+}
+function openFlashcardModal() {
+  initFlashcards();
+  document.getElementById('flashcardModal').classList.remove('hidden');
+}
+function closeFlashcardModal() {
+  document.getElementById('flashcardModal').classList.add('hidden');
+}
+
+// ====== CONCEPT MAP ======
+function openConceptMap() {
+  document.getElementById('conceptMapModal').classList.remove('hidden');
+  drawConceptMap();
+}
+function closeConceptMap() {
+  document.getElementById('conceptMapModal').classList.add('hidden');
+}
+
+function drawConceptMap() {
+  const canvas = document.getElementById('conceptMapCanvas');
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, 900, 550);
+
+  const nodes = [
+    {id:0, x:450,y:30, label:'EECS 151', color:'#7c3aed', r:30},
+    {id:1, x:100,y:100, label:'Boolean\nLogic', color:'#2563eb', r:28, tab:1},
+    {id:2, x:250,y:100, label:'Comb.\nLogic', color:'#2563eb', r:28, tab:2},
+    {id:3, x:400,y:100, label:'Verilog', color:'#0891b2', r:28, tab:3},
+    {id:4, x:550,y:100, label:'Sequential\n& FSM', color:'#059669', r:28, tab:4},
+    {id:5, x:700,y:100, label:'RISC-V\nDatapath', color:'#059669', r:28, tab:5},
+    {id:6, x:800,y:200, label:'Pipeline', color:'#d97706', r:28, tab:6},
+    {id:7, x:100,y:250, label:'CMOS', color:'#dc2626', r:28, tab:7},
+    {id:8, x:250,y:250, label:'Logical\nEffort', color:'#dc2626', r:28, tab:8},
+    {id:9, x:400,y:250, label:'Wires', color:'#dc2626', r:25, tab:9},
+    {id:10, x:550,y:250, label:'Adders', color:'#7c3aed', r:28, tab:10},
+    {id:11, x:700,y:300, label:'Multipliers', color:'#7c3aed', r:28, tab:11},
+    {id:12, x:550,y:370, label:'Shifters', color:'#7c3aed', r:25, tab:12},
+    {id:13, x:250,y:370, label:'Timing', color:'#dc2626', r:28, tab:13},
+    {id:14, x:100,y:400, label:'SRAM', color:'#0891b2', r:28, tab:14},
+    {id:15, x:400,y:430, label:'Power', color:'#d97706', r:28, tab:15},
+    {id:16, x:700,y:430, label:'FPGA/\nASIC', color:'#059669', r:28, tab:16},
+  ];
+
+  const edges = [
+    [0,1],[0,2],[0,3],[0,4],[0,5],
+    [1,2],[2,3],[2,10],[4,5],[5,6],
+    [7,8],[7,9],[8,9],[7,13],[13,4],
+    [10,11],[10,12],[11,12],
+    [7,14],[13,6],[15,7],[15,9],
+    [3,16],[16,14],
+    [6,11],[6,5]
+  ];
+
+  // Draw edges
+  ctx.lineWidth = 1.5;
+  edges.forEach(([a,b]) => {
+    ctx.strokeStyle = '#d1d5db';
+    ctx.beginPath();
+    ctx.moveTo(nodes[a].x, nodes[a].y);
+    ctx.lineTo(nodes[b].x, nodes[b].y);
+    ctx.stroke();
+  });
+
+  // Draw nodes
+  nodes.forEach(n => {
+    ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, Math.PI*2);
+    ctx.fillStyle = n.color; ctx.fill();
+    ctx.strokeStyle = 'white'; ctx.lineWidth = 2; ctx.stroke();
+    ctx.fillStyle = 'white'; ctx.font = 'bold 10px Inter'; ctx.textAlign = 'center';
+    const lines = n.label.split('\n');
+    lines.forEach((line, i) => {
+      ctx.fillText(line, n.x, n.y + (i - (lines.length-1)/2) * 12 + 4);
+    });
+  });
+
+  // Click to navigate
+  canvas.onclick = function(e) {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = 900 / rect.width;
+    const x = (e.clientX - rect.left) * scaleX;
+    const y = (e.clientY - rect.top) * scaleX;
+    for (const n of nodes) {
+      if (Math.hypot(x - n.x, y - n.y) < n.r && n.tab !== undefined) {
+        closeConceptMap();
+        switchTab(n.tab);
+        return;
+      }
+    }
+  };
+}
+
+// ====== INITIALIZATION ======
+document.addEventListener('DOMContentLoaded', () => {
+  // Render KaTeX
+  renderMathInElement(document.body, {
+    delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}],
+    ignoredTags: ['script','noscript','style','textarea','pre']
+  });
+  // Manual render for .katex-render elements
+  document.querySelectorAll('.katex-render').forEach(el => {
+    try {
+      katex.render(el.textContent, el, {displayMode: false, throwOnError: false});
+    } catch(e) {}
+  });
+
+  // Init interactive elements
+  convertTC();
+  drawGateSimulator();
+  updateGateTruthTable();
+  computeALU();
+  decodeInstruction();
+  calcLE();
+  calcLEPath();
+  calcPower();
+  updateTimingDiagram();
+  showMultiplication();
+
+  // Mark section 0 visited
+  visitedSections.add(0);
+  updateGlobalProgress();
+
+  // Init mermaid
+  mermaid.initialize({startOnLoad: false, theme: 'default'});
+});
+</script>
+
+</body>
+</html>

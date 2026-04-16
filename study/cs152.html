@@ -1,0 +1,1413 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CS152 · Midterm 2 · 学习站</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],throwOnError:false})"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<style>
+  :root { color-scheme: light; }
+  html, body { background: #ffffff; color: #1a1a1f; font-family: -apple-system, 'SF Pro Text', system-ui, sans-serif; }
+  .font-zh { font-family: 'PingFang SC', 'Hiragino Sans GB', system-ui, sans-serif; }
+  .card { background: #f7f7fa; border: 1px solid #e2e4ea; border-radius: 14px; }
+  .zh-block { background: linear-gradient(90deg,#faf5ff,#f5f3ff); border-left: 3px solid #c084fc; border-radius: 0 10px 10px 0; }
+  .prereq-block { background: linear-gradient(90deg,#ecfdf5,#f0fdf4); border-left: 3px solid #34d399; border-radius: 0 10px 10px 0; }
+  .tab-btn { transition: all .15s; }
+  .tab-btn.active { background: #c084fc; color: #ffffff; font-weight: 600; }
+  .pill { display:inline-block; padding: 2px 10px; border-radius: 999px; font-size: 11px; font-weight: 600; letter-spacing: .03em; }
+  details > summary { cursor: pointer; user-select: none; }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: '▸ '; color: #6b7280; }
+  details[open] > summary::before { content: '▾ '; }
+  .chat-msg { animation: fade .25s ease-out; }
+  @keyframes fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+  .mermaid { background: #f3f4f6; border-radius: 10px; padding: 12px; }
+  ::selection { background: #c084fc55; }
+  .glow { box-shadow: 0 0 30px #c084fc22; }
+  .kbd { font-family: 'SF Mono', Menlo, monospace; font-size: 10px; background: #e2e4ea; padding: 1px 6px; border-radius: 4px; border-bottom: 1px solid #ffffff; }
+  .recall-q { background: #fef9e7; border-left: 2px solid #fbbf24; padding: 10px 14px; border-radius: 0 8px 8px 0; }
+  .recall-a { color: #9ca3af; font-size: 13px; padding-top: 8px; }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; }
+  th, td { border: 1px solid #e2e4ea; padding: 6px 10px; text-align: left; }
+  th { background: #f3f4f6; color: #a78bfa; }
+
+  /* ─── PRINT / CHEATSHEET ─── */
+  @media print {
+    @page { size: letter; margin: 0.3in; }
+    html, body { background: white !important; color: black !important; }
+    header, aside, #main, .no-print { display: none !important; }
+    #cheat-modal { position: static !important; background: white !important; padding: 0 !important; }
+    #cheat-content { box-shadow: none !important; padding: 0 !important; max-width: none !important; }
+    .cheat-card { break-inside: avoid; page-break-inside: avoid; }
+  }
+  .cheat-content { font-size: 8.5pt; line-height: 1.25; color: #111; }
+  .cheat-content h1 { font-size: 13pt; font-weight: 700; margin-bottom: 2pt; }
+  .cheat-content h2 { font-size: 10pt; font-weight: 700; background: #111; color: #fff; padding: 2pt 5pt; border-radius: 2pt; margin-top: 4pt; }
+  .cheat-content h3 { font-size: 9pt; font-weight: 700; color: #7e22ce; margin-top: 3pt; }
+  .cheat-content table { font-size: 7.5pt; }
+  .cheat-content th, .cheat-content td { border: 0.5pt solid #333; padding: 1pt 3pt; color: #111; }
+  .cheat-content th { background: #eee; color: #111; }
+  .cheat-content .cheat-card { border: 1pt solid #333; padding: 4pt 6pt; border-radius: 3pt; margin-bottom: 4pt; background: #fafafa; }
+  .cheat-content .zh { color: #7e22ce; font-weight: 600; }
+  .cheat-content .fml { font-family: 'SF Mono', Menlo, monospace; background: #eef2ff; padding: 1pt 3pt; border-radius: 2pt; display: inline-block; }
+</style>
+</head>
+<body class="min-h-screen">
+
+<!-- Header -->
+<header class="sticky top-0 z-20 backdrop-blur bg-[#ffffffcc] border-b border-[#e2e4ea] no-print">
+  <div class="max-w-[1400px] mx-auto px-6 py-3 flex items-center gap-4 flex-wrap">
+    <div class="text-purple-300 text-xl font-bold">✦ CS152 MT2 · 学习站</div>
+    <div class="text-[#6b7280] text-xs" id="countdown">Tue Apr 14 · 7–9 PM · scope L10–L14</div>
+    <div class="ml-auto flex gap-2 text-xs">
+      <a href="https://cs152-teach.github.io/sp26-web/resources/" target="_blank"
+         class="px-3 py-1.5 rounded-lg bg-[#f7f7fa] border border-[#e2e4ea] hover:border-purple-400">📚 Resources + Past Exams</a>
+      <a href="https://docs.google.com/presentation/d/1Z5pyubInGiIjE7Ap53xZTXS5-_1_GlbLG4hYYvyRDqk/edit" target="_blank"
+         class="px-3 py-1.5 rounded-lg bg-[#f7f7fa] border border-[#e2e4ea] hover:border-purple-400">📑 Review Slides</a>
+      <button id="btn-cheat" class="px-3 py-1.5 rounded-lg bg-purple-500 text-[#ffffff] font-semibold hover:bg-purple-400">📝 Open Cheatsheet</button>
+    </div>
+  </div>
+  <div class="max-w-[1400px] mx-auto px-6 pb-3 flex flex-wrap gap-2 text-sm" id="lecture-tabs"></div>
+</header>
+
+<div class="max-w-[1400px] mx-auto px-6 py-6 grid gap-6" style="grid-template-columns: 1fr 360px;">
+  <main id="main"></main>
+
+  <!-- Chat sidebar -->
+  <aside class="sticky top-36 self-start h-[calc(100vh-11rem)] flex flex-col card p-4 glow no-print">
+    <div class="flex items-center gap-2 mb-3">
+      <div class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
+      <div class="text-sm font-semibold text-purple-300">Cosmo · MiniMax-M2.5</div>
+      <div class="ml-auto text-[10px] text-[#6b7280]">openclaw local</div>
+    </div>
+    <div id="chat-log" class="flex-1 overflow-y-auto space-y-3 pr-1 text-sm">
+      <div class="chat-msg text-[#6b7280] text-xs">
+        Ask anything about L10–L14. 中文或英文都行。<br>
+        <span class="kbd">explain VLIW like I'm new</span>
+      </div>
+    </div>
+    <div class="mt-3 border-t border-[#e2e4ea] pt-3">
+      <textarea id="chat-input" rows="2" placeholder="ask in 中文 or english…"
+        class="w-full bg-[#ffffff] border border-[#e2e4ea] rounded-lg px-3 py-2 text-sm resize-none focus:border-purple-400 mb-2"></textarea>
+      <div class="flex gap-2">
+        <button id="btn-voice" class="px-3 py-1.5 rounded-lg bg-[#f7f7fa] border border-[#e2e4ea] hover:border-purple-400 text-sm">🎤</button>
+        <button id="btn-send" class="flex-1 px-3 py-1.5 rounded-lg bg-purple-500 text-[#ffffff] font-semibold text-sm hover:bg-purple-400">Send ↵</button>
+      </div>
+      <div class="text-[10px] text-[#6b7280] mt-2"><span class="kbd">c</span> focus · <span class="kbd">v</span> voice · <span class="kbd">⌘↵</span> send</div>
+    </div>
+  </aside>
+</div>
+
+<!-- Cheatsheet modal -->
+<div id="cheat-modal" class="hidden fixed inset-0 bg-black/80 z-30 p-6 overflow-y-auto">
+  <div class="max-w-[8.2in] mx-auto bg-white rounded shadow-2xl p-4 cheat-content" id="cheat-content"></div>
+  <button id="cheat-close" class="fixed top-4 right-4 text-white text-2xl no-print">✕</button>
+  <div class="fixed bottom-4 left-1/2 -translate-x-1/2 no-print">
+    <button onclick="window.print()" class="px-4 py-2 bg-purple-500 text-[#ffffff] font-semibold rounded-lg shadow-xl">🖨️ Print (⌘P)</button>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════ DATA ══════════════════════════════
+const LECTURES = [
+
+{
+  id: 'PIPE', title: '5-Stage Pipeline', zh: '流水线',
+  pill: 'baseline in-order pipeline',
+
+  prereq: { zh: '<b>🚂 用装配流水线类比从零开始：</b><br><br>想象一条装配汽车的流水线，有 5 个工位：<br>• <b>IF</b> (Fetch 取指) — 从 I-cache 拿下一条指令<br>• <b>ID</b> (Decode 解码) — 看是什么指令，读寄存器文件<br>• <b>EX</b> (Execute 执行) — ALU 算术 / 地址计算<br>• <b>MEM</b> (Memory) — 访问 D-cache (load/store)<br>• <b>WB</b> (Writeback 写回) — 结果写进寄存器<br><br>一个时钟周期，每个工位都在忙：IF 处理指令 5，ID 处理指令 4，EX 处理指令 3，MEM 处理指令 2，WB 处理指令 1。<br><br><b>🎯 理想</b>：每 cycle 完成 1 条指令 → <b>CPI = 1</b>。<br><b>😬 现实</b>：会有 "hazards 冒险" 打乱节奏，必须处理。<br><br><b>Speedup over unpipelined</b>：N 个 stage 理论上 N× speedup。但实际因为 hazards 和 pipeline 填充 (fill + drain)，没那么多。',
+            en: 'Think of a car assembly line with 5 stations: IF (fetch)/ID (decode+regread)/EX (ALU)/MEM (cache access)/WB (writeback). Every cycle each stage processes a different instruction — 5 in flight at once. Ideal CPI = 1. Real pipelines suffer hazards that force stalls.' },
+
+  overview: {
+    zh: '<b>三种 hazards 必须彻底记住：</b><br><br><b>① Structural Hazard (结构冒险)</b><br>两条指令需要同一个硬件资源。例如 IF 和 MEM 都想访问内存。<br><b>解决</b>：分开 I-cache 和 D-cache，或者 stall 一个。<br><br><b>② Data Hazard (数据冒险) — 最常考</b><br>三种：<br>• <b>RAW (Read After Write)</b> — 真相关，下一条要读上一条的结果<br>&nbsp;&nbsp;<code>add x1, x2, x3</code><br>&nbsp;&nbsp;<code>sub x4, x1, x5</code>&nbsp;&nbsp;← sub 需要新的 x1<br>• <b>WAR (Write After Read)</b> — 反相关 (假相关)<br>• <b>WAW (Write After Write)</b> — 输出相关 (假相关)<br><br><b>解决 RAW 的两种方法</b>：<br>1. <b>Forwarding (Bypass 旁路)</b>：EX 的结果直接从 EX/MEM 寄存器接到下一条 ID/EX 的 ALU 输入，不用等 WB 写回寄存器文件。节省 2 cycle。<br>2. <b>Stall (插入 bubble)</b>：Forwarding 救不了的情况 — <b>load-use hazard</b>。load 的数据要到 MEM 阶段结尾才出来，下一条如果立刻用它，EX 时数据还没到手。必须 stall <b>1 cycle</b>。<br><br><b>解决 WAR/WAW</b>：<br>• 5-stage in-order 流水线通常<i>不出现</i> WAR/WAW（所有 write 都在 WB 阶段，所有 read 都在 ID，in-order 保证先读后写）<br>• OoO 才会出 WAR/WAW，用 register rename 消除<br><br><b>③ Control Hazard (控制冒险)</b><br>分支指令的方向和目标在 EX 阶段 (甚至更晚) 才知道。在那之前已经 fetch 了 "错的" 指令。<br><br><b>解决</b>：<br>• <b>Stall</b> 直到 branch resolved (保守)<br>• <b>Predict</b> (预测 taken 或 not-taken)，错了就 flush<br>• <b>Delayed branch</b> (老 MIPS): 编译器填一个 delay slot<br><br><b>⏱ Branch Penalty</b><br>• Branch resolved in <b>ID</b> 阶段：penalty = <b>1 cycle</b> (flush 1 条)<br>• Branch resolved in <b>EX</b> 阶段：penalty = <b>2 cycles</b> (flush 2 条)<br>• 现代 OoO deep pipeline：penalty = 10-20 cycles<br><br><b>🎯 考试常问</b>：<br>• Q: Load-use hazard 为什么必须 stall？→ A: load 的数据在 MEM 阶段结尾才出现，下一条的 EX 在 stall 前需要它。没有时光机，必须等 1 cycle。<br>• Q: 为什么 in-order 5-stage 不需要处理 WAW？→ A: 所有 write 在 WB 阶段，in-order 保证前面的 WB 先于后面的 WB。<br>• Q: Branch resolved 越早越好吗？→ A: 是的。ID-resolved 1 penalty，EX-resolved 2 penalty，EX-MEM-resolved 3。<br>• Q: Forwarding 的路径有几条？→ A: EX/MEM → ID/EX input mux (从前一条)，MEM/WB → ID/EX input mux (从前两条)。',
+    en: 'Three hazards: structural (resource conflict), data (RAW=true dep, fix with forwarding or stall; WAR/WAW=false dep, in-order pipeline avoids them), control (branch unresolved, predict/stall/delayed slot). Load-use forces 1-cycle stall regardless of forwarding. Branch penalty = stages executed before resolution; ID=1, EX=2.',
+  },
+
+  formulas: [
+    { label: 'Ideal pipeline speedup (N stages)', tex: 'S = N' },
+    { label: 'Effective CPI with stalls', tex: '\\text{CPI} = 1 + \\frac{\\text{stall cycles}}{\\text{instruction}}' },
+    { label: 'Branch penalty (stages before resolved)', tex: 'P = s_{\\text{resolve}} - 1' },
+    { label: 'Load-use hazard stall', tex: '\\text{stall} = 1 \\text{ cycle (forced)}' },
+  ],
+
+  diagram: `flowchart LR
+  IF[IF fetch] --> ID[ID decode+regread]
+  ID --> EX[EX ALU]
+  EX --> MEM[MEM cache]
+  MEM --> WB[WB writeback]
+  EX -.->|forward| EX
+  MEM -.->|forward| EX
+  style IF fill:#c084fc,color:#000
+  style EX fill:#fbbf24,color:#000`,
+
+  example: {
+    title: 'Forwarding vs Stall on load-use',
+    body: `Code:<br><code>1: lw  x1, 0(x2)</code><br><code>2: add x3, x1, x4</code><br><br>
+Without forwarding: x1 written in WB (cycle 5). add reads in ID (needs it by EX = cycle 3 of add = cycle 4 overall). <b>3-cycle stall</b>.<br><br>
+With forwarding, no stall attempt: add in EX needs x1. lw\'s x1 comes out of MEM stage. lw in MEM at cycle 4, add in EX at cycle 4 → <b>need a forward from MEM stage output to EX stage input</b>. But MEM output is available at END of cycle 4, add EX input needed at START of cycle 4. <b>Still need 1 cycle stall</b>.<br><br>
+Result: load-use hazard forces 1 stall even with perfect forwarding, because future data cannot be forwarded.`,
+  },
+
+  recall: [
+    { q: 'Why does load-use force a stall even with forwarding?', a: 'The load value is only available at the end of MEM stage, but the next instruction needs it at the start of EX. Forwarding would require sending data backwards in time.' },
+    { q: 'Why does 5-stage in-order not need to handle WAR/WAW?', a: 'All writes happen in WB, all reads in ID. In-order order guarantees that an earlier instruction\'s WB completes before a later one\'s WB, and reads (ID) come before writes (WB).' },
+    { q: 'Branch resolved in ID vs EX — which is better?', a: 'ID is better: 1-cycle penalty instead of 2. Early branch resolution reduces mispredict cost.' },
+    { q: 'Name the two main forwarding paths in a 5-stage pipeline.', a: 'EX/MEM → ID/EX (1 instr ahead) and MEM/WB → ID/EX (2 instr ahead). These feed ALU input muxes.' },
+    { q: 'Structural hazard example?', a: 'Single-port memory used by both IF and MEM stages in the same cycle. Fix: separate I-cache and D-cache (Harvard architecture).' },
+  ],
+
+  cheat: {
+    defs: [
+      ['5-stage', 'IF → ID → EX → MEM → WB'],
+      ['RAW', 'True dep, needs forwarding or stall'],
+      ['WAR/WAW', 'False deps, in-order avoids them'],
+      ['Forwarding', 'EX/MEM → EX and MEM/WB → EX'],
+      ['Load-use', 'Forced 1-cycle stall (future data)'],
+      ['Branch penalty', 'stages_before_resolved − 1'],
+    ],
+    formulas: ['S_ideal = N', 'CPI = 1 + stalls/inst', 'Penalty ID=1, EX=2'],
+    gotchas: [
+      'Load-use always 1 stall, forwarding cannot save it',
+      '5-stage in-order naturally avoids WAR/WAW',
+      'Branch flush depends on where resolved',
+    ],
+  },
+},
+
+{
+  id: 'OOO', title: 'Out-of-Order · Tomasulo', zh: '乱序执行',
+  pill: 'dynamic HW scheduling',
+
+  walkthrough: {
+    title: 'OoO timing table · 5 条指令',
+    setup: 'Machine: ROB=4, 1 dispatch/issue/commit per cycle. Latencies: ALU=1, MEM=1(hit), FMUL=3. 第一条 dispatch 在 cycle 1.<br><br><code>1. lw x1, 0(x2)      — MEM, 无依赖<br>2. addi x3, x1, 5    — ALU, 需要 x1<br>3. lw x4, 0(x5)      — MEM, 独立<br>4. mul x6, x3, x4    — FMUL, 需要 x3, x4<br>5. add x7, x1, x4    — ALU, 需要 x1, x4</code>',
+    steps: [
+      '<b>Step 1 · 填 Dispatch 列 (in-order, 1/cycle)</b><br>简单逐行 +1:<br><br>指令 1: cycle <b>1</b><br>指令 2: cycle <b>2</b><br>指令 3: cycle <b>3</b><br>指令 4: cycle <b>4</b><br>指令 5: cycle <b>5</b>',
+      '<b>Step 2 · 填 Issue 列 (看依赖)</b><br>公式: <code>Issue = max(Dispatch + 1, 所有 src 的 Complete cycle)</code><br><br><b>指令 1</b> (无依赖): max(1+1, 0) = <b>2</b><br><br><b>指令 2</b> (需 x1 from 指令 1):<br>&nbsp;&nbsp;指令 1 complete = 2+1 = 3<br>&nbsp;&nbsp;Issue = max(2+1, 3) = <b>3</b><br><br><b>指令 3</b> (独立): max(3+1, 0) = <b>4</b><br><br><b>指令 4</b> (需 x3, x4):<br>&nbsp;&nbsp;指令 2 complete = 3+1 = 4<br>&nbsp;&nbsp;指令 3 complete = 4+1 = 5<br>&nbsp;&nbsp;Issue = max(4+1, 4, 5) = <b>5</b><br><br><b>指令 5</b> (需 x1, x4):<br>&nbsp;&nbsp;Issue = max(5+1, 3, 5) = <b>6</b>',
+      '<b>Step 3 · 填 Complete 列</b><br>公式: <code>Complete = Issue + FU latency</code><br><br>指令 1: 2 + 1 (MEM) = <b>3</b><br>指令 2: 3 + 1 (ALU) = <b>4</b><br>指令 3: 4 + 1 (MEM) = <b>5</b><br>指令 4: 5 + 3 (FMUL) = <b>8</b><br>指令 5: 6 + 1 (ALU) = <b>7</b><br><br>⚠️ <b>注意</b>: 指令 5 Complete = 7, 但指令 4 Complete = 8。指令 5 完成得<i>比</i>指令 4 早!',
+      '<b>Step 4 · 填 Commit 列 (in-order!)</b><br>公式: <code>Commit = max(Complete + 1, 前一条 Commit + 1)</code><br><br>指令 1: max(3+1, 0) = <b>4</b><br>指令 2: max(4+1, 4+1) = <b>5</b><br>指令 3: max(5+1, 5+1) = <b>6</b><br>指令 4: max(8+1, 6+1) = <b>9</b><br>指令 5: max(7+1, <b>9+1</b>) = <b>10</b><br><br>⚠️ 虽然指令 5 Complete=7, 但它必须等指令 4 先 commit (in-order), 所以 commit=10 不是 8!',
+      '<b>✅ 完整表格</b><br><table style="width:100%;border-collapse:collapse;font-size:12px;margin-top:8px;"><tr style="background:#f5f3ff;"><th style="border:1px solid #ccc;padding:4px;">Instr</th><th style="border:1px solid #ccc;padding:4px;">Disp</th><th style="border:1px solid #ccc;padding:4px;">Issue</th><th style="border:1px solid #ccc;padding:4px;">Comp</th><th style="border:1px solid #ccc;padding:4px;">Commit</th></tr><tr><td style="border:1px solid #ccc;padding:4px;">lw x1</td><td style="border:1px solid #ccc;padding:4px;">1</td><td style="border:1px solid #ccc;padding:4px;">2</td><td style="border:1px solid #ccc;padding:4px;">3</td><td style="border:1px solid #ccc;padding:4px;">4</td></tr><tr><td style="border:1px solid #ccc;padding:4px;">addi x3</td><td style="border:1px solid #ccc;padding:4px;">2</td><td style="border:1px solid #ccc;padding:4px;">3</td><td style="border:1px solid #ccc;padding:4px;">4</td><td style="border:1px solid #ccc;padding:4px;">5</td></tr><tr><td style="border:1px solid #ccc;padding:4px;">lw x4</td><td style="border:1px solid #ccc;padding:4px;">3</td><td style="border:1px solid #ccc;padding:4px;">4</td><td style="border:1px solid #ccc;padding:4px;">5</td><td style="border:1px solid #ccc;padding:4px;">6</td></tr><tr><td style="border:1px solid #ccc;padding:4px;">mul x6</td><td style="border:1px solid #ccc;padding:4px;">4</td><td style="border:1px solid #ccc;padding:4px;">5</td><td style="border:1px solid #ccc;padding:4px;">8</td><td style="border:1px solid #ccc;padding:4px;">9</td></tr><tr style="background:#fef9e7;"><td style="border:1px solid #ccc;padding:4px;">add x7 ⚠️</td><td style="border:1px solid #ccc;padding:4px;">5</td><td style="border:1px solid #ccc;padding:4px;">6</td><td style="border:1px solid #ccc;padding:4px;">7</td><td style="border:1px solid #ccc;padding:4px;"><b>10</b></td></tr></table><br><b>🔑 关键 insight</b>: 指令 5 虽然 Complete 比指令 4 早 (7 vs 8), 但 in-order commit 强制它<b>等指令 4 先 commit</b>。这是 OoO 的精确异常保证。'
+    ]
+  },
+
+
+  prereq: { zh: '<b>⚡ 为什么需要 OoO？</b><br><br>In-order pipeline 的致命问题：一条指令 stall (比如 L2 cache miss，200+ cycles)，<i>后面所有指令都 stall</i>，哪怕它们完全不依赖那条 stall 的指令。<br><br>举例：<br><code>lw  x1, 0(x2)    # cache miss, stall 200 cycles</code><br><code>add x3, x4, x5   # 不依赖 x1, 但也得干等</code><br><code>mul x6, x7, x8   # 也不依赖, 也等</code><br><br><b>OoO 的想法</b>：让 <code>add</code> 和 <code>mul</code> 先跑，<code>lw</code> 回来后再跑依赖它的指令。<br><br>关键原则：<b>指令可以乱序执行，但必须按顺序提交 (commit)</b>，保证程序语义正确和精确异常。<br><br><b>Tomasulo 算法</b> (IBM 1967) 解决 3 个问题：<br>1. <b>找独立指令</b> — reservation station 等操作数 ready<br>2. <b>消除假依赖</b> — register rename 消灭 WAR/WAW<br>3. <b>按顺序提交</b> — Reorder Buffer (ROB) 排队<br><br><b>💡 核心硬件结构</b>：<br>• <b>ROB (Reorder Buffer)</b>：顺序退役队列<br>• <b>Rename Table</b>：arch reg → physical reg 映射<br>• <b>PRF (Physical Register File)</b>：实际值存这里，比 arch reg 多 (比如 arch 32 个, PRF 128 个)<br>• <b>Reservation Station / Issue Queue</b>：等操作数的指令池<br>• <b>CDB (Common Data Bus)</b>：广播 "结果 X 出来了" 的总线',
+            en: 'In-order stalls the whole pipeline on any stall event. OoO lets independent instructions proceed. Tomasulo uses register rename (eliminate false deps), reservation stations (wait for operands), ROB (in-order commit for precise exceptions). Core structures: ROB, rename table, PRF, RS/IQ, CDB.' },
+
+  overview: {
+    zh: '<b>🔁 Tomasulo 的 6 个 stage (必须记顺序)</b><br><br><b>① Fetch</b> — 从 I-cache 取指<br><b>② Dispatch</b> — 进 ROB 和 RS，做 register rename (arch dest reg → 新的 phys reg)。<i>Dispatch 必须 in-order</i>。<br><b>③ Issue</b> — 当两个 src 操作数都 ready 且 FU 空闲时，从 RS 发射到 FU。<i>Issue 是 out-of-order 的</i>。<br><b>④ Execute</b> — FU 跑 (ALU 1 cyc, FMUL 3 cyc, DRAM load 200+ cyc)<br><b>⑤ Writeback</b> — 广播结果到 CDB，写进 PRF，唤醒 RS 里等这个结果的指令<br><b>⑥ Commit</b> — 从 ROB head 按顺序 commit，更新 arch state，释放旧的 phys reg。<i>Commit 必须 in-order</i>。<br><br><b>💡 关键 insight</b>：Dispatch 顺序，Issue 乱序，Commit 顺序。这个 "in-order, out-of-order, in-order" 三明治结构是精确异常的秘密。<br><br><b>🔄 Register Rename 的魔法</b><br>假设 arch 有 32 reg，PRF 有 128 reg。Rename table 映射 arch → phys。<br><br><code>add x1, x2, x3   # rename: x1 → P10</code><br><code>sub x4, x1, x5   # x1 现在映射 P10, sub 等 P10 ready</code><br><code>add x1, x6, x7   # 写 x1 给新 phys: x1 → P11</code><br><br>第三条指令写 x1 <i>不会</i>污染第二条的 x1，因为第二条看的是 P10 (rename 时固化)，第三条写的是 P11。<br><br><b>这就是 WAW 假依赖的消除</b>。没有 rename 的话，第三条必须等第二条完成才能写 x1。有了 rename，它们写不同的物理寄存器，可以并行。<br><br><b>⏱ Timing 计算 (sp25 P2a 考点)</b><br>假设：ROB 大小 4，fetch/dispatch/issue/commit 各 1 条/cycle (不同 stage 可并行)。<br><br>指令进 ROB 在 cycle <code>d</code> → 最早 issue 在 cycle <code>d+1</code> (如果操作数 ready) → WB 在 cycle <code>issue + latency</code> → commit 在 <code>WB + 1</code> (如果它在 ROB head)。<br><br><b>Resource stalls</b>：<br>• ROB full → dispatch stall<br>• RS full → dispatch stall<br>• 在 head 但前面没 commit → 等 in-order<br>• 同一 FU 两条指令竞争 → 较旧的先<br>• Only 1 instruction can complete per cycle (多条同时完成按 age tie-break)<br><br><b>💥 Branch Misprediction Recovery</b><br>1. Branch 在 EX 阶段 resolve，发现错预测<br>2. Flush ROB 中 branch 之后的所有 entries<br>3. 恢复 rename table (用 checkpoint 或按序回滚)<br>4. 从正确 PC 重新 fetch<br><br><b>📈 Max CPI/IPC 计算 (sp25 P2c 原题)</b><br>瓶颈 = <code>min(fetch_width, dispatch, issue, commit_per_cycle)</code><br>例：fetch 61, dispatch 61, issue 2, WB 151, commit 152<br>→ min = 2 → <b>IPC_max = 2, CPI_min = 0.5</b><br><br><b>🎯 考试常问</b>：<br>• Q: Register rename 消除哪些相关？→ A: WAR 和 WAW (假相关)。RAW 还是要等。<br>• Q: ROB 和 PRF 的区别？→ A: ROB 是顺序退役队列 (保 commit 顺序)，PRF 是值的存储。<br>• Q: Dispatch stall 的两种原因？→ A: ROB full 或 RS full。<br>• Q: 为什么 commit 必须 in-order？→ A: 精确异常和 speculation 回滚需要 "发现前面有错可以撤销后面"。<br>• Q: Branch misprediction 怎么恢复 rename table？→ A: Checkpoint 在 branch 时拍快照，发现错了就恢复。',
+    en: 'Tomasulo stages: Fetch → Dispatch (enter ROB + rename, in-order) → Issue (out-of-order when ready) → Execute → Writeback (CDB broadcast + PRF write) → Commit (in-order from ROB head). Rename eliminates WAR/WAW. Branch misprediction flushes ROB newer than branch, restores rename checkpoint. Max IPC = min(fetch, dispatch, issue, commit).',
+  },
+
+  formulas: [
+    { label: 'Earliest issue cycle', tex: '\\text{issue} = \\max(\\text{dispatch}+1, \\; \\text{srcs ready})' },
+    { label: 'Writeback cycle', tex: '\\text{WB} = \\text{issue} + \\text{FU latency}' },
+    { label: 'Commit cycle', tex: '\\text{commit} = \\text{WB} + 1 \\text{ (if at ROB head)}' },
+    { label: 'Max IPC (pipeline bottleneck)', tex: '\\text{IPC}_{\\max} = \\min(\\text{fetch}, \\text{disp}, \\text{issue}, \\text{commit})' },
+  ],
+
+  diagram: `flowchart LR
+  F[Fetch] --> D[Dispatch<br>enter ROB<br>rename]
+  D --> I[Issue<br>wait for srcs]
+  I --> E[Execute<br>FU]
+  E --> W[Writeback<br>CDB broadcast]
+  W --> C[Commit<br>in-order]
+  style D fill:#c084fc,color:#000
+  style I fill:#fbbf24,color:#000
+  style C fill:#78dcca,color:#000`,
+
+  example: {
+    title: 'sp25 P2 — Tomasulo timing walkthrough',
+    body: `Machine: ROB=4, fetch/dispatch/issue/commit = 1/cycle. Latencies ALU=1, FADD=2, FMUL=3, MEM=4. No forwarding, issue 1 cycle after dispatch, commit 1 cycle after complete.<br><br>
+Code:<br><code>bge t0, a1, done   # ALU 1 cyc</code><br><code>bge t1, a3, done   # ALU</code><br><code>lw  f0, 0(a0)      # MEM 4 cyc</code><br><code>lw  f1, 0(a2)      # MEM</code><br><code>fmul f2, f0, f1    # FMUL 3 cyc (needs f0, f1)</code><br><br>
+First bge: dispatch c1, issue c2, WB c3, commit c4.<br>
+Second bge: dispatch c4 (only 1 dispatch per cycle, must wait for ROB slot after first commits), issue c5, WB c6, commit c7.<br>
+lw f0: dispatch c7, issue c8, WB c12 (c8+4), commit c13.<br>
+lw f1: dispatch c8, issue c9, WB c13, commit c14.<br>
+fmul f2: dispatch c9, issue c14 (waits for f0 at c12 AND f1 at c13, so earliest c14), WB c17, commit c18.<br><br>
+This is exactly the problem 2a style. Practice filling the table: <b>Enter ROB | Issue | WB | Commit</b>.`,
+  },
+
+  recall: [
+    { q: 'Which false dependencies does register rename eliminate?', a: 'WAR (write after read) and WAW (write after write). RAW (true dep) still requires waiting.' },
+    { q: 'Why must commit be in-order even though execution is out-of-order?', a: 'Precise exceptions: if an older instruction faults, all younger speculative work must be thrown away without affecting architectural state. In-order commit enforces this boundary.' },
+    { q: 'What causes dispatch to stall?', a: 'ROB is full (no retirement slot) or RS is full (no issue slot). Dispatch is in-order so it also blocks younger instructions.' },
+    { q: 'On branch misprediction, what must be restored?', a: 'ROB entries after the branch are flushed; the rename table is restored to the checkpoint taken at branch dispatch; fetch redirects to the correct PC.' },
+    { q: 'In sp25 P2c, CPU with fetch 61, issue 2, commit 152 — max IPC?', a: 'min(61, 2, 152) = 2. IPC_max = 2, CPI_min = 0.5. Issue width is the bottleneck.' },
+    { q: 'ROB entry vs PRF entry — difference?', a: 'ROB entry tracks retirement order and holds pointer to the PRF entry (plus ready/exception bits). PRF holds the actual data value. Separating them lets the ROB be narrow.' },
+  ],
+
+  cheat: {
+    defs: [
+      ['ROB', 'Reorder Buffer — in-order retirement queue'],
+      ['Rename Table', 'arch reg → latest phys reg producer'],
+      ['PRF', 'Physical Register File — stores values'],
+      ['RS / IQ', 'Reservation station — waits for operands'],
+      ['CDB', 'Common Data Bus — broadcasts WB results'],
+      ['Dispatch', 'Enter ROB + rename, in-order'],
+      ['Issue', 'Send to FU when ready, out-of-order'],
+      ['Commit', 'Retire from ROB head, in-order'],
+    ],
+    formulas: [
+      'issue ≥ dispatch+1 AND srcs ready',
+      'WB = issue + FU latency',
+      'commit = WB + 1 (if at head)',
+      'IPC_max = min(fetch, disp, issue, commit)',
+    ],
+    gotchas: [
+      'Dispatch stall: ROB full OR RS full',
+      'Only 1 FU of each kind unless stated',
+      'Rename eliminates WAR/WAW, not RAW',
+      'Mispredict flush: ROB entries after branch + restore checkpoint',
+    ],
+  },
+},
+
+{
+  id: 'BPRED', title: 'Branch Prediction', zh: '分支预测',
+  pill: 'speculation + correlation',
+
+  walkthrough: {
+    title: '2-bit BHT trace · simple loop',
+    setup: '4-entry BHT, indexed by <code>PC[3:2]</code>, 所有 counter 初始 <b>10 (Weakly Taken)</b>。循环:<br><br><code>PC:<br>&nbsp;0: beq x1,x2,A  # 每次 Taken (x1 == x2)<br>&nbsp;8: bne x3,x4,B  # 每次 Not Taken (x3 == x4)<br>12: j loop       # 无条件 Taken</code>',
+    steps: [
+      '<b>Step 1 · 算每条指令用哪个 counter</b><br><br>用 PC[3:2] (位 3 和 2) 索引:<br><br><b>beq</b> at PC=0 (binary 000...00): PC[3:2] = 00 → <b>Counter 0</b><br><b>bne</b> at PC=8 (binary 000...1000): PC[3:2] = 10 → <b>Counter 2</b><br><b>j</b> at PC=12 (binary 000...1100): PC[3:2] = 11 → <b>Counter 3</b><br><br>(Counter 1 没被用到)',
+      '<b>Step 2 · 记住 2-bit 转换规则</b><br><br>State: <b>11</b>=ST · <b>10</b>=WT · <b>01</b>=WN · <b>00</b>=SN<br><b>MSB 是预测</b> (1=Taken, 0=NotTaken)<br><br><b>+T → counter +1</b> (饱和到 11)<br><b>+NT → counter -1</b> (饱和到 00)<br><br>初始所有 counter = <b>10</b> (预测 T)',
+      '<b>Step 3 · Iteration 1</b><br><br><b>beq</b>: C0=<b>10</b> → 预测 <b>T</b> → 实际 T ✅ → C0 变 <b>11</b><br><br><b>bne</b>: C2=<b>10</b> → 预测 <b>T</b> → 实际 NT <span style="color:#dc2626;">❌</span> → C2 变 <b>01</b><br><br><b>j</b>: C3=<b>10</b> → 预测 <b>T</b> → 实际 T ✅ → C3 变 <b>11</b>',
+      '<b>Step 4 · Iteration 2</b><br><br><b>beq</b>: C0=<b>11</b> → 预测 <b>T</b> → 实际 T ✅ → C0 保持 <b>11</b><br><br><b>bne</b>: C2=<b>01</b> → 预测 <b>NT</b> → 实际 NT ✅ → C2 变 <b>00</b><br><br><b>j</b>: C3=<b>11</b> → 预测 <b>T</b> → 实际 T ✅ → 保持 <b>11</b><br><br>🎉 从第 2 轮起, 预测全对!',
+      '<b>✅ 总结</b><br><br>第 1 次迭代: 错 1 次 (bne)<br>第 2 次及以后: 0 次错<br><br><b>2-bit 优势</b>: 需要<i>连续错 2 次</i>才改变预测。bne 只错了 1 次就适应了 (10→01, 但 01 的预测是 NT)。<br><br><b>对比 1-bit</b>: bne 每次都错, 因为 1-bit 没有惯性。<br><br><b>对比 loop 模式</b>: 如果是一个 N-iter 的 loop, 2-bit 每次只错 1 次 (退出), 1-bit 每次错 2 次 (进入和退出)。'
+    ]
+  },
+
+
+  prereq: { zh: '<b>🔮 为什么需要分支预测？</b><br><br>CPU 在 IF 阶段只知道当前 PC，不知道 "下一条指令的 PC" 是什么。如果这条是分支 (beq/bne/jal/jalr)，方向和目标要到 EX (甚至 commit) 才知道。<br><br>两种做法：<br>1. <b>Stall</b> 直到 branch resolved → 每个分支浪费几个 cycle，慢<br>2. <b>Predict</b> → 猜下一条 PC，对了不浪费，错了就 flush<br><br>现代 CPU 的分支预测准确率 &gt; 95%，是性能的关键技术。<br><br><b>两种预测任务</b>：<br>• <b>Direction (方向)</b>：这条条件分支 taken 还是 not-taken？<br>• <b>Target (目标)</b>：如果 taken，跳去哪里？<br><br><b>不同分支类型</b>：<br>• <b>条件分支</b> (beq/bne) — 要预测 direction 和 target<br>• <b>无条件 jump</b> (jal) — 只要 target (总 taken)<br>• <b>间接跳</b> (jalr) — target 来自寄存器，难预测<br>• <b>Return</b> (jalr ra) — 特殊情况，用 RAS<br><br><b>预测失误的代价</b>：pipeline depth × 平均指令宽度。现代 OoO 约 15-20 cycles × 4 IPC = 60-80 条指令的工作被扔掉。',
+            en: 'CPU does not know next PC until branch resolves in EX. Either stall (slow) or predict. Modern CPUs predict >95% accurately. Two tasks: direction (T/NT) and target. Mispredict flushes ~pipeline_depth × IPC instructions of work.' },
+
+  overview: {
+    zh: '<b>① 1-bit predictor (最基础)</b><br>每个分支 PC 对应一位：上次 T 预测 T，上次 NT 预测 NT。<br><b>失败案例</b>：loop 循环，每次都错 2 次 (进入 loop 时预测错，退出 loop 时预测错)。<br><br><b>② 2-bit saturating counter (bimodal) — 经典</b><br>4 个状态：<br>&nbsp;&nbsp;<b>SN</b> (Strongly Not Taken) / <b>WN</b> (Weakly NT) / <b>WT</b> (Weakly Taken) / <b>ST</b> (Strongly Taken)<br><br>每次 taken → counter +1 (饱和到 ST)，not-taken → -1 (饱和到 SN)。<br>预测：state >= WT → 预测 T，否则 NT。<br><br><b>改进</b>：需要<i>连续 2 次错</i>才 flip 预测方向。loop 进入和退出只错 1 次 (不是 2)，比 1-bit 强。<br><br><b>BHT (Branch History Table)</b>：存 counter 的数组，PC hash 索引。大小 2^M entries。<br><b>Hash</b>：<code>PC[log₂(M)+1 : 2]</code>，跳过低 2 位 (word 对齐)。<br><br><b>③ 2-level predictor (关联预测)</b><br>有些分支是<i>关联</i>的。例如：<br><code>if (x > 0) a = 1; else a = 0;</code><br><code>if (y > 0) b = 2; else b = 0;</code><br><code>if (a == 1 && b == 2) ...  // 这个分支和前两个高度相关</code><br><br>1-level predictor 看不出这种关联，2-level 可以。<br><br><b>GHR (Global History Register)</b>：P 位 shift register，记录最近 P 次分支的 T/NT。每次分支 resolve 就 shift in 结果。<br><br><b>2-level 结构</b>：<code>BHT[2^P][M]</code> 二维表。行用 GHR 索引 (2^P 行)，列用 hash(PC) 索引 (M 列)。<br><b>预测</b> = <code>BHT[GHR][hash(PC)]</code><br><br><b>Area 公式 (sp25 P3e 考点)</b>：<br><span class="fml">Area = P + 2^P · M · N bits</span><br>P = GHR bits, M = BHT entries per row, N = counter FSM bits<br><br><b>④ BTB (Branch Target Buffer)</b><br>存 "跳到哪里 (destination 地址)"。对 PC 无关的 jump (jal) 和间接跳 (jalr) 特别有用。PC 索引，存 target。<br><br><b>⑤ RAS (Return Address Stack)</b><br>专门预测函数返回：<br>• push on <code>jal</code> (函数调用)<br>• pop on <code>ret</code> / <code>jalr ra</code> (返回)<br><br><b>为什么单独？</b>因为 return 的目标取决于<i>谁调用了它</i>，不是 return 指令的 PC 本身。RAS 用 LIFO 栈匹配 call/return 对，精准率接近 100%。<br><br><b>🔑 Key insight</b>：<br>• <b>BTB</b> = "branch <b>TO</b> 哪里" (destination)<br>• <b>RAS</b> = "branch <b>BACK</b> 到哪里" (return)<br>• <b>BHT</b> = "direction" (taken 还是 NT)<br><br><b>🎯 考试常问 (sp25 P3 风格)</b>：<br>• Q: 一个随机 coin flip 的分支，最佳预测率？<br>&nbsp;&nbsp;→ A: 50% (随机无规律，任何 predictor 都无法超过)<br>• Q: Always not-taken 的分支呢？<br>&nbsp;&nbsp;→ A: 100% (简单 predictor 就能达到)<br>• Q: Loop 结构 <code>beq x0, x0, LOOP</code>？<br>&nbsp;&nbsp;→ A: 100% (无条件，永远 taken)<br>• Q: 多个分支 alias 到同一个 BHT entry 怎么办？<br>&nbsp;&nbsp;→ A: 冲突，预测率降低。增大 M 让他们 hash 到不同 index。<br>• Q: M=1, N=1, P=0 的 predictor 能达到最佳？<br>&nbsp;&nbsp;→ A: 只有一个 entry，所有分支都 alias。如果分支倾向不同，会 thrash，无法最佳。<br>• Q: 设计最小 area 但最佳预测的 predictor?<br>&nbsp;&nbsp;→ A: 找让不同分支 hash 到不同 index 的最小 M，用 2-bit counter，P=0。',
+    en: 'Predictors: 1-bit (fails on loops), 2-bit bimodal SN/WN/WT/ST (needs 2 flips), BHT (PC-indexed counters), GHR (P bits of recent outcomes), 2-level BHT[GHR][hash(PC)] for correlated branches. BTB stores destination for taken branches. RAS is LIFO for call/return pairs. Area = P + 2^P·M·N bits.',
+  },
+
+  formulas: [
+    { label: '2-level index', tex: '\\text{pred} = \\text{BHT}[\\text{GHR}][\\text{hash}(\\text{PC})]' },
+    { label: 'Hash function', tex: '\\text{hash} = \\text{PC}[\\log_2 M + 1 : 2]' },
+    { label: 'Total area', tex: '\\text{bits} = P + 2^P \\cdot M \\cdot N' },
+    { label: 'Random branch best accuracy', tex: '\\text{accuracy}_{\\max} = 50\\%' },
+  ],
+
+  diagram: `flowchart LR
+  PC[Fetch PC] --> Hash[hash PC]
+  GHR[GHR P bits] --> Table[2^P rows]
+  Hash --> Table
+  Table --> Counter[N-bit saturating counter]
+  Counter --> Pred[Taken / Not Taken]
+  style Table fill:#c084fc,color:#000
+  style Counter fill:#fbbf24,color:#000`,
+
+  example: {
+    title: 'sp25 P3 — Egg sorting loop analysis',
+    body: `<code>EGG_LOOP:<br>&nbsp;rand a0              # random bit<br>&nbsp;beq  a0, x0, BAD    # B1, 50/50<br>&nbsp;beq  a0, x0, NO_YOLK # B2, always NT if we get here<br>BAD_EGG:<br>NO_YOLK:<br>&nbsp;beq  x0, x0, EGG_LOOP # B3, always taken</code><br><br>
+<b>Taken rates</b>: B1 = 50% random, B2 = 0% (a0 is 1 if we fell through B1), B3 = 100% unconditional.<br><br>
+<b>Best predictions</b>:<br>
+B1: max 50% (random — can\'t beat coin flip)<br>
+B2: 100% (always-NT predictor)<br>
+B3: 100% (always-T predictor)<br><br>
+<b>Overall max accuracy</b>: 2.5 branches executed per loop on average (B1 always + B2 when B1 NT + B3 always). Weighted = (0.5 · 50% + 0.5·100% + 100%·100%) / 2.5 ≈ <b>80%</b> actual, or 83.3% if averaging the 3 static branches.<br><br>
+<b>Minimal predictor design (P3e)</b>: M=4, N=1, P=0. M=4 lets all 3 branches hash to distinct indices (no aliasing). 1-bit counter is enough for B2/B3 (fixed behavior). Total area = 0 + 2^0 · 4 · 1 = 4 bits.`,
+  },
+
+  recall: [
+    { q: '1-bit predictor on a N-iteration loop — how many mispredicts?', a: '2 per loop: one entering (predicted NT from previous run\'s final NT) and one exiting (predicted T from loop body\'s consecutive Ts).' },
+    { q: '2-bit bimodal on the same loop?', a: '1 mispredict per loop (the exit). Entering is predicted correctly because the saturating counter stayed at ST from the previous body iterations.' },
+    { q: 'Difference between BTB and RAS?', a: 'BTB predicts "where to branch TO" for taken branches (PC-indexed, destination stored). RAS predicts "where to return BACK" for call/return pairs (LIFO stack, independent of PC).' },
+    { q: 'When does a 2-level predictor beat a 1-level of the same size?', a: 'When branches are spatially correlated — the outcome depends on recent branch history (e.g. nested conditions, data-dependent patterns).' },
+    { q: 'Can any predictor beat 50% on a truly random branch?', a: 'No. A perfectly random source has no exploitable structure. 50% is the information-theoretic ceiling.' },
+    { q: 'Why is the GHR updated with each resolved branch, not each fetched branch?', a: 'To avoid contaminating the history with speculative (possibly wrong) predictions. Some designs use both with checkpoint/restore on mispredict.' },
+  ],
+
+  cheat: {
+    defs: [
+      ['1-bit', 'Last outcome, fails loops 2x'],
+      ['2-bit bimodal', 'SN/WN/WT/ST saturating counter'],
+      ['BHT', 'PC-indexed counter array'],
+      ['GHR', 'Shift reg of last P outcomes'],
+      ['2-level', 'BHT[GHR][hash(PC)] for correlation'],
+      ['BTB', 'PC → target address (branch TO)'],
+      ['RAS', 'LIFO call/return stack (branch BACK)'],
+    ],
+    formulas: [
+      'Area = P + 2^P · M · N bits',
+      'hash = PC[log2(M)+1 : 2]',
+      'Random best = 50%',
+    ],
+    gotchas: [
+      'Random branches: 50% is ceiling',
+      '2-bit takes 2 mispredicts to flip',
+      'BHT aliasing: multiple PCs hit same entry',
+      'BTB is for target, RAS is separate for return',
+    ],
+  },
+},
+
+{
+  id: 'CACHE', title: 'Caches', zh: '缓存',
+  pill: 'hierarchy + locality exploitation',
+
+  prereq: { zh: '<b>💾 内存层级和 Locality</b><br><br>现代 CPU 的内存不是一个平的东西，而是层级：<br><br><table><tr><th>层级</th><th>大小</th><th>访问时间</th></tr><tr><td>Registers</td><td>几十</td><td>0 cycle</td></tr><tr><td>L1 cache</td><td>32-64 KB</td><td>1-4 cycle</td></tr><tr><td>L2 cache</td><td>256-1024 KB</td><td>10-20 cycle</td></tr><tr><td>L3 cache</td><td>几-几十 MB</td><td>30-60 cycle</td></tr><tr><td>DRAM</td><td>几-几十 GB</td><td>200+ cycle</td></tr><tr><td>SSD/Disk</td><td>TB</td><td>100,000+ cycle</td></tr></table><br><b>核心原则</b>：越近 CPU，越小，越快，越贵。<br><br><b>💡 为什么 cache 有用？Locality (局部性)</b><br>• <b>Temporal locality (时间局部性)</b>：最近用的数据很快还会用 (例如循环变量 i 在每次迭代都被读)<br>• <b>Spatial locality (空间局部性)</b>：用了地址 X，附近 X+1, X+2 也很可能用 (例如连续访问数组)<br><br>Cache 把最近 / 附近的数据复制一份在 CPU 旁边，这样大多数访问都命中 cache，很少去 DRAM。<br><br><b>Cache line (block)</b>：cache 的最小单位，通常 64 字节。一次 load / store 可能只动 4 字节，但 cache 操作整个 64 字节 block — 这利用 spatial locality。',
+            en: 'Memory hierarchy: registers (0 cyc) → L1 (1-4) → L2 (10-20) → L3 (30-60) → DRAM (200+) → disk (100k+). Closer = smaller, faster, costlier. Caches exploit temporal locality (reuse soon) and spatial locality (nearby addresses used). Cache line (block) is the unit of allocation, typically 64 B.' },
+
+  overview: {
+    zh: '<b>📍 Cache 基本结构</b><br><br>一个 cache 是一组 "行 (lines)"。每行存一小块连续内存 (一个 cache line)。要访问某个地址，先把地址切成三部分：<br><br><b>地址切分 (必背公式)</b>：<br><code>| Tag | Index | Offset |</code><br>• <b>Offset</b>：行内字节位置。位数 = log₂(block size)<br>• <b>Index</b>：选哪个 set。位数 = log₂(#sets)<br>• <b>Tag</b>：比对这个 set 里存的是不是我要的。位数 = PA_width − index − offset<br><br><b>关系公式</b>：<br>• #sets = total_size / (ways × block_size)<br>• total SRAM bits ≈ #sets × ways × (data + tag + V + D + LRU)<br><br><b>🔀 3 种映射方式</b><br><table><tr><th>Type</th><th>Ways</th><th>特点</th></tr><tr><td>Direct-mapped</td><td>1</td><td>快, 便宜, conflict miss 多</td></tr><tr><td>N-way set-assoc</td><td>N</td><td>平衡 (L1 通常 4-8 way)</td></tr><tr><td>Fully-assoc</td><td>all</td><td>无 conflict, 贵 (需并行比较所有 way)</td></tr></table><br><b>💥 3 C\'s of Cache Misses (必考)</b><br>• <b>Compulsory (冷启动)</b>: 第一次访问，无法避免 (prefetch 可缓解)<br>• <b>Capacity</b>: 工作集 &gt; cache 容量，早期 entry 被挤出<br>• <b>Conflict</b>: Direct 或低 assoc cache 里，多个地址映射到同一 set<br>• <b>[+ Coherence]</b>: 多核 invalidation (L14 话题)<br><br><b>⏱ AMAT (Average Memory Access Time)</b><br><span class="fml">AMAT = hit_time + miss_rate × miss_penalty</span><br><br><b>Multi-level</b>:<br><span class="fml">AMAT = L1_hit + L1_miss × (L2_hit + L2_miss × mem_time)</span><br><br><b>🖊️ Write Policies</b><br><table><tr><th></th><th>Write-through</th><th>Write-back</th></tr><tr><td>行为</td><td>每次写都到 mem</td><td>只在 evict 时写回</td></tr><tr><td>带宽</td><td>高</td><td>低</td></tr><tr><td>复杂度</td><td>简单</td><td>需 dirty bit</td></tr></table><br><b>Write miss 的策略</b>：<br>• <b>Write-allocate</b>: 先 fetch 整行进 cache，再写<br>• <b>No-write-allocate</b>: 直接写 mem, 不 fetch<br><br>通常配对：write-back + write-allocate 或 write-through + no-write-allocate。<br><br><b>🔄 Replacement Policies</b><br>• <b>LRU (Least Recently Used)</b>: 理论最好，真 LRU 代价高 (N! states)。实际用 pseudo-LRU (tree-based)<br>• <b>FIFO</b>: 简单但有 Belady 异常 (增大 cache 反而性能变差)<br>• <b>Random</b>: 便宜，性能接近 LRU<br><br><b>🎯 考试常问</b>：<br>• Q: 4-way set-assoc, 16 KB cache, 64 B block, 32-bit address. 求 tag bits。<br>&nbsp;&nbsp;→ A: #sets = 16K/(4×64) = 64. offset=6, index=6, tag=32−6−6=<b>20 bits</b><br>• Q: AMAT 计算: hit=2, miss_rate=5%, miss_penalty=100<br>&nbsp;&nbsp;→ A: AMAT = 2 + 0.05×100 = <b>7 cycles</b><br>• Q: Direct-mapped vs 2-way vs 4-way — 哪个 conflict miss 少？<br>&nbsp;&nbsp;→ A: 越多 way 越少<br>• Q: Write-back 的优点？<br>&nbsp;&nbsp;→ A: 节省带宽。多次写同一 line 只写回内存一次。<br>• Q: Belady 异常是什么？<br>&nbsp;&nbsp;→ A: FIFO 策略下, cache 增大反而 miss 增多的异常情况。LRU 无此问题。',
+    en: 'Address = |Tag|Index|Offset|. #offset=log2(block), #index=log2(sets), #tag=PA-index-offset. #sets=total/(ways·block). Direct/N-way/fully-assoc trade conflict misses for hardware cost. 3 C\'s: compulsory, capacity, conflict. AMAT = hit + miss_rate·miss_penalty. Write-through+no-write-allocate or write-back+write-allocate.',
+  },
+
+  formulas: [
+    { label: 'AMAT', tex: '\\text{AMAT} = t_{\\text{hit}} + m \\cdot t_{\\text{penalty}}' },
+    { label: 'Multi-level AMAT', tex: '\\text{AMAT} = t_{L1} + m_{L1}(t_{L2} + m_{L2} \\cdot t_{\\text{mem}})' },
+    { label: 'Address split', tex: '\\text{addr} = |\\text{tag} : \\text{index} : \\text{offset}|' },
+    { label: '#sets', tex: '\\#\\text{sets} = \\frac{\\text{total}}{\\text{ways} \\cdot \\text{block}}' },
+    { label: '#tag bits', tex: '\\text{tag} = \\text{PA} - \\log_2(\\text{sets}) - \\log_2(\\text{block})' },
+  ],
+
+  diagram: `flowchart LR
+  A[Address] --> T[Tag]
+  A --> I[Index]
+  A --> O[Offset]
+  I --> S[Select set]
+  S --> W1[Way 0]
+  S --> W2[Way 1]
+  W1 --> C[Compare tags]
+  W2 --> C
+  T --> C
+  C --> H{hit?}
+  H -->|yes| D[Return data]
+  H -->|no| M[Miss → next level]
+  style C fill:#c084fc,color:#000`,
+
+  example: {
+    title: 'Address math — 16 KB 4-way set-assoc, 64 B block, 32-bit PA',
+    body: `Step 1: <b>offset bits</b> = log₂(64) = <b>6</b><br>
+Step 2: <b>#sets</b> = 16 KB / (4 × 64 B) = 16384 / 256 = <b>64 sets</b><br>
+Step 3: <b>index bits</b> = log₂(64) = <b>6</b><br>
+Step 4: <b>tag bits</b> = 32 − 6 − 6 = <b>20</b><br><br>
+Address breakdown: <code>| tag (20) | index (6) | offset (6) |</code><br><br>
+<b>Total SRAM bits per line</b> = 64 × 8 + 20 + 1 (V) + 1 (D) + 2 (pseudo-LRU) = 536 bits<br>
+<b>Total SRAM</b> = 256 lines × 536 bits ≈ 17 KB (~6% overhead)`,
+  },
+
+  recall: [
+    { q: 'Name the 3 C\'s of cache misses.', a: 'Compulsory (first access, cold), Capacity (working set > cache), Conflict (too few ways, addresses map to same set).' },
+    { q: 'Why pair write-back with write-allocate (and not write-through)?', a: 'Write-back keeps a dirty line in cache and batches writes. Write-allocate pulls the line into cache so subsequent writes hit. Pairing maximizes both bandwidth savings and write locality.' },
+    { q: 'AMAT for hit=1, miss=10%, penalty=100 cycles?', a: '1 + 0.10 × 100 = 11 cycles.' },
+    { q: 'What does associativity reduce?', a: 'Conflict misses. Compulsory and capacity are unaffected.' },
+    { q: 'Why is true LRU rarely used in hardware?', a: 'True LRU requires tracking a full order over all ways, costing ~log(N!) bits per set. Pseudo-LRU uses a binary tree approximation, linear cost, nearly as good.' },
+    { q: 'Belady anomaly — what is it and when does it occur?', a: 'A larger cache yields more misses than a smaller one under the same workload and policy. Happens with FIFO, never with LRU (LRU is a stack algorithm).' },
+  ],
+
+  cheat: {
+    defs: [
+      ['Cache line', '64 B block, unit of allocation'],
+      ['Direct-mapped', '1 way, fastest, most conflicts'],
+      ['N-way set-assoc', 'N ways per set, balanced'],
+      ['Fully-assoc', 'One big set, no conflict misses'],
+      ['Compulsory miss', 'Cold, first access'],
+      ['Capacity miss', 'Working set > cache'],
+      ['Conflict miss', 'Ways too few, same index collision'],
+      ['Write-through', 'Every write to mem'],
+      ['Write-back', 'Only on evict (dirty bit)'],
+    ],
+    formulas: [
+      'AMAT = t_hit + m · t_penalty',
+      '#sets = total / (ways · block)',
+      '#offset = log2(block)',
+      '#tag = PA − index − offset',
+    ],
+    gotchas: [
+      'More ways → fewer conflict misses only',
+      'Belady anomaly: FIFO, not LRU',
+      'Write-back pairs with write-allocate',
+      'Miss penalty grows with distance in hierarchy',
+    ],
+  },
+},
+
+{
+  id: 'VM', title: 'Virtual Memory · VIPT', zh: '虚拟内存',
+  pill: 'address translation + TLB',
+
+  walkthrough: {
+    title: 'VIPT 最小 associativity · 32 KB cache, 64 B line, 4 KB page',
+    setup: '给定: cache size S = 32 KB, line size L = 64 B, page size P = 4 KB. <br>求: 最小 associativity (ways) 让 cache 不会 alias.',
+    steps: [
+      '<b>Step 1 · 算 offset bits</b><br>每个 cache line 是 64 字节, 需要 log₂(64) = <b>6 bits</b> 来表示行内位置。<br><br><code>offset_bits = 6</code>',
+      '<b>Step 2 · 算 page offset bits</b><br>每个 page 是 4 KB = 4096 字节, 需要 log₂(4096) = <b>12 bits</b> 表示页内位置。<br><br><code>page_offset_bits = 12</code>',
+      '<b>Step 3 · 应用 VIPT 无别名约束</b><br><code>index + offset ≤ page_offset</code><br><code>index + 6 ≤ 12</code><br>→ <b>index ≤ 6 bits</b><br><br>为什么? Page offset 部分的位在 VA 和 PA 里完全相同 (pages 是对齐的)。如果 cache 的 index 只用这部分的位, 那用虚拟地址和物理地址算出来的 index 一样, 不会 alias。',
+      '<b>Step 4 · 最大 #sets</b><br>index ≤ 6 → max #sets = 2^6 = <b>64 sets</b>',
+      '<b>Step 5 · 求 ways</b><br><code>total_size = #sets × ways × line_size</code><br><code>32 KB = 64 × ways × 64 B</code><br><code>32768 = 4096 × ways</code><br>→ <b>ways = 8</b>',
+      '<b>✅ 答案: 最小 8-way set-associative</b><br><br><b>验证陷阱 (选择题常考)</b>:<br>• <b>4-way</b>: #sets = 32768/(4·64) = 128 → index = 7 bits &gt; 6 → <b>会 alias ❌</b><br>• <b>8-way</b>: #sets = 64 → index = 6 bits ≤ 6 → <b>不 alias ✅</b><br>• <b>16-way</b>: #sets = 32 → index = 5 bits ≤ 6 → <b>不 alias ✅</b><br><br>所以答案是 "aliasing 只有在 ≥ 8-way 时不会发生"。'
+    ]
+  },
+
+
+  prereq: { zh: '<b>📄 什么是虚拟内存？用公司办公桌类比</b><br><br>想象你开了一家公司，每个员工都想要 "自己的办公桌和文件柜"。但实际上公司只有 10 张桌子，员工有 100 个。<br><br>解决方案：<br>• 每个员工分配一个<b>虚拟办公室</b>，编号 0, 1, 2...<br>• 真正坐的时候，系统动态地把虚拟办公室映射到一张物理桌子<br>• 没坐的时候，员工的东西放在仓库 (disk, swap)<br>• 员工自己感觉永远有自己的办公室 (编号不变，位置可能变)<br><br>这就是 <b>Virtual Memory (虚拟内存)</b>：<br>• <b>VA (Virtual Address)</b>：程序看到的地址 (员工的虚拟编号)<br>• <b>PA (Physical Address)</b>：真实 DRAM 地址 (真实桌子位置)<br>• <b>Page</b>：固定大小的块 (通常 4 KB)，映射的最小单位<br>• <b>Page Table</b>：系统维护的 "VPN → PPN" 映射表<br>• <b>TLB (Translation Lookaside Buffer)</b>：最近用过的映射缓存<br><br><b>为什么需要 VM？(必须记住)</b><br>1. 每个进程以为有<i>整个地址空间</i>，互相隔离 (安全)<br>2. 物理内存可以被多个进程<i>共享</i><br>3. Page 可以换到 disk 上 (swap)，省 DRAM<br>4. Kernel 和 user 地址空间分离 (保护)',
+            en: 'Virtual memory gives each process its own virtual address space, mapped via a page table to physical frames. TLB caches recent translations. Benefits: isolation (security), physical-memory sharing, disk swap, kernel/user separation. Page = fixed-size block (typically 4 KB).' },
+
+  overview: {
+    zh: '<b>📐 地址结构</b><br><br><code>VA = | VPN | page offset |</code><br><code>PA = | PPN | page offset |</code><br><br>Page offset 部分在 VA 和 PA 里完全相同 (因为 page 是对齐的)。<br><br>4 KB page → offset = <b>12 bits</b><br>• 32-bit VA → 20-bit VPN<br>• 48-bit VA (x86-64) → 36-bit VPN<br><br><b>🗂️ Page Table</b><br>一个数组，用 VPN 索引，每个 entry 存：<br>• PPN (physical page number)<br>• 权限位 (r/w/x, user/kernel)<br>• Valid bit (页是否在内存)<br>• Dirty bit (写过)<br>• Access bit (最近用过)<br><br><b>⚠️ 问题</b>：对 64-bit VA，单级 page table 太大。48-bit VA → 2^36 = 680 亿个 entry × 8 字节 = 500 GB。不可能。<br><br><b>🎯 解决：Multi-level Page Table (多级页表)</b><br>把 VPN 切成几段，每段索引一级页表。只有被使用的地址才分配下级页表。稀疏地址空间节省大量空间。<br><br>x86-64 用 <b>4 级 page table</b>: PML4 → PDPT → PD → PT → Page<br><br><b>⚡ TLB (Translation Lookaside Buffer)</b><br>Page table 住在 mem，每次查要一次额外 DRAM access (或走多级). 太慢。<br><br>TLB 是 32-128 entry 的小 cache (高 assoc 或 fully assoc)，存最近用过的 VPN → PPN:<br>• <b>TLB hit</b>: 几乎免费 (1 cycle)<br>• <b>TLB miss</b>: 走 page table (可能几百 cycles)<br>• <b>Page fault</b>: 页根本不在 memory → OS trap → 从 disk 装入 (几 ms)<br><br><b>区分 TLB miss 和 page fault</b>：<br>• TLB miss = 翻译不在 TLB，但可能在 page table (hardware 或 OS 处理，快)<br>• Page fault = 翻译在 page table 里，但 PPN 映射的页不在物理内存 (OS 处理，慢)<br><br><b>💡 VIPT / PIPT / VIVT Caches — sp25 P1a 必考</b><br><br><table><tr><th>类型</th><th>Index</th><th>Tag</th><th>特点</th></tr><tr><td><b>VIVT</b></td><td>VA</td><td>VA</td><td>最快 (无需 TLB) 但有 alias / ASID 问题</td></tr><tr><td><b>PIPT</b></td><td>PA (等 TLB)</td><td>PA</td><td>无 alias 但慢 (串行)</td></tr><tr><td><b>VIPT</b> ⭐️</td><td>VA (和 TLB 并行)</td><td>PA (TLB 后比对)</td><td>快 + 无 alias (约束下)</td></tr></table><br><b>VIPT 核心想法</b>：用 VA 的低位做 index (和 TLB 并行进行)，用 PA 做 tag (TLB 翻译完后和 tag 对比)。节省了 "等 TLB" 的时间。<br><br><b>🔑 VIPT alias-free 条件 (必考)</b>：<br><span class="fml">index_bits + offset_bits ≤ page_offset_bits</span><br><br>为什么？因为 page offset 位在 VA 和 PA 里完全相同。如果 index 只用这部分的位，那就和用 PA 算出的 index 完全一样 — 不会 alias。<br><br><b>🎯 sp25 P1(a) 完整解法</b>：<br>48 KiB VIPT cache, 64 B line, 4 KB page, 求最小 associativity<br><br>1. offset_bits = log₂(64) = <b>6</b><br>2. page_offset_bits = log₂(4096) = <b>12</b><br>3. 最大 index_bits = 12 − 6 = <b>6</b><br>4. 最大 #sets = 2⁶ = <b>64</b><br>5. ways = total / (sets × block) = 48 KiB / (64 × 64 B) = 49152 / 4096 = <b>12</b> ✓<br><br>答案：最小 associativity = <b>12-way</b>。<br><br><b>🎯 考试常问</b>：<br>• Q: 为什么要 multi-level page table? → A: 单级对 64-bit VA 太大, 稀疏空间也全部分配。多级只在 used 的地方分配下级。<br>• Q: TLB miss vs page fault 区别? → A: TLB miss = 翻译不在 TLB (仍可能在 page table)；page fault = 页根本不在 mem，需要 disk I/O。<br>• Q: 为什么 VIPT 比 PIPT 快? → A: VIPT index 和 TLB 翻译并行；PIPT 必须等 TLB 完才能 index。<br>• Q: VIPT 的 alias 问题? → A: 如果 index 用的 VA 位超过 page offset 部分，两个 VA 映射到同一 PA 可能落到不同 set，产生 alias (同一数据有多份 copy 在 cache 里)。<br>• Q: 如何消除 VIPT alias? → A: 约束 index+offset ≤ page_offset，或者提高 associativity 使总 cache size 更小。',
+    en: 'VA=|VPN|offset|, PA=|PPN|offset|. Multi-level page tables save space for sparse address spaces. TLB (32-128 entries, high assoc) caches translations. TLB miss walks page table; page fault = page not in RAM. VIVT (fast, alias), PIPT (safe, slow), VIPT (both — alias-free iff index+offset ≤ page_offset_bits).',
+  },
+
+  formulas: [
+    { label: 'Page offset bits (4 KB page)', tex: '\\text{offset} = \\log_2(\\text{page size}) = 12' },
+    { label: 'VIPT alias-free condition', tex: '\\text{index} + \\text{offset} \\leq \\text{page offset}' },
+    { label: 'Min VIPT associativity', tex: '\\text{ways}_{\\min} = \\frac{\\text{total size}}{2^{\\text{page offset}}}' },
+    { label: 'Multi-level page table depth', tex: 'L = \\lceil \\text{VPN bits} / \\text{idx bits per level} \\rceil' },
+  ],
+
+  diagram: `flowchart LR
+  VA[Virtual Address] --> Split1[VPN + offset]
+  Split1 --> TLB{TLB}
+  TLB -->|hit| PPN[PPN]
+  TLB -->|miss| PT[Page Table walk]
+  PT --> PPN
+  PPN --> Combine[PPN + offset]
+  Combine --> PA[Physical Address]
+  style TLB fill:#c084fc,color:#000
+  style PT fill:#fbbf24,color:#000`,
+
+  example: {
+    title: 'sp25 P1a · VIPT minimum associativity',
+    body: `<b>Given</b>: 48 KiB VIPT cache, 64 B cache lines, 4 KB pages. Intel design can look up tag and data arrays in parallel with TLB, so must prevent aliasing without physical tagging.<br><br>
+<b>Step 1</b> — offset bits: <code>log₂(64) = 6</code><br>
+<b>Step 2</b> — page offset bits: <code>log₂(4096) = 12</code><br>
+<b>Step 3</b> — to prevent aliasing, (index_bits + offset_bits) ≤ page_offset_bits, so index_bits ≤ <b>12 − 6 = 6</b><br>
+<b>Step 4</b> — maximum #sets: <code>2^6 = 64</code><br>
+<b>Step 5</b> — solve for ways from total size:<br>
+&nbsp;&nbsp;<code>total = #sets × ways × block</code><br>
+&nbsp;&nbsp;<code>48 KiB = 64 × ways × 64 B</code><br>
+&nbsp;&nbsp;<code>49152 = 64 × ways × 64</code><br>
+&nbsp;&nbsp;<code>ways = 49152 / 4096 = 12</code> ✓<br><br>
+<b>Answer</b>: minimum 12-way associativity.`,
+  },
+
+  recall: [
+    { q: 'Why use multi-level page tables?', a: 'A single-level table for a 64-bit address space would require petabytes. Multi-level tables allocate lower levels only for used regions of the address space, saving memory for sparse layouts.' },
+    { q: 'TLB miss vs page fault — difference?', a: 'TLB miss: translation not cached, walk page table (fast, hardware). Page fault: page not in physical memory at all, must trap to OS and fetch from disk (slow, ms).' },
+    { q: 'Why is VIPT faster than PIPT?', a: 'VIPT starts the cache index lookup using virtual bits in parallel with TLB translation. PIPT must wait for TLB before it can even begin indexing.' },
+    { q: 'What is the VIPT alias problem?', a: 'If the cache index uses virtual bits beyond the page offset, two virtual addresses mapping to the same physical page may land in different sets — the same data is cached twice, and a write to one copy does not update the other.' },
+    { q: 'How do you eliminate VIPT aliasing (two methods)?', a: '(1) Constrain index_bits + offset_bits ≤ page_offset_bits, forcing index to come from page-offset bits only. (2) Increase associativity at the cost of making the cache smaller (fewer sets).' },
+    { q: 'Why does the page offset stay the same between VA and PA?', a: 'Pages are aligned — translation operates at page granularity. The within-page offset is invariant, only the page number is translated.' },
+  ],
+
+  cheat: {
+    defs: [
+      ['VA / PA', 'Virtual and physical addresses'],
+      ['VPN / PPN', 'Virtual / physical page number'],
+      ['Page', '4 KB aligned block'],
+      ['Page table', 'VPN → PPN map with perms'],
+      ['TLB', 'Translation cache, 32-128 entries'],
+      ['Page fault', 'Page not in DRAM, disk I/O'],
+      ['VIVT', 'Fastest but aliasing'],
+      ['PIPT', 'Safest but slow'],
+      ['VIPT', 'Best: index VA, tag PA, with constraint'],
+    ],
+    formulas: [
+      'offset = log2(page size) = 12 for 4 KB',
+      'VIPT alias-free: idx + off ≤ page_off',
+      'ways_min = total / 2^page_off',
+    ],
+    gotchas: [
+      'TLB miss ≠ page fault',
+      'Multi-level PT is for sparse address spaces',
+      'VIPT: page offset is the magic alignment',
+      'Reduce size or increase ways to satisfy constraint',
+    ],
+  },
+},
+
+{
+  id: 'L10', title: 'VLIW', zh: '超长指令字',
+  pill: 'compiler-scheduled ILP',
+
+  prereq: { zh: '<b>🍳 用餐厅类比从零开始：</b><br><br>• <b>CPU</b> = 一个厨师<br>• <b>指令 (instruction)</b> = 一个做菜动作（切菜、炒菜、装盘）<br>• <b>流水线 (pipeline)</b> = 厨师把做菜拆成 5 个阶段 (IF→ID→EX→MEM→WB)。就像工厂流水线，同一时刻有 5 道菜在不同阶段，没人闲着。<br>• <b>ILP (指令级并行)</b> = 一个线程里，找到几条 <i>互不依赖</i> 的指令让它们同时跑。比如 "切菜" 和 "烧水" 可以一起做，但 "放盐" 必须等 "水开"。<br>• <b>超标量 OoO (乱序执行)</b> = 现代 CPU (Intel / Apple M / AMD) 的做法：里面有一个超级聪明的硬件调度器 (ROB + issue queue + register rename)，<i>运行时</i> 动态找独立指令同时发射。非常强大，但硬件巨复杂、面积大、功耗高。<br>• <b>VLIW</b> = 完全相反的思路：老板 (<b>编译器</b>) 提前在一张大纸条上写好 "这个时间段 4 个厨师同时做 A/B/C/D"。硬件只看纸条执行，不思考。硬件简单省电，但老板必须超聪明。<br><br>这张 "纸条" 就是 <b>bundle (指令包)</b>。一个 bundle 有 W 个 <b>slot (槽位)</b>，每个 slot 对应一个 <b>功能单元 (FU)</b>。一个 cycle 里 W 个 slot 同时发射出去。<br><br><b>重点对比</b>：OoO 硬件做调度 (动态)，VLIW 编译器做调度 (静态)。互为镜像。',
+              en: 'What you need first:<br>① <b>ILP</b> = run independent instructions at the same time → higher single-thread perf.<br>② <b>Pipelined CPU</b> = 5 stages (IF/ID/EX/MEM/WB), one new instruction enters each cycle.<br>③ <b>Superscalar OoO</b> = hardware dynamically finds independent instructions using register renaming, a ROB, and issue queues — complex, power-hungry.<br>④ <b>VLIW</b> = opposite philosophy: let the <b>compiler</b> find ILP offline and pack it into wide instructions. Hardware stays dumb and fast.' },
+
+  overview: {
+    zh: 'VLIW 的核心想法：<b>把 "找独立指令" 这件事从硬件搬到编译器</b>。<br><br><b>传统 OoO 做法</b>：运行时硬件动态分析指令依赖，聪明派单。成本 = 硬件巨大、功耗高、电费贵。<br><b>VLIW 做法</b>：编译器离线把独立指令装进 bundle，运行时硬件 "闭眼执行"。成本 = 硬件极简、功耗低、时间可预测。<br><br><b>✅ 优点</b>：<br>1. 硬件小 → 省电省面积 → DSP 和嵌入式喜欢<br>2. 时间确定 → 每条指令的延迟都可预测 → 实时系统友好<br>3. 不需要 ROB / register rename / issue queue 这些复杂东西<br><br><b>❌ 缺点 (考试最爱考)</b>：<br>1. <b>代码膨胀</b>：编译器找不够独立指令就只能在 slot 里填 NOP (空操作)，代码变大。比如只找到 2 条独立指令，4-slot bundle 里另外 2 个就是 NOP。<br>2. <b>Cache miss 杀手</b>：bundle 是 "一条大指令"，4 个 slot 一起发射、一起停。任何一个 slot 碰到 cache miss → 整个 bundle 都停住。OoO 可以让没 miss 的 slot 继续往前跑，VLIW 做不到。<br>3. <b>编译器依赖症</b>：编译器必须神级聪明，要提前预测运行时行为 (分支概率、数据相关)。遇到不可预测的动态事件就翻车。<br>4. <b>没有 binary 兼容性</b>：机器从 4-slot 升级到 8-slot → bundle 格式变了 → 老二进制文件没法用新硬件的额外 slot。x86 OoO 没这个问题 (老程序在新 CPU 上直接变快)。<br>5. <b>分支难处理</b>：遇到 if/else 分支会让 bundle 里一半 slot 没用。解决方法 = <b>Predication (谓词执行)</b>：每个 op 带一个 predicate register，把两条分支路径 <i>都跑</i>，最后按谓词选结果，消除真分支。<br><br><b>代表产品</b>：Intel Itanium (IA-64) — 2001 年 Intel 想用它取代 x86，结果失败了。原因：① 编译器技术跟不上 ② 动态事件太多 (cache miss, 分支错预测) ③ x86 的 OoO 已经太强。<br>现在 VLIW 主要活在 <b>DSP</b> (TI C6x, Qualcomm Hexagon) 和 <b>专用加速器</b> (一些 TPU) 里。<br><br><b>🎯 考试常问</b>：<br>• Q: 为什么一个 cache miss 让整个 bundle 停？→ A: bundle 是一条指令，没有 per-slot stall 机制<br>• Q: Predication 是什么？→ A: 每个 op 带谓词 reg，guard 条件，消除分支<br>• Q: VLIW vs OoO 一句话？→ A: 静态编译器调度 vs 动态硬件调度，简单脆弱 vs 复杂鲁棒<br>• Q: 为什么 VLIW 没有 binary 兼容？→ A: bundle 宽度写死在指令格式里，改宽度 = 改 ISA',
+    en: 'A VLIW bundle contains W independent operations (slots), one per functional unit, issued <i>together</i> in a single cycle. No dynamic scheduling — the compiler must prove the ops in one bundle are independent. <b>Wins</b>: dead-simple hardware, low power, deterministic latency. <b>Losses</b>: code bloat (NOP-padded slots), a single L1 miss freezes all W slots, compiler complexity, binary incompatibility across widths. Itanium (IA-64) was the famous commercial attempt; it lost to OoO x86 because real code has too many dynamic events (cache misses, branch mispredictions) for static scheduling to beat hardware.',
+  },
+
+  formulas: [
+    { label: 'Max IPC', tex: '\\text{IPC}_{\\max} = W \\text{ (slots per bundle)}' },
+    { label: 'Static speedup (perfect fill)', tex: 'S = \\frac{\\text{scalar cycles}}{\\text{VLIW cycles}} \\le W' },
+    { label: 'Code size blow-up', tex: '\\text{size}_{\\text{VLIW}} \\approx \\text{size}_{\\text{RISC}} \\cdot \\frac{W}{\\text{fill rate}}' },
+    { label: 'Effective IPC with stalls', tex: '\\text{IPC}_{\\text{eff}} = W \\cdot (1 - \\text{stall rate})' },
+  ],
+
+  diagram: `flowchart LR
+  A[Compiler finds ILP] -->|packs| B["Bundle: op1 | op2 | op3 | op4"]
+  B -->|issue 1 cycle| C[4 FUs execute in parallel]
+  C --> D[Writeback]
+  style A fill:#c084fc,color:#000
+  style B fill:#faf5ff,stroke:#c084fc,color:#1a1a1f`,
+
+  example: {
+    title: 'Scheduling a loop into a 4-slot VLIW',
+    body: `Sequential RISC code for <code>a[i] = b[i] + c[i]</code>:<br>
+<code>1. lw  t0, 0(b)<br>2. lw  t1, 0(c)<br>3. add t2, t0, t1<br>4. sw  t2, 0(a)<br>5. addi i, i, 4<br>6. bne  i, N, loop</code><br><br>
+Dependencies: 3 needs 1&2, 4 needs 3, 5 is independent, 6 needs 5.<br>
+Naive schedule into a 4-wide VLIW:<br>
+<code>Bundle1: lw lw addi NOP   — 1,2,5 fire together<br>Bundle2: add NOP NOP NOP<br>Bundle3: sw  bne NOP NOP</code><br><br>
+→ 3 bundles, IPC = 6/3 = 2 (out of max 4). Fill rate = 50%. <b>Unroll the loop 4×</b> to stack more independent instructions in each bundle.`,
+  },
+
+  recall: [
+    { q: 'Why does one cache miss freeze the entire VLIW bundle?', a: 'Every slot in a bundle is issued in the same cycle as one logical instruction. VLIW hardware has no mechanism to stall just one slot while others continue — unlike OoO which keeps independent ops moving. The whole core stalls until the missed load returns.' },
+    { q: 'What is predication and why does VLIW depend on it?', a: 'Predication attaches a predicate register to each op: "only commit if pN is true." This converts control dependencies into data dependencies so the compiler can bundle ops from both sides of a branch without actually branching. VLIW needs this because scheduled branches would leave slot bubbles.' },
+    { q: 'Binary compatibility problem of VLIW in one line.', a: 'Widen the bundle (4 → 8 slots) and old binaries fail: they encode the old width and cannot use the new slots. x86 OoO solves this transparently in hardware; VLIW cannot.' },
+    { q: 'One-line contrast with OoO superscalar.', a: 'VLIW = compiler schedules statically, fragile under dynamic events; OoO = hardware schedules dynamically, robust, expensive.' },
+    { q: 'What is rotating register file?', a: 'A software-pipelining trick: each loop iteration gets a fresh register window by rotating the register file pointer. Lets the compiler pipeline loop iterations without unrolling.' },
+  ],
+
+  cheat: {
+    defs: [
+      ['VLIW', 'Wide bundle of W independent ops, compiler-scheduled'],
+      ['Bundle', '1 cycle of execution, W slots, W functional units'],
+      ['Predication', 'Guard each op by a predicate register → kill control dep'],
+      ['Rotating regs', 'SW pipeline without unroll; iteration gets fresh regs'],
+      ['Fill rate', '(real ops) / (total slots) — NOPs hurt this'],
+    ],
+    formulas: ['IPC_max = W', 'size ≈ RISC·W/fill', 'IPC_eff = W·(1−stall)'],
+    gotchas: [
+      'Cache miss → whole bundle stalls (no per-slot stall)',
+      'No binary compat across widths',
+      'Itanium (IA-64) = famous commercial flop',
+      'Still used in DSPs (TI C6x) and specialized accelerators',
+    ],
+  },
+},
+
+{
+  id: 'L11', title: 'Vectors', zh: '向量处理器',
+  pill: 'data-level parallelism (DLP)',
+
+  prereq: { zh: '<b>🎁 用发贴纸的类比从零开始：</b><br><br>想象一下你要给班上 64 个学生每人一张贴纸：<br><br>• <b>标量 CPU</b> = 你一个人，一次只能发 1 张 → 要发 64 次才发完<br>• <b>SIMD</b> = 你有一个"一次发 8 张"的工具 → 8 次发完。但 "8" 是写死在工具里的，不能改。AVX2 是 8 lane，AVX-512 是 16 lane，代码得重写。<br>• <b>向量处理器</b> = 你有一个"可调节宽度"的工具，上面有一个旋钮叫 <b>VLR</b>。你可以写 VLR=64 一次发 64 张，也可以写 VLR=9 一次发 9 张。硬件最大是 <b>MVL</b> (比如 64)，你的 VLR 不能超过 MVL。<br><br><b>关键区别</b>：<br>• SIMD 的 lane 数是<i>编译时</i>写死的 (在 opcode 里)<br>• 向量的 lane 数是<i>运行时</i>软件可写的 (在 VLR 里)<br>• 同一份向量代码可以跑在 MVL=32 的手机和 MVL=512 的超算上，不用改一行<br><br><b>💡 关键概念</b>：<br>• <b>MVL (Maximum Vector Length)</b> = 硬件最大向量长度，固定<br>• <b>VLR (Vector Length Register)</b> = 软件可写，"这一条 vinst 处理几个元素"<br>• <b>DLP (Data-Level Parallelism)</b> = 数据级并行，一个 for 循环每次迭代对数组的一个元素做同样的操作，迭代之间互相不依赖。向量机专门吃这种。',
+              en: 'From scratch:<br>① <b>DLP</b> = independent loop iterations doing the same op on array elements. This is what vector machines eat.<br>② <b>SIMD vs Vector</b>: SIMD hard-codes the lane count N into the opcode (AVX2 = 8 floats). Vector machines expose a writable <b>VLR</b> — same binary runs on different widths.<br>③ <b>MVL</b> = hardware maximum vector length (physical register width).<br>④ <b>VLR</b> = software-writable "how many lanes to use this instruction." Program sets it per loop iteration.' },
+
+  overview: {
+    zh: '向量处理器用<b>一条指令</b>操作<b>一整条数据向量</b>。必须记住三个关键词：<b>VLR、Strip-mining、Chaining</b>。<br><br><b>① VLR (向量长度寄存器)</b><br>每条 vinst 之前都要设置 VLR。用 <code>vsetvli</code> 指令告诉硬件"这次处理几个元素"。<br><br><b>② Strip-mining (分段处理)</b> — 处理任意长度的循环<br>真实的数组长度 N 不一定是 MVL 的整数倍。编译器把循环切成 MVL 大小的块。<br><br>🔑 <b>关键技巧：余数先处理</b>。<br>比如 N = 201, MVL = 64：<br>• 迭代 1：VL = 201 mod 64 = <b>9</b>，处理 [0..8] (余数先！)<br>• 迭代 2：VL = 64，处理 [9..72]<br>• 迭代 3：VL = 64，处理 [73..136]<br>• 迭代 4：VL = 64，处理 [137..200]<br>• 总共 9 + 64×3 = 201 ✓<br><br>为什么余数先？→ 让后面所有迭代都用满 MVL，循环体是 uniform 的，chaining 效率最高，分支预测也简单。<br><br><b>③ Chaining (链式转发)</b> — 向量机的"加速器"<br>没有 chaining：vinst1 跑完所有 N 个元素 → vinst2 开始 → vinst2 跑完。总时间 ≈ 2 × (start_up + N - 1)。<br>有 chaining：vinst1 的 <i>第一个元素</i> 结果一出来，立刻喂给 vinst2 当输入，vinst2 不用等 vinst1 全跑完。总时间 ≈ start_up + N - 1 + 一点点。<br><br>🏭 <b>类比</b>：工厂流水线。零件装到一半就开始下一道工序，不用等全部装完才下一步。省了一倍时间。<br><br><b>其他必须知道的概念</b>：<br>• <b>Stride (步长)</b>：非单位步长的访问，比如读矩阵的一列 (每次跳一行那么多个元素)<br>• <b>Gather / Scatter (收集/散播)</b>：用索引向量做间接寻址，比如 <code>A[B[i]]</code>。<i>非常慢</i>，但有时没办法<br>• <b>Mask (掩码)</b>：每个 lane 一个 on/off 位，在向量内实现 if/else (两边都跑，按掩码选)<br>• <b>Reduction (归约)</b>：sum、max 之类，需要 log 深度的树或标量累加器。不能一步完成<br><br><b>代表机器</b>：<br>• <b>Cray-1</b> (1976) — 第一台商用向量超算，开启超算时代<br>• <b>NEC SX 系列</b> — 一直做到 2020 年代<br>• <b>RISC-V V 扩展</b> (2021 标准化) — 现代复活，手机、嵌入式、服务器都在用<br>• <b>ARM SVE</b> — ARM 的向量扩展，同一个思路<br><br><b>🎯 考试常问</b>：<br>• Q: 向量 vs SIMD 一句话区别？→ A: VLR 运行时可调 (向量) vs 编译时写死 (SIMD)<br>• Q: Chaining 省多少时间？→ A: k 条链的指令从 k×(T_start+N-1) 降到 T_start+N-1+小开销<br>• Q: 向量什么时候慢？→ A: 短循环 (start-up 占比高)、gather/scatter、发散控制流、reduction<br>• Q: 为什么即使 MVL 很大也要 strip-mining？→ A: N 通常不整除 MVL，需要处理余数<br>• Q: Masked lanes 还占时间吗？→ A: 占，时间 ≈ N 不是 N_active，空转的 lane 也要一个 cycle',
+    en: 'One instruction operates on a whole vector. Three must-memorize tricks:<br><br><b>VLR</b> — software writes this before each vector instruction. Controls how many lanes fire.<br><b>Strip-mining</b> — a compiler loop that handles arbitrary-length work: first iteration does <code>N mod MVL</code> elements (remainder first), then full MVL chunks until done.<br><b>Chaining</b> — pipeline forwarding at vector granularity: the first element output of vinst1 flows immediately into vinst2, so vinst2 starts after start-up latency, not after vinst1 finishes all N elements. Cuts long dependency chains from ~2·N to ~N+startup.<br><br>Extras: gather/scatter for irregular access, strided loads for non-unit steps, masks for control flow. Canonical machine = Cray-1 (1976); modern rebirth = RISC-V "V" extension.',
+  },
+
+  formulas: [
+    { label: 'Strip-mine iteration count', tex: '\\text{iters} = \\lceil N / \\text{MVL} \\rceil' },
+    { label: 'Chained execution time (N ≫ startup)', tex: 'T_{\\text{chain}} \\approx T_{\\text{start}} + N - 1' },
+    { label: 'Unchained execution time', tex: 'T_{\\text{unchain}} \\approx k \\cdot (T_{\\text{start}} + N - 1)' },
+    { label: 'Amdahl for vectorized fraction f', tex: 'S = \\frac{1}{(1-f) + f/V}' },
+  ],
+
+  diagram: `flowchart LR
+  A["N elements to process"] --> B{VL = min(VLR, N − i)}
+  B --> C[vadd.vv v3 v1 v2]
+  C -->|chain| D[vmul.vv v4 v3 v5]
+  D -->|chain| E[vse.v v4]
+  E --> F[i += VL]
+  F -->|i < N| B
+  style C fill:#faf5ff,stroke:#c084fc,color:#1a1a1f
+  style D fill:#faf5ff,stroke:#c084fc,color:#1a1a1f`,
+
+  example: {
+    title: 'Strip-mine N=201, MVL=64',
+    body: `<code>iters = ceil(201/64) = 4</code>. Classic pattern: <b>remainder first</b>.<br>
+Iter 1: VL = 201 mod 64 = 9 — process elements [0..8]<br>
+Iter 2: VL = 64 — process [9..72]<br>
+Iter 3: VL = 64 — process [73..136]<br>
+Iter 4: VL = 64 — process [137..200]<br>
+Total: 9 + 64·3 = 201 ✓<br><br>
+Why remainder first? Later iterations all run at full MVL, maximizing chaining efficiency and keeping the back-half of the loop uniform.`,
+  },
+
+  recall: [
+    { q: 'In one sentence: vector processor vs SIMD.', a: 'SIMD bakes N lanes into each opcode (width known at compile time). Vector machines let software write VLR at runtime, so the same binary adapts to any MVL.' },
+    { q: 'What does chaining save vs running vinsts back-to-back with no chaining?', a: 'Without chaining, each vinst takes T_start + N−1 and they run serially → k(T_start + N − 1). With chaining, they pipeline through start-up and total ≈ T_start + N − 1 + small overlap ≈ N + const. Savings scale with k (chain depth).' },
+    { q: 'When is vector bad?', a: '(1) Short loops where T_start dominates. (2) Irregular memory access (gather/scatter is slow). (3) Highly divergent control flow (masks lose effective lanes). (4) Reductions (need log-depth tree or scalar accumulator).' },
+    { q: 'Why is strip-mining still needed on a machine with very large MVL?', a: 'N is rarely a multiple of MVL; the remainder must be handled. Also, register pressure and memory bandwidth bound how many vectors stay live at once.' },
+    { q: 'What is a mask register used for?', a: 'Per-lane enable/disable bit. Lets vinst implement <code>if</code> inside a loop: evaluate both sides under a mask, commit only selected lanes.' },
+  ],
+
+  cheat: {
+    defs: [
+      ['MVL', 'Hardware max vector length (fixed per machine)'],
+      ['VLR', 'Software-writable, lanes used this instruction'],
+      ['Strip-mine', 'Remainder-first loop to handle N not divisible by MVL'],
+      ['Chaining', 'Element-by-element forwarding between dependent vinsts'],
+      ['Gather/scatter', 'Indexed load/store for irregular access'],
+      ['Stride', 'Non-unit step memory access (e.g. column of matrix)'],
+    ],
+    formulas: ['iters = ⌈N/MVL⌉', 'T_chain ≈ T_start + N − 1', 'Amdahl: 1/((1−f)+f/V)'],
+    gotchas: [
+      'Start-up latency hurts short vectors',
+      'Gather/scatter ≫ contiguous loads in time',
+      'Reductions need log-tree or accumulator',
+      'Masked lanes still consume a slot (time ≈ N not N_active)',
+    ],
+  },
+},
+
+{
+  id: 'L12', title: 'Multi-threading', zh: '多线程',
+  pill: 'latency hiding via TLP',
+
+  prereq: { zh: '<b>🍲 用厨师做菜类比从零开始：</b><br><br>想象你是一个厨师 (CPU core) 在做一道菜：<br>• 这道菜有一步是 <b>"煲汤 30 分钟"</b> = CPU 的 <i>内存访问</i><br>• L2 cache miss ≈ 20 cycles 浪费 (小停顿)<br>• DRAM miss ≈ 200+ cycles 浪费 (大停顿)<br>• 这段时间你什么也没做，厨房 (FU) 闲着 → 浪费<br><br><b>🎯 解决方案</b>：同时做几道菜 = 同时跑几个线程。第一道菜在煲汤时，你可以切第二道菜的材料。厨房不闲。<br><br><b>💡 核心概念</b>：<br>• <b>线程 (thread)</b> = 独立的指令流，有自己的 PC (指令指针) 和寄存器<br>• <b>CPU 瓶颈</b> = 内存访问停顿，功能单元闲着<br>• <b>ILP (指令级并行)</b> = 在 <i>一个线程</i> 里找独立指令并行<br>• <b>TLP (线程级并行)</b> = 用 <i>不同线程</i> 的指令填空闲槽位<br>• <b>MT 的目标</b> = 提高 <i>吞吐量 (throughput)</i>，不是单线程延迟。用备用线程填充停顿槽位<br><br>ILP 和 TLP 是<b>互补</b>的：ILP 不够了，TLP 补上。现代 CPU 两个都用。',
+              en: 'From scratch:<br>① <b>Thread</b> = an independent instruction stream with its own PC and architectural registers.<br>② <b>CPU bottleneck</b>: memory stalls are huge (L2 ~20 cyc, DRAM ~200+ cyc). During a stall, functional units are idle.<br>③ <b>ILP vs TLP</b>: ILP finds independent ops <i>in one thread</i>; TLP fills idle slots with ops from <i>other threads</i>. Complementary.<br>④ <b>Goal of MT</b>: raise aggregate throughput by reusing idle cycles. Per-thread latency unchanged or slightly worse.' },
+
+  overview: {
+    zh: '多线程有<b>三种粒度</b>，考试经常考它们的对比：<br><br><b>① Coarse-grained MT (粗粒度多线程)</b><br>• <b>什么时候切线程？</b> 只在长停顿 (L2 miss 或 DRAM miss) 时才切<br>• <b>怎么切？</b> 把 pipeline 清空，换上另一个线程，继续跑<br>• ✅ <b>优点</b>：实现简单、便宜；单线程性能几乎不受影响 (没停顿时整个 core 都是你的)<br>• ❌ <b>缺点</b>：pipeline flush 有开销 (几十 cycles)，所以必须是长停顿才值得切。短停顿 (几 cycles) 没法利用。<br>• <b>代表</b>：早期 IBM 大型机<br><br><b>② Fine-grained MT (细粒度多线程)</b><br>• <b>什么时候切？</b> <b>每一个 cycle</b> 都切，轮询 (round-robin)<br>• <b>怎么切？</b> 硬件有 N 份 PC / 寄存器 / rename table，每个 cycle 从不同线程取指令<br>• ✅ <b>优点</b>：100% 利用 pipeline，长短停顿都能藏住<br>• ❌ <b>缺点</b>：单线程性能被切成 <b>1/N</b> (你的线程要 N 个 cycle 才轮到一次)<br>• <b>代表</b>：Sun Niagara (UltraSPARC T1)，每核 8 个线程<br><br><b>③ SMT — Simultaneous Multi-Threading (同时多线程)</b> 🌟 重点<br>• <b>核心特征</b>：<b>同一个 cycle</b> 里从 <i>多个线程</i> 发射指令到一个 OoO 后端<br>• <b>用的硬件</b>：一个 OoO superscalar core (有 ROB、issue queue、多个 FU 能发射 4-6 条指令/cycle 的那种)<br>• <b>线程怎么共存</b>：<br>&nbsp;&nbsp;— 复制：每个线程自己的 arch register file / PC / rename table<br>&nbsp;&nbsp;— 共享：ROB entries, issue queue slots, FU, L1 cache, BTB<br>• <b>代表</b>：Intel Hyperthreading，典型 2 threads/core。IBM POWER 可以 4 或 8 threads/core<br><br><b>💡 SMT 的关键 insight</b>：OoO 后端本来就能发射 4-6 条指令/cycle，但单线程常常填不满。SMT 让它从多个线程来填。<br><br><b>⚠️ SMT 不总是赢 (考试最爱考)</b>：<br>1. <b>FU port 冲突</b>：两个线程都抢同一个 FP 乘法单元 → 互相 serialize<br>2. <b>Cache footprint 爆炸</b>：两个线程的 working set 加起来 > L1 容量 → miss rate 飙升<br>3. <b>BTB / 分支预测器污染</b>：互相干扰预测准确度<br><br>🎯 <b>SMT 胜利条件</b>：两个线程压<i>不同</i>资源 (一个 memory-bound + 一个 compute-bound)。反之则 SMT 可能<i>损失</i>性能 10-20%。<br><br><b>🔐 安全问题</b>：SMT 带来 side-channel 攻击 (PortSmash, MDS, TAA, Spectre 家族)。两个共享核心的线程能通过微架构时序互相偷信息 (cache timing, port timing)。OpenBSD 和一些 HPC 系统默认关闭 SMT。<br><br><b>📊 硬件分配对比</b>：<br><table><tr><th>资源</th><th>复制?</th><th>说明</th></tr><tr><td>Arch 寄存器</td><td>N 份</td><td>每个线程自己的</td></tr><tr><td>PC</td><td>N 份</td><td>每个线程自己的指令指针</td></tr><tr><td>Rename table</td><td>N 份</td><td>每个线程独立重命名</td></tr><tr><td>ROB / IQ</td><td>共享</td><td>可以按线程标记 entries</td></tr><tr><td>FU</td><td>共享</td><td>所有线程抢</td></tr><tr><td>L1 / L2 cache</td><td>共享</td><td>容易互相踩</td></tr></table><br><b>🎯 考试常问</b>：<br>• Q: 哪个 MT 粒度能在 <i>同一个 cycle</i> 发射多个线程的指令？→ A: 只有 SMT<br>• Q: SMT 什么时候会 <i>伤害</i> 性能？→ A: FU port 冲突 + cache 容量不够<br>• Q: Fine-grained 为什么让单线程性能变 1/N？→ A: 每 N 个 cycle 你才轮到一次<br>• Q: 要多少线程才能完全隐藏 L 个 cycle 的延迟？→ A: T ≥ L × w / IPC_per_thread<br>• Q: SMT 和 CMP (多核) 有什么区别？→ A: CMP 是多个完整 core，SMT 是一个 core 共享给多个线程',
+    en: 'Three flavors:<br><br><b>Coarse-grained MT</b> — switch only on long-latency events (e.g. L2 miss). Cheap (one pipeline flush on switch) but misses short stall opportunities.<br><b>Fine-grained MT</b> — round-robin every cycle. Needs N copies of PC, regs, rename table. Per-thread perf drops to ~1/N but throughput is high. Used in Sun Niagara.<br><b>SMT</b> — issue ops from <i>multiple threads in the same cycle</i> through one OoO backend. Shared: ROB, issue queue, functional units, L1. Duplicated: arch regs, PC, rename table. Intel Hyperthreading is the canonical case (2 threads/core).<br><br>SMT is not always a win: if threads contend for the same FU port or blow out L1 working set, net throughput can drop. Rule of thumb: SMT wins when threads stress <i>different</i> resources (e.g. one memory-bound, one compute-bound).',
+  },
+
+  formulas: [
+    { label: 'Utilization with stall rate s', tex: 'U_{1t} = 1 - s' },
+    { label: 'SMT throughput upper bound', tex: 'U_{\\text{SMT}} \\le \\min(1, T \\cdot U_{1t})' },
+    { label: 'Threads to fully hide latency L', tex: 'T \\geq \\lceil L \\cdot w / \\text{IPC}_{1t} \\rceil' },
+    { label: 'Single-thread perf in fine-grained', tex: '\\text{IPC}_{1t, \\text{FGMT}} \\approx \\text{IPC}_{1t} / T' },
+  ],
+
+  diagram: `flowchart TD
+  subgraph "Coarse-grained"
+    direction LR
+    C1[T1 run] -->|miss!| C2[T2 run] -->|miss!| C3[T1 run]
+  end
+  subgraph "Fine-grained"
+    direction LR
+    F1[T1] --> F2[T2] --> F3[T3] --> F4[T4] --> F1b[T1]
+  end
+  subgraph "SMT"
+    direction LR
+    S1["T1,T2,T3 all issue THIS cycle"] --> S2["T1,T2 issue next cycle"]
+  end
+  style S1 fill:#c084fc,color:#000`,
+
+  example: {
+    title: 'Does SMT help or hurt?',
+    body: `<b>Case 1</b> (SMT helps): Thread A streams data from DRAM (memory-bound, stalls a lot). Thread B does FP math from registers (compute-bound, no stalls). They use <i>different</i> resources → SMT nearly doubles throughput.<br><br>
+<b>Case 2</b> (SMT hurts): Both threads run the same compute-heavy loop, both hammer the same FP port. Contention → they serialize on the port, and doubled cache footprint causes extra L1 misses. Net: ~10–20% throughput <i>loss</i>.<br><br>
+Takeaway: test empirically. Some workloads (crypto, HPC) actively disable SMT.`,
+  },
+
+  recall: [
+    { q: 'What state must be duplicated per thread in SMT?', a: 'Arch register file, PC, rename table, interrupt/privilege state. Shared: ROB entries, issue queue slots, functional units, L1/L2 caches, BTB (usually).' },
+    { q: 'Coarse vs fine vs SMT — which issues ops from multiple threads IN the same cycle?', a: 'Only SMT. Fine-grained switches every cycle but still issues from one thread per cycle.' },
+    { q: 'Why might SMT hurt throughput?', a: 'Cache footprint contention (both threads\' working sets evict each other), FU port conflicts (same unit needed), and branch predictor interference.' },
+    { q: 'Security concern specific to SMT.', a: 'Side-channel attacks across sibling threads: PortSmash, MDS/TAA, Spectre variants leak micro-architectural timing state. OpenBSD and some HPC systems disable SMT for this reason.' },
+    { q: 'When does coarse-grained MT beat fine-grained?', a: 'When stalls are rare but long: the overhead of switching every cycle is wasted if there\'s nothing stalled. Single-thread performance is preserved on coarse MT because the thread owns the core between stalls.' },
+  ],
+
+  cheat: {
+    defs: [
+      ['Coarse MT', 'Switch on long stall, cheap, keeps 1-thread perf'],
+      ['Fine MT',   'Switch every cycle, high throughput, 1/N single-thread'],
+      ['SMT',       'Multiple threads issue in SAME cycle through 1 OoO backend'],
+      ['Hyperthreading', 'Intel marketing name for 2-way SMT'],
+      ['Duplicated',  'Arch regs, PC, rename table, priv state'],
+      ['Shared',      'ROB, IQ, FUs, caches, BTB'],
+    ],
+    formulas: ['T ≥ L·w / IPC₁', 'FGMT: IPC₁ₜ ≈ IPC/T', 'SMT: best when threads stress different resources'],
+    gotchas: [
+      'SMT can LOSE throughput: FU port conflicts, cache eviction',
+      'Side-channel attacks across SMT siblings',
+      'Fine-grained: need N × reg file',
+    ],
+  },
+},
+
+{
+  id: 'L13', title: 'GPU / SIMT', zh: 'GPU 与 SIMT',
+  pill: 'massive DLP + fine-grained MT',
+
+  prereq: { zh: '<b>🎓 用班级做题类比从零开始：</b><br><br>想象一个教室 (这是一个 <b>SM</b> = Streaming Multiprocessor) 有 1024 个学生，老师把他们分成 32 人一组 (这就是 <b>warp</b>)。<br><br>• 老师说"做第 5 题" → 一组里 32 个学生 <i>同时各自</i> 做第 5 题 (同一条指令，32 份不同的数据)<br>• 一个 warp 里的 32 个学生必须 <b>lockstep (锁步)</b>：老师一次只能宣布一道题，所有人都做这同一题<br>• 如果有人要做分支 "A 同学走 A 路，B 同学走 B 路"：<br>&nbsp;&nbsp;— 老师先让走 A 路的人做 A (走 B 路的举手空等)<br>&nbsp;&nbsp;— 然后让走 B 路的人做 B (走 A 路的举手空等)<br>&nbsp;&nbsp;— 这就是 <b>warp divergence (分支发散)</b>，浪费一半时间<br><br><b>🏗️ CUDA 层次 (必须记住)</b>：<br><pre>Kernel (一次 GPU 函数调用)<br>&nbsp;└ Grid (由很多 block 组成)<br>&nbsp;&nbsp;&nbsp;└ Block (由很多 warp 组成，住在一个 SM 上)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└ Warp (32 个 thread，lockstep)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└ Thread (一个"学生"，自己的 reg)</pre><br><b>💡 SIMT vs SIMD (关键区别)</b>：<br>• <b>SIMD</b>：你写代码时<i>显式</i>说"这条指令处理 8 个 lane"。代码知道宽度。麻烦。<br>• <b>SIMT</b>：你写代码时每个 thread 看起来是 <i>独立的 scalar 程序</i>。硬件自动把 32 个 thread 打包成一个 warp 做 SIMD。代码不知道宽度。<br>• ✅ SIMT 好处：编程简单<br>• ❌ SIMT 坏处：warp divergence 是"隐藏的代价"，新手看不到<br><br><b>⚡ 延迟隐藏的秘密</b>：<br>GPU 故意发<i>超多</i>线程 (比 core 数多 10-100 倍)，用轮流跑来盖住 DRAM 延迟：<br>• DRAM 延迟：400+ cycles<br>• 一个 SM 可以同时保留 64+ 个 warp (= 64×32 = 2048 个 thread)<br>• 任一 warp 停了访存 → SM 立刻发另一个 ready warp 的指令<br>• 等于超大规模的 fine-grained multi-threading',
+              en: 'From scratch:<br>① <b>SIMD vs SIMT</b>: SIMD = you write vector code (explicit lanes). SIMT = you write <i>scalar</i> code ("what does this one thread do?") and hardware packs 32 threads into a warp that executes in SIMD fashion under the hood.<br>② <b>CUDA hierarchy</b>: kernel → grid of blocks → block of warps → warp of 32 threads → thread.<br>③ <b>SM</b> = Streaming Multiprocessor, GPU has dozens; each SM holds dozens of resident warps and round-robins between them.<br>④ <b>Latency hiding</b>: GPUs launch 10–100× more threads than cores; while some warps stall on DRAM, others run. Massive fine-grained multi-threading.' },
+
+  overview: {
+    zh: '<b>🧩 Warp 和 Divergence (最核心)</b><br><br>NVIDIA 的 warp 一直是 <b>32 threads</b>，AMD 叫 wavefront，以前是 64 现在也有 32。<br><br><b>Divergent branch 成本计算</b>：<br><pre>if (tid % 2 == 0) heavy_A();  // 偶数 tid<br>else              heavy_B();  // 奇数 tid</pre>一个 warp 里 32 个 thread 分成 16 偶 + 16 奇。硬件：<br>1. 先跑 heavy_A，奇数 lanes 被 mask 掉 (空转)<br>2. 再跑 heavy_B，偶数 lanes 被 mask 掉 (空转)<br>3. 总时间 = A + B (<i>不是</i> max(A,B))<br>如果 A = B = 100 cycles → divergent 要 200 cycles，没有 divergence 要 100 cycles<br><br><b>✅ 解决办法：让 branch 条件是 warp-uniform 的</b><br><pre>if ((tid / 32) % 2 == 0) heavy_A();  // 整个 warp 走同一边</pre>这样 warp 0 全走 A，warp 1 全走 B，没有 divergence。总时间 = max(A, B)。<br><br><b>💾 GPU 内存层级 (考试常考)</b><br><br><table><tr><th>层级</th><th>范围</th><th>大小</th><th>延迟</th><th>特点</th></tr><tr><td><b>Registers</b></td><td>per thread</td><td>~255 × 4B</td><td>0 cyc</td><td>编译器分配，太多 → occupancy 低</td></tr><tr><td><b>Shared mem</b></td><td>per block</td><td>48-164 KB</td><td>~1 cyc</td><td>软件管理的 scratchpad，超快</td></tr><tr><td><b>L1 cache</b></td><td>per SM</td><td>几十 KB</td><td>10-50 cyc</td><td>硬件 cache</td></tr><tr><td><b>L2 cache</b></td><td>per GPU</td><td>几 MB</td><td>~200 cyc</td><td>所有 SM 共享</td></tr><tr><td><b>Global (HBM)</b></td><td>per GPU</td><td>GB</td><td>400+ cyc</td><td>主存，coalesced 关键</td></tr></table><br><b>🔑 Shared memory 是 CUDA 最重要的优化</b><br>它是每个 block 的小 scratchpad，程序员手动管理。<br><br>经典应用：<b>tiled 矩阵乘法</b><br>1. 把 A 的一个 tile 和 B 的一个 tile 从 global memory 搬到 shared memory<br>2. block 里所有 thread 从 shared memory 读数据做计算<br>3. shared memory 被读 100 次，global memory 只读 1 次<br>4. → 省 100 倍带宽！<br><br><b>🚀 Coalesced Memory Access (合并访问) — GPU 性能最大坑点</b><br><br><b>Coalesced (合并)</b>：一个 warp 的 32 thread <i>同时</i> 访问连续对齐的 128 字节 → 硬件合并成 <b>1 次</b> 内存事务<br><pre>// Coalesced: thread i reads A[tid]<br>float x = A[tid];  // thread 0→A[0], thread 1→A[1], ...</pre><b>Uncoalesced (非合并)</b>：threads 访问分散地址 → 最多 <b>32 次</b> 独立内存事务，~30× 慢<br><pre>// Uncoalesced: 随机访问<br>float x = A[random[tid]];</pre><br><b>📊 Occupancy (入住率)</b><br>公式：<br><pre>occupancy = 当前 SM 上的活跃 warp 数 / SM 最大允许 warp 数</pre>高 occupancy → 能藏更多延迟。<br><br><b>⚠️ 什么限制 occupancy？</b><br>1. <b>每 thread 的寄存器用量</b>：寄存器 file 总量固定，如果每 thread 用太多 reg，能同时住的 thread 就少<br>2. <b>每 block 的 shared memory 用量</b>：shared memory 总量固定，用太多 → 能同时住的 block 少<br>3. <b>每 block 的 thread 数</b>：太小利用不足<br><br>编译器会告诉你 "register pressure"。太多寄存器 → spill 到 L1 (慢) 或降低 occupancy。<br><br><b>🔄 __syncthreads()</b><br>Block 级 barrier。一个 block 里所有 thread 必须都到达这个点才继续。常见用法：往 shared memory 写数据之后、读别人写的数据之前。<br>代价：stall 所有快 warp 等最慢的那个。<br><br><b>🎯 考试常问</b>：<br>• Q: SIMT vs SIMD 一句话？→ A: SIMT 写 per-thread scalar 代码，硬件隐藏 warp 宽度；SIMD 暴露 lane 数<br>• Q: Warp divergence 代价？→ A: taken + not-taken (serialized)<br>• Q: Coalesced vs uncoalesced 的事务数比？→ A: 1 次 vs 最多 32 次<br>• Q: Shared memory 怎么用？→ A: 每 block 的 scratchpad，软件管理，缓存 tile<br>• Q: 为什么 GPU 发那么多 thread？→ A: fine-grained MT 藏 DRAM 延迟<br>• Q: Occupancy 被什么限制？→ A: register 用量 + shared memory 用量<br>• Q: __syncthreads 的代价？→ A: 整个 block 等最慢的 warp',
+    en: 'GPU execution essentials:<br><br><b>Warp</b> — 32 threads in lockstep, same instruction, different data. Each thread has its own registers, PC is shared.<br><b>Warp divergence</b> — if threads in a warp take different sides of a branch, hardware runs the taken path with the not-taken lanes masked off, then runs the not-taken path with taken lanes masked off. Serialization cost = taken + not-taken, not max.<br><b>Memory hierarchy</b>:<br>• registers — per-thread, 0-cycle<br>• shared memory — per-block scratchpad, ~48–164 KB, ~1 cycle, software-managed<br>• L1/L2 — hardware caches<br>• global (HBM) — 400+ cycles<br><b>Coalesced access</b> — 32 threads in a warp touching one contiguous, aligned 128-byte chunk → 1 memory transaction. Uncoalesced → up to 32 txns, ~30× slower.<br><b>Occupancy</b> = active warps per SM / max warps per SM. Higher is better for latency hiding, limited by register and shared-memory usage per block.',
+  },
+
+  formulas: [
+    { label: 'Divergent branch cost', tex: 'T_{\\text{div}} = T_{\\text{taken}} + T_{\\text{not-taken}}' },
+    { label: 'Occupancy', tex: '\\text{occ} = \\frac{\\text{active warps per SM}}{\\text{max warps per SM}}' },
+    { label: 'Threads per block limit', tex: '\\text{threads} = \\text{warps} \\cdot 32 \\le \\text{block limit (typ. 1024)}' },
+    { label: 'Peak FLOPs (single SM)', tex: '\\text{FLOP/cyc} = \\text{cores} \\cdot 2 \\; (\\text{FMA})' },
+    { label: 'Effective bandwidth', tex: '\\text{BW}_{\\text{eff}} = \\text{BW}_{\\text{peak}} \\cdot \\text{coalescing factor}' },
+  ],
+
+  diagram: `flowchart TD
+  Kernel[Kernel launch] --> Grid[Grid = many blocks]
+  Grid --> Block["Block = many warps, one SM"]
+  Block --> Warp["Warp = 32 threads lockstep"]
+  Warp --> Branch{"if tid % 2 == 0?"}
+  Branch -->|even lanes| A[heavy_A; odd masked]
+  Branch -->|odd lanes| B[heavy_B; even masked]
+  A --> Reconv[reconverge]
+  B --> Reconv
+  style Warp fill:#c084fc,color:#000
+  style Branch fill:#fbbf24,color:#000`,
+
+  example: {
+    title: 'Warp divergence — good vs bad branch',
+    body: `Kernel A: <code>if (tid % 2 == 0) do_X() else do_Y()</code>. Each warp has 16 even and 16 odd threads. Hardware runs do_X with odds masked, then do_Y with evens masked. Cost = do_X + do_Y (serialized).<br><br>
+Kernel B: <code>if ((tid / 32) % 2 == 0) do_X() else do_Y()</code>. Whole warps go one way — no divergence. Cost = max(do_X, do_Y) over the two halves.<br><br>
+Rule: branch on <i>warp-uniform</i> values (warp id, block id, constants) when possible, not on per-thread data.`,
+  },
+
+  recall: [
+    { q: 'One-line: how is SIMT different from SIMD?', a: 'SIMT lets the programmer write per-thread scalar code; hardware groups 32 threads into a warp that executes in SIMD fashion. Divergence is transparent to the programmer (but slow).' },
+    { q: 'Why does the GPU resident thread count dwarf the core count?', a: 'To hide memory latency. With 64+ resident warps per SM, when one warp issues a global load and stalls ~400 cycles, the SM has plenty of ready warps to issue from. Classic fine-grained multi-threading at scale.' },
+    { q: 'What is shared memory and why does it matter for matmul?', a: 'On-chip scratchpad per block, software-managed. In tiled matmul you stage a tile of A and a tile of B into shared memory, then each thread reuses them many times — cuts global-memory traffic by the tile dimension.' },
+    { q: 'Coalesced memory access in one sentence.', a: 'If all 32 threads of a warp access a contiguous aligned 128-byte region in the same instruction, hardware fuses them into one memory transaction. Non-coalesced → multiple txns, huge slowdown.' },
+    { q: 'What limits occupancy?', a: 'Registers per thread (total reg file / reg per thread gives max threads) and shared memory per block (total shmem / shmem per block gives max blocks). Pick whichever is smaller.' },
+    { q: 'Why is __syncthreads() needed and what does it cost?', a: 'Threads in a block execute asynchronously across warps. __syncthreads is a block-scoped barrier — all warps wait until every thread hits it. Needed before reading data another thread wrote to shared memory. Cost: stalls all fast warps until the slowest one arrives.' },
+  ],
+
+  cheat: {
+    defs: [
+      ['Warp', '32 threads lockstep SIMD'],
+      ['Block', 'Group of warps, one SM, shared memory + __syncthreads'],
+      ['Grid', 'All blocks of a kernel launch'],
+      ['SM', 'Streaming Multiprocessor; schedules resident warps'],
+      ['Divergence', 'Intra-warp branch split → serialize both paths'],
+      ['Coalesced', '32 contiguous aligned = 1 memory txn'],
+      ['Shared mem', 'Per-block SW-managed scratchpad, ~1 cyc'],
+      ['Occupancy', 'Active warps / max warps, limited by regs & shmem'],
+    ],
+    formulas: ['T_div = T_taken + T_not', 'occ = active/max warps', 'BW_eff = BW·coalesce_factor'],
+    gotchas: [
+      'Branch on per-thread data → divergence',
+      'Non-coalesced memory → 32× slower',
+      'High register use → fewer resident warps → less latency hiding',
+      '__syncthreads stalls whole block to slowest warp',
+    ],
+  },
+},
+
+{
+  id: 'L14', title: 'Cache Coherence', zh: '缓存一致性',
+  pill: 'multi-core correctness',
+
+  prereq: { zh: '<b>🏠 用宿舍类比从零开始：</b><br><br>想象一个宿舍里住了 4 个人：<br>• 每个人 (core) 都有<b>自己的一本课本副本</b> (L1 cache)<br>• 大家的课本内容来自<b>同一本正版书</b> (共享内存 / DRAM)<br>• 问题：如果 C0 在自己的副本上改了第 10 页，C1 的副本还是老版本 → 大家看到的内容不一致 → 出错<br><br>🎯 <b>Cache coherence (缓存一致性)</b> 就是解决这个问题的协议：让每个 core 最终看到的都是同一个版本。<br><br><b>🔑 两个保证 (考试定义必背)</b>：<br>1. <b>Write Propagation (写传播)</b>：一个 core 写了，<i>最终</i>会被所有 core 看到 (不一定立刻，但最终)<br>2. <b>Write Serialization (写序列化)</b>：所有 core 对<i>同一地址</i>看到的写顺序是一致的。不会出现 "C0 看到 A→B，C1 看到 B→A" 这种情况<br><br><b>💾 Cache 基础复习</b>：<br>• 每个 core 有自己的 L1 cache (也可能有 L2)，L3 通常共享<br>• <b>Cache line</b> = cache 的最小单位，通常 <b>64 字节</b><br>• 一个 cache line 包含：tag、数据、状态位<br>• 所有 coherence 操作都是 <i>以 cache line 为粒度</i> 的 (不是单字节)<br><br><b>🚌 两种实现方式</b>：<br>• <b>Snoopy (窥探式)</b>：每个 core 都"窥探"共享总线上的消息。小规模好 (4-8 core)。总线带宽是瓶颈。<br>• <b>Directory (目录式)</b>：有一个目录记录每条 cache line 被哪些 core 缓存。大规模好 (几十上百 core)。点对点消息。<br><br><b>⚠️ 注意区分</b>：<br>• <b>Coherence (一致性)</b> = 每个单独地址在不同 core 上看到的值一致 — 这一课<br>• <b>Consistency (内存一致性)</b> = 跨地址的写入顺序 — 相关但是不同的概念 (SC, TSO, Relaxed)',
+              en: 'From scratch:<br>① <b>Cache basics</b>: each core has its own L1. Cache line (usually 64 B) is the granule — holds tag, data, state bits.<br>② <b>Multi-core problem</b>: two cores can cache the same memory. If C0 writes, C1\'s stale copy must be dealt with.<br>③ <b>Two guarantees</b>: (1) <b>Write propagation</b> — writes eventually become visible to all cores. (2) <b>Write serialization</b> — all cores see writes to a given address in the same order.<br>④ <b>Snoopy vs Directory</b>: Snoopy broadcasts on a shared bus (cheap, doesn\'t scale). Directory keeps a per-line record of sharers, point-to-point messages (scales, more complex).' },
+
+  overview: {
+    zh: '<b>🎯 MSI / MESI / MOESI 状态机是考试核心</b><br><br>每条 cache line 有一个<b>状态</b>。协议定义了在各种事件下状态怎么变。<br><br><b>① MSI (最基础，3 状态)</b><br>• <b>M (Modified)</b> — 我独占这行，而且改过了 (dirty)，内存是旧的<br>• <b>S (Shared)</b> — 我有这行的干净副本，别人可能也有<br>• <b>I (Invalid)</b> — 我没有这行 / 失效了<br><br><b>MSI 的问题</b>：如果我有 S 状态的行要写它，我必须发 BusRdX/BusUpgr 让别人失效才能变 M。但如果实际上别人早就不持有这行 (只是我不知道)，这次广播是<i>浪费</i>的。<br><br><b>② MESI (加一个 E，4 状态)</b><br>• <b>E (Exclusive clean)</b> — 我是<i>唯一</i>的持有者，而且是干净的 (和内存一致)<br>• 🔑 <b>关键优化</b>：E 写入时可以<b>悄悄升级到 M</b>，不需要任何总线事务！(因为我知道没别人)<br>• 这是 MESI 比 MSI 强的地方：<b>单线程数据的写省一次总线事务</b><br><br><b>③ MOESI (加一个 O，5 状态)</b><br>• <b>O (Owned dirty shared)</b> — 脏的，但别人也在读 (shared)<br>• MESI 里，如果有 M 行被别人读了，必须先写回内存再变 S<br>• MOESI 里，拥有者可以保持脏状态 (O)，直接给别人供应数据，省掉写回内存的那一步<br>• <b>收益</b>：生产者-消费者模式、频繁共享脏数据的场景<br><br><b>🚌 总线事务类型 (Snoopy)</b><br><table><tr><th>事务</th><th>意思</th><th>触发</th></tr><tr><td><b>BusRd</b></td><td>读请求</td><td>cache miss 想读</td></tr><tr><td><b>BusRdX</b></td><td>读 + 写意图，invalidate 别人</td><td>想写但没权限</td></tr><tr><td><b>BusUpgr</b></td><td>S → M 升级 (不用重读数据)</td><td>想写，有干净副本</td></tr><tr><td><b>BusWB</b></td><td>写回脏数据</td><td>替换 M 行</td></tr></table><br><b>📋 MESI 完整状态转换表 (必背)</b><br><br><b>CPU 操作</b>：<br><table><tr><th>现状</th><th>CPU 读</th><th>CPU 写</th></tr><tr><td><b>I</b></td><td>BusRd → E (独) / S (有人有)</td><td>BusRdX → M</td></tr><tr><td><b>S</b></td><td>hit, 无总线</td><td>BusUpgr → M</td></tr><tr><td><b>E</b></td><td>hit, 无总线</td><td><b>silent → M</b> ⭐️</td></tr><tr><td><b>M</b></td><td>hit, 无总线</td><td>hit, 无总线</td></tr></table><br><b>收到别人的 BusRd (snoop)</b>：<br><table><tr><th>现状</th><th>新状态</th><th>动作</th></tr><tr><td><b>M</b></td><td>M → S</td><td>flush 脏数据到总线</td></tr><tr><td><b>E</b></td><td>E → S</td><td>无</td></tr><tr><td><b>S</b></td><td>S</td><td>无</td></tr><tr><td><b>I</b></td><td>I</td><td>无</td></tr></table><br><b>收到别人的 BusRdX (snoop)</b>：<br><table><tr><th>现状</th><th>新状态</th><th>动作</th></tr><tr><td><b>M</b></td><td>M → I</td><td>flush + 失效</td></tr><tr><td><b>E</b></td><td>E → I</td><td>失效</td></tr><tr><td><b>S</b></td><td>S → I</td><td>失效</td></tr><tr><td><b>I</b></td><td>I</td><td>无</td></tr></table><br><b>🚶 完整走查 — 两个 core，地址 X</b><br><br><b>Step 1</b> · C0 读 X。X 没人缓存 → BusRd → 内存给数据 → 没人响应 "shared" → <b>C0: E</b><br><br><b>Step 2</b> · C0 写 X。E → <i>silent</i> → <b>C0: M</b> ⭐️ <i>零总线事务</i>！这是 MESI 的大赢<br><br><b>Step 3</b> · C1 读 X。BusRd → C0 snoop 到，看到自己是 M，flush 脏数据到总线 (同时给 C1 和内存)，M → S → <b>C0: S, C1: S</b><br><br><b>Step 4</b> · C1 写 X。S → BusUpgr → C0 snoop 到，S → I → <b>C0: I, C1: M</b><br><br>总共 <b>3 次总线事务</b> (step 1, 3, 4)。Step 2 免费。<br><br><b>⚠️ False Sharing (伪共享) — 性能杀手</b><br><br><b>问题</b>：两个线程写同一 cache line 的<i>不同</i>字节。<br><pre>struct { int a; int b; } shared;<br>// Thread 0 写 shared.a<br>// Thread 1 写 shared.b</pre>逻辑上它们没共享任何数据 (a 和 b 不同)，但 <b>cache line 粒度</b>的 coherence 协议以为它们在共享。导致 line 在两个 cache 间反复 M ↔ I → 性能暴跌 10-100 倍！<br><br><b>🔧 修复</b>：把热点数据对齐到 64 字节边界 (一条 cache line)<br><pre>struct alignas(64) Hot { int value; };  // C++11+</pre><br><b>🧠 Memory Consistency (可能考)</b><br><br>这是<i>跨地址</i>的写入顺序问题，和 coherence 是不同的。<br><br><table><tr><th>模型</th><th>允许的 reorder</th><th>Fence</th><th>例子</th></tr><tr><td><b>SC (Sequential)</b></td><td>无 — 全局一个 interleave</td><td>不需要</td><td>理想，慢</td></tr><tr><td><b>TSO (x86)</b></td><td>W→R 只 (写缓冲)</td><td>mfence</td><td>Intel / AMD</td></tr><tr><td><b>Relaxed</b></td><td>W→R, W→W, R→R, R→W 全允许</td><td>acquire/release/full</td><td>ARM, POWER, RISC-V</td></tr></table><br><b>🎯 考试常问</b>：<br>• Q: E 状态比 MSI 省什么？→ A: 单线程写时 silent E→M，省一次总线事务<br>• Q: Directory 为什么比 snoopy 大规模好？→ A: 点对点消息，不用每个 core 看每条消息<br>• Q: False sharing 是什么，怎么修？→ A: disjoint bytes 同 line ping-pong，pad 到 64 B<br>• Q: MOESI 加 O 的好处？→ A: 脏数据不用先写回内存就能共享给读者<br>• Q: Write propagation 和 write serialization 分别是什么？→ A: 写最终被看到 + 所有 core 看同一顺序<br>• Q: x86 是什么内存模型？→ A: TSO (允许 W→R reorder，需要 mfence)',
+    en: '<b>MSI/MESI/MOESI state machines</b> are the exam core. Each cache line has a state.<br><br><b>MSI</b>: Modified (exclusive dirty) / Shared (possibly multi-copy, clean) / Invalid.<br><b>MESI</b> adds <b>E (Exclusive)</b>: I\'m the only holder and the line is clean → can silently upgrade to M on a write with NO bus transaction. MSI\'s big fix.<br><b>MOESI</b> adds <b>O (Owned)</b>: dirty AND shared — the owner supplies reads directly without writing back to memory. Big win for producer-consumer.<br><br><b>Snoopy bus transactions</b>:<br>• BusRd — read request (other caches may supply)<br>• BusRdX — read-with-intent-to-write (invalidate all others)<br>• BusUpgr — upgrade S → M (invalidate others, don\'t re-fetch)<br>• BusWB — writeback dirty line<br><br><b>False sharing</b>: two cores write disjoint bytes of the same cache line. Logically no sharing but the line ping-pongs via invalidations → 10–100× slowdown. Fix: pad structs to 64 B boundaries (e.g. <code>struct alignas(64) {}</code>).',
+  },
+
+  formulas: [
+    { label: 'MESI Read transitions', tex: '\\begin{aligned} I &\\xrightarrow{\\text{BusRd, sole}} E \\\\ I &\\xrightarrow{\\text{BusRd, shared}} S \\\\ S/E/M &\\to \\text{hit, no bus} \\end{aligned}' },
+    { label: 'MESI Write transitions', tex: '\\begin{aligned} I &\\xrightarrow{\\text{BusRdX}} M \\\\ S &\\xrightarrow{\\text{BusUpgr/RdX}} M \\\\ E &\\xrightarrow{\\text{silent}} M \\\\ M &\\to \\text{hit} \\end{aligned}' },
+    { label: 'MESI Snoop (other BusRd)', tex: 'M \\to S(\\text{flush}), \\; E \\to S, \\; S/I \\to \\text{unchanged}' },
+    { label: 'MESI Snoop (other BusRdX)', tex: 'M \\to I(\\text{flush}), \\; E/S \\to I, \\; I \\to \\text{unchanged}' },
+  ],
+
+  diagram: `stateDiagram-v2
+  [*] --> I
+  I --> E: BusRd (sole copy)
+  I --> S: BusRd (others share)
+  I --> M: BusRdX (write)
+  E --> M: CPU write (silent)
+  E --> S: other BusRd
+  E --> I: other BusRdX
+  S --> M: BusUpgr (invalidate others)
+  S --> I: other BusRdX
+  M --> S: other BusRd (flush)
+  M --> I: other BusRdX (flush + invalidate)`,
+
+  example: {
+    title: 'Full MESI walkthrough — two cores, address X',
+    body: `<b>Step 1</b> · C0 reads X. X not cached anywhere. BusRd → memory supplies. No other cache responds "shared". → <b>C0: E</b>.<br><br>
+<b>Step 2</b> · C0 writes X. Current state E → <i>silent</i> upgrade. → <b>C0: M</b>. <i>Zero bus traffic</i> — this is MESI\'s win over MSI, which would have required a BusUpgr.<br><br>
+<b>Step 3</b> · C1 reads X. BusRd. C0 snoops, sees it has M, flushes dirty data onto the bus (to C1 and memory), downgrades M→S. → <b>C0: S, C1: S</b>.<br><br>
+<b>Step 4</b> · C1 writes X. Current state S → BusRdX (or BusUpgr). C0 snoops, invalidates. → <b>C0: I, C1: M</b>.<br><br>
+Bus transactions: 3 (steps 1, 3, 4). Step 2 was free.`,
+  },
+
+  recall: [
+    { q: 'What does the E state save over MSI?', a: 'A single owner can upgrade E → M silently (no bus transaction) on a write. In MSI, every write from S requires a BusRdX/BusUpgr broadcast. For single-threaded data, MESI saves one bus transaction per write.' },
+    { q: 'Why does directory scale better than snoopy?', a: 'Snoopy bus bandwidth grows with cores × request rate — becomes the bottleneck. Directory uses point-to-point messages to just the sharers, O(log cores) per transaction.' },
+    { q: 'What is false sharing and how do you fix it?', a: 'Two threads write disjoint bytes of the SAME 64 B cache line. The line ping-pongs between caches via M-state invalidations even though logically there\'s no sharing. Fix: pad structs to cache-line boundary (alignas(64) in C++11+).' },
+    { q: 'Why does MOESI add O?', a: 'In MESI, when M is read by another core, the dirty line must be written back to memory so it can become S. MOESI skips that writeback — the Owner keeps it dirty and supplies reads. Big win in producer-consumer patterns.' },
+    { q: 'Sequential vs TSO consistency (bonus).', a: 'SC = all cores see one global interleaving, programmer-friendly but slow. TSO (x86) = a single write buffer, allows W→R reorder. Use mfence to restore SC ordering around critical sections.' },
+    { q: 'What is write serialization?', a: 'All cores observe writes to a given address in the same order. Separate from write propagation (writes eventually visible). Together they define what "coherent" means.' },
+  ],
+
+  cheat: {
+    defs: [
+      ['MSI', 'Modified / Shared / Invalid — minimal protocol'],
+      ['MESI', 'Adds E (Exclusive clean) → silent upgrade to M'],
+      ['MOESI', 'Adds O (dirty shared) → supply reads w/o writeback'],
+      ['Snoopy', 'Bus broadcast, small scale'],
+      ['Directory', 'Per-line sharer list, point-to-point, big scale'],
+      ['False sharing', 'Disjoint bytes same line → ping-pong, fix = pad 64B'],
+      ['BusRd',  'Read request'],
+      ['BusRdX', 'Read + write intent, invalidate others'],
+      ['BusUpgr','S → M upgrade without re-fetch'],
+      ['BusWB',  'Writeback dirty'],
+    ],
+    formulas: [
+      'Read  I→E(sole) | I→S(shared) | S/E/M→hit',
+      'Write I→M(BusRdX) | S→M(BusUpgr) | E→M(silent) | M→M',
+      'Snoop on BusRd:  M→S flush | E→S | S→S | I→I',
+      'Snoop on BusRdX: M→I flush | E→I   | S→I | I→I',
+    ],
+    gotchas: [
+      'Silent E→M upgrade saves a bus txn',
+      'MOESI: dirty supplier avoids writeback',
+      'False sharing: pad 64 B',
+      'x86 is TSO, not SC — need mfence for ordering',
+    ],
+  },
+},
+];
+
+// ══════════════════════════════ RENDER ══════════════════════════════
+const main = document.getElementById('main');
+const tabs = document.getElementById('lecture-tabs');
+let active = 'L10';
+let showPrereq = true;
+
+function render() {
+  tabs.innerHTML = LECTURES.map(l => `
+    <button data-lec="${l.id}" class="tab-btn px-4 py-1.5 rounded-full border border-[#e2e4ea] ${active===l.id?'active':'text-[#6b7280] hover:text-white'}">
+      ${l.title} <span class="font-zh text-[11px] opacity-70">${l.zh}</span>
+    </button>
+  `).join('');
+  tabs.querySelectorAll('button').forEach(b => b.onclick = () => { active = b.dataset.lec; render(); window.scrollTo({top:0,behavior:'smooth'}); });
+
+  const l = LECTURES.find(x => x.id === active);
+  main.innerHTML = `
+    <div class="mb-4 flex items-end gap-3 flex-wrap">
+      <div>
+        <h1 class="text-3xl font-bold">${l.title} <span class="font-zh text-purple-500 text-2xl ml-2">${l.zh}</span></h1>
+      </div>
+      <span class="pill bg-purple-500/20 text-purple-200 border border-purple-400/30">${l.pill}</span>
+    </div>
+
+    <!-- 从零开始 · Prereqs -->
+    <div class="card p-5 mb-5 prereq-block">
+      <div class="text-[10px] text-emerald-300 uppercase tracking-wider mb-2 font-semibold">从零开始 · PREREQUISITES · READ FIRST IF NEW</div>
+      <div class="font-zh text-[15px] leading-relaxed mb-3">${l.prereq.zh}</div>
+      <details class="text-[13px] text-[#9ca3af]"><summary class="font-semibold text-white">English version</summary><div class="mt-2">${l.prereq.en}</div></details>
+    </div>
+
+    <!-- 中文总结 -->
+    <div class="card p-5 mb-5 zh-block">
+      <div class="text-[10px] text-purple-300 uppercase tracking-wider mb-2 font-semibold">中文总结 · CORE IDEA IN CHINESE</div>
+      <div class="font-zh text-[15px] leading-relaxed">${l.overview.zh}</div>
+    </div>
+
+    <!-- English -->
+    <div class="card p-5 mb-5">
+      <div class="text-[10px] text-[#6b7280] uppercase tracking-wider mb-2 font-semibold">Core idea · English</div>
+      <div class="text-[14px] leading-relaxed text-[#374151]">${l.overview.en}</div>
+    </div>
+
+    <!-- Diagram -->
+    <div class="card p-5 mb-5">
+      <div class="text-[10px] text-[#6b7280] uppercase tracking-wider mb-3 font-semibold">Diagram</div>
+      <div class="mermaid">${l.diagram}</div>
+    </div>
+
+    <!-- Formulas -->
+    <div class="card p-5 mb-5">
+      <div class="text-[10px] text-[#6b7280] uppercase tracking-wider mb-3 font-semibold">Formulas · also on cheatsheet</div>
+      <div class="space-y-3">
+        ${l.formulas.map(f => `<div><div class="text-xs text-[#6b7280] mb-1">${f.label}</div><div class="text-[15px]">$$${f.tex}$$</div></div>`).join('')}
+      </div>
+    </div>
+
+    <!-- Worked example -->
+    <details class="card p-5 mb-5" open>
+      <summary class="text-[10px] text-[#6b7280] uppercase tracking-wider font-semibold">Worked example · ${l.example.title}</summary>
+      <div class="mt-3 text-[14px] leading-relaxed text-[#374151]">${l.example.body}</div>
+    </details>
+
+    <!-- Active recall -->
+    <div class="card p-5 mb-5">
+      <div class="text-[10px] text-yellow-400 uppercase tracking-wider mb-3 font-semibold">Active recall · COVER THE ANSWER FIRST, THEN CLICK</div>
+      <div class="space-y-3">
+        ${l.recall.map((r,i) => `<details class="recall-q"><summary class="font-semibold">Q${i+1}. ${r.q}</summary><div class="recall-a">${r.a}</div></details>`).join('')}
+      </div>
+    </div>
+
+    <!-- Mini cheat -->
+    <div class="card p-5 mb-5 border-purple-400/30">
+      <div class="text-[10px] text-purple-300 uppercase tracking-wider mb-3 font-semibold">📝 This card on your cheatsheet · preview</div>
+      <div class="text-[13px]">
+        <div class="font-semibold mb-1">Definitions</div>
+        <table class="mb-3"><tbody>${l.cheat.defs.map(([k,v]) => `<tr><td class="font-mono font-semibold text-purple-300">${k}</td><td>${v}</td></tr>`).join('')}</tbody></table>
+        <div class="font-semibold mb-1">Formulas / key rules</div>
+        <ul class="list-disc ml-5 mb-3">${l.cheat.formulas.map(f => `<li class="font-mono text-[12px]">${f}</li>`).join('')}</ul>
+        <div class="font-semibold mb-1">Traps / what they test</div>
+        <ul class="list-disc ml-5">${l.cheat.gotchas.map(g => `<li>${g}</li>`).join('')}</ul>
+      </div>
+    </div>
+
+    <!-- Step-by-step Walkthrough (shown only for lectures with examples) -->
+    ${l.walkthrough ? `
+    <div class="card p-5 mb-5 border-2" style="border-color:#c084fc;">
+      <div class="text-[10px] text-purple-600 uppercase tracking-wider mb-3 font-semibold">🎞️ Step-by-step 走一遍 · click Next to advance</div>
+      <div class="mb-3 text-[14px] font-semibold">${l.walkthrough.title}</div>
+      <div class="text-[13px] mb-3 bg-[#faf5ff] p-3 rounded">${l.walkthrough.setup}</div>
+      <div id="wt-step-display" class="min-h-[200px]"></div>
+      <div class="flex gap-2 mt-4">
+        <button id="wt-prev" class="px-3 py-1.5 rounded bg-[#f3f4f6] border border-[#e2e4ea] text-sm">← Prev</button>
+        <button id="wt-next" class="px-3 py-1.5 rounded bg-purple-500 text-white font-semibold text-sm">Next →</button>
+        <button id="wt-reset" class="px-3 py-1.5 rounded bg-[#f3f4f6] border border-[#e2e4ea] text-sm ml-auto">Reset</button>
+        <span id="wt-counter" class="text-xs text-[#6b7280] self-center"></span>
+      </div>
+    </div>
+    ` : ''}
+
+    <!-- Nav -->
+    <div class="flex gap-2 mt-6">
+      ${LECTURES.map(x => `<button data-lec="${x.id}" class="px-3 py-1 text-xs rounded ${x.id===active?'bg-purple-500 text-[#ffffff]':'bg-[#f7f7fa] text-[#6b7280] hover:text-white'}">${x.id}</button>`).join('')}
+    </div>
+  `;
+
+  main.querySelectorAll('[data-lec]').forEach(b => b.onclick = () => { active = b.dataset.lec; render(); window.scrollTo({top:0,behavior:'smooth'}); });
+
+  // Walkthrough interaction
+  if (l.walkthrough) {
+    const steps = l.walkthrough.steps;
+    let cur = 0;
+    const disp = document.getElementById('wt-step-display');
+    const counter = document.getElementById('wt-counter');
+    const update = () => {
+      const visible = steps.slice(0, cur + 1).map((s, i) => `
+        <div style="animation: fade .4s; margin-bottom: 10px; padding: 10px 14px; border-left: 3px solid #c084fc; background: ${i === cur ? '#f5f3ff' : '#fafafa'}; border-radius: 0 6px 6px 0;">
+          <div style="font-size: 11px; color: #7c3aed; font-weight: 700; margin-bottom: 3px;">STEP ${i + 1}</div>
+          <div style="font-size: 13px;">${s}</div>
+        </div>
+      `).join('');
+      disp.innerHTML = visible;
+      counter.textContent = `${cur + 1} / ${steps.length}`;
+    };
+    update();
+    document.getElementById('wt-next').onclick = () => { if (cur < steps.length - 1) { cur++; update(); } };
+    document.getElementById('wt-prev').onclick = () => { if (cur > 0) { cur--; update(); } };
+    document.getElementById('wt-reset').onclick = () => { cur = 0; update(); };
+  }
+
+  if (window.renderMathInElement) {
+    window.renderMathInElement(main, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}], throwOnError:false});
+  }
+  if (window.mermaid) mermaid.run({nodes: main.querySelectorAll('.mermaid')});
+}
+
+// ══════════════════════════════ CHEATSHEET ══════════════════════════════
+function renderCheat() {
+  const el = document.getElementById('cheat-content');
+  el.innerHTML = `
+    <h1>CS152 MT2 Cheatsheet — Full Semester · 3 × 8.5″×11″ double-sided · Abby</h1>
+    <p style="font-size:7pt;color:#555;margin-bottom:4pt;">Scope: L01–L14 (全学期) · 6 pages · Print both sides · Cmd+P</p>
+
+    <h2>⚙️ Iron Law · Amdahl · Performance</h2>
+    <table><thead><tr><th>Formula</th><th>中文</th></tr></thead><tbody>
+    <tr><td class="fml">Time = I · CPI · Tc</td><td>执行时间 = 指令数 × 每指令周期数 × 周期时间</td></tr>
+    <tr><td class="fml">CPI = Σ fᵢ · CPIᵢ</td><td>加权 CPI (多种指令类型)</td></tr>
+    <tr><td class="fml">IPC = 1/CPI</td><td>两种表示可互换</td></tr>
+    <tr><td class="fml">S = 1 / ((1−f) + f/V)</td><td>Amdahl — 加速比受未加速部分限制</td></tr>
+    <tr><td class="fml">Max IPC = min(fetch, dispatch, issue, commit)</td><td>OoO 流水线瓶颈</td></tr>
+    </tbody></table>
+
+    <h2>🚂 5-Stage RISC-V Pipeline (L02–L04)</h2>
+    <p><b>Stages</b>: <span class="fml">IF</span> fetch | <span class="fml">ID</span> decode+reg read | <span class="fml">EX</span> ALU | <span class="fml">MEM</span> load/store | <span class="fml">WB</span> writeback</p>
+    <table><thead><tr><th>Hazard</th><th>类型</th><th>解决 (fix)</th></tr></thead><tbody>
+    <tr><td><b>Structural</b></td><td>资源冲突 (同 port)</td><td>复制硬件 / stall</td></tr>
+    <tr><td><b>Data RAW</b></td><td>真相关 (读后写)</td><td>forwarding EX→EX, MEM→EX</td></tr>
+    <tr><td><b>Data WAR/WAW</b></td><td>假相关 (名字冲突)</td><td>register rename</td></tr>
+    <tr><td><b>Control</b></td><td>分支未定</td><td>predict / stall / delayed slot</td></tr>
+    <tr><td><b>Load-use</b></td><td>load 后立刻用它的结果</td><td>强制 1-cycle stall (EX→EX 不可能)</td></tr>
+    </tbody></table>
+    <p><b>Forwarding paths</b>: EX/MEM → ID/EX input mux, MEM/WB → ID/EX input mux. <b>Bypass from WB to ID</b>: write first half, read second half. <b>Branch resolved in EX</b> → 2-cycle penalty on mispredict (flush IF, ID).</p>
+
+    <h2>🔮 Branch Prediction (sp25 P3 style)</h2>
+    <table><thead><tr><th>Component</th><th>功能</th><th>何时用</th></tr></thead><tbody>
+    <tr><td><b>1-bit predictor</b></td><td>last outcome = prediction</td><td>差，loop 每次 2 次错 (enter + exit)</td></tr>
+    <tr><td><b>2-bit bimodal</b></td><td>SN / WN / WT / ST 饱和计数器</td><td>需要 2 次连错才 flip，loop 友好</td></tr>
+    <tr><td><b>BHT</b> (Branch History Table)</td><td>PC 索引的 counter 数组</td><td>基础组件，无关联</td></tr>
+    <tr><td><b>GHR</b> (Global History Register)</td><td>最近 P 位 T/NT</td><td>追踪全局分支关联</td></tr>
+    <tr><td><b>2-level predictor</b></td><td>BHT[GHR][hash(PC)]</td><td>空间关联 (spatial correlation)</td></tr>
+    <tr><td><b>BTB</b> (Branch Target Buffer)</td><td>存 "跳到哪里 (destination)"</td><td>间接跳 / 无条件 jump</td></tr>
+    <tr><td><b>RAS</b> (Return Address Stack)</td><td>push on jal, pop on ret/jalr</td><td>函数返回预测 (不和 PC 关联)</td></tr>
+    </tbody></table>
+    <p><b>Area</b>: <span class="fml">P + 2^P · M · N bits</span> | M=BHT entries, N=FSM bits, P=GHR bits<br>
+    <b>Hash</b>: <span class="fml">PC[log₂(M)+1 : 2]</span> (跳过 2 LSB 是 word 对齐)<br>
+    <b>Key insight</b>: BTB = "where to branch <b>TO</b>"; RAS = "where to branch <b>BACK</b>"</p>
+
+    <h2>🔄 Tomasulo Out-of-Order (L?, sp25 P2 style)</h2>
+    <p><b>Pipeline (必须记顺序)</b>:<br>
+    Fetch → <b>Dispatch</b> (enter ROB + rename) → <b>Issue</b> (when srcs ready, FU free) → <b>Execute</b> (FU latency) → <b>Writeback</b> (broadcast CDB + write PRF) → <b>Commit</b> (in-order from ROB head)</p>
+    <table><thead><tr><th>Structure</th><th>Purpose</th></tr></thead><tbody>
+    <tr><td><b>ROB</b> (Reorder Buffer)</td><td>in-order 退役队列，每个 in-flight 指令一个 entry</td></tr>
+    <tr><td><b>Rename Table</b></td><td>arch reg → latest physical reg producer</td></tr>
+    <tr><td><b>PRF</b> (Physical Register File)</td><td>holds actual values, more regs than arch ISA</td></tr>
+    <tr><td><b>Issue Queue / RS</b></td><td>等操作数 ready via CDB broadcast</td></tr>
+    <tr><td><b>CDB</b> (Common Data Bus)</td><td>广播 (phys reg tag, value) 给等待者</td></tr>
+    </tbody></table>
+    <p><b>Timing 公式 (sp25 P2a style)</b>：<br>
+    enter ROB @ <code>d</code> → issue @ <code>d+1</code> (or later if src not ready) → WB @ <code>issue + L</code> → commit @ <code>WB + 1</code> (in-order from head)<br>
+    <b>Stalls</b>: ROB full / RS full / in-order commit blocked by older instr.</p>
+    <p><b>Misprediction</b>: flush ROB entries newer than mispredicted branch; restore rename table from checkpoint; resume fetch from correct PC.</p>
+    <p><b>Max CPI 计算 (P2c)</b>: bottleneck = <span class="fml">1/min(fetch_width, dispatch, issue, commit)</span>, max CPI = 1/(min width). <i>Fetch 61, issue 2, commit 152 → min=2 → IPC_max=2.</i></p>
+
+    <h2>💾 Caches (L05–L07)</h2>
+    <table><thead><tr><th>Quantity</th><th>Formula</th></tr></thead><tbody>
+    <tr><td>Address split</td><td class="fml">| Tag | Index | Offset |</td></tr>
+    <tr><td>#offset bits</td><td class="fml">log₂(block size in bytes)</td></tr>
+    <tr><td>#index bits</td><td class="fml">log₂(#sets)</td></tr>
+    <tr><td>#tag bits</td><td class="fml">PA_bits − index − offset</td></tr>
+    <tr><td>#sets</td><td class="fml">total_size / (ways · block_size)</td></tr>
+    <tr><td>Total SRAM bits</td><td class="fml">#sets · ways · (data + tag + V + D + LRU)</td></tr>
+    <tr><td><b>AMAT</b></td><td class="fml">hit + miss_rate · miss_penalty</td></tr>
+    <tr><td>Multi-level AMAT</td><td class="fml">L1_hit + L1_miss·(L2_hit + L2_miss·mem)</td></tr>
+    </tbody></table>
+    <p><b>3 C 型 misses</b>: <b>Compulsory</b> (冷启动) · <b>Capacity</b> (工作集 &gt; 容量) · <b>Conflict</b> (way 太少, 同 index 撞)<br>
+    <b>Associativity trade</b>: direct-mapped (1-way, 快但 conflict 多) ↔ set-assoc (N-way) ↔ fully-assoc (no conflict, 慢且贵)<br>
+    <b>Replacement</b>: LRU (真 LRU 或 pseudo) / FIFO / random<br>
+    <b>Write policies</b>: <i>write-through</i> (每写都到 mem，简单) vs <i>write-back</i> (only on evict, 用 dirty bit，带宽少)<br>
+    <b>Write miss</b>: <i>write-allocate</i> (fetch 到 cache 再写) vs <i>no-write-allocate</i> (直接写 mem)</p>
+
+    <h2>📄 Virtual Memory · TLB · VIPT (L08)</h2>
+    <p><b>VA</b> = | VPN | page offset (4KB 页 = 12 bit) |  →  <b>PA</b> = | PPN | page offset |<br>
+    <b>Page table</b> 住在 mem，多级 (x86 4-level)，节省稀疏地址空间的内存<br>
+    <b>TLB</b>: VPN→PPN 的 cache, 通常 32–128 entry, 高 assoc<br>
+    <b>TLB miss</b>: hardware 走 page table (x86) 或 OS trap (MIPS)<br>
+    <b>Page fault</b>: PPN 不在 mem, OS 从 disk 装入</p>
+    <table><thead><tr><th>Cache 类型</th><th>Index from</th><th>Tag from</th><th>特点</th></tr></thead><tbody>
+    <tr><td><b>VIVT</b></td><td>VA</td><td>VA</td><td>快但有 aliasing、ASID 问题</td></tr>
+    <tr><td><b>PIPT</b></td><td>PA (先等 TLB)</td><td>PA</td><td>安全但慢 (串行)</td></tr>
+    <tr><td><b>VIPT</b> ⭐</td><td>VA (和 TLB 并行)</td><td>PA (TLB 出来后比较)</td><td>两全其美，有 alias 约束</td></tr>
+    </tbody></table>
+    <p><b>VIPT alias-free 条件 (考试必考)</b>: <span class="fml">index_bits + offset_bits ≤ page_offset_bits</span><br>
+    这样 index 完全来自 page offset (VA 和 PA 相同的低位), 不会有 alias。<br><br>
+    <b>sp25 P1a 解法 · 最小 associativity</b>: 48KiB cache, 64B line, 4KB page<br>
+    • offset = log₂(64) = <b>6 bits</b><br>
+    • page_offset = log₂(4096) = <b>12 bits</b><br>
+    • 可用 index bits ≤ 12 − 6 = <b>6</b><br>
+    • max #sets = 2^6 = <b>64</b><br>
+    • assoc ≥ total/(sets·line) = 48KiB/(64·64B) = 48·1024/4096 = <b>12-way</b></p>
+
+    <h2>🎯 sp24 MT2 Patterns — High-Value Facts</h2>
+    <p><b>Confirmed MT2 scope from sp24 exam (Fletcher, 04/12/24)</b>: VM+Caches, Vectors/MT/GPU tradeoffs, OoO, Branch Prediction. This matches Wen\'s review session scope.</p>
+
+    <h3>💡 Quick-fire facts (sp24 P2 multiple choice)</h3>
+    <table><thead><tr><th>Question</th><th>Answer</th></tr></thead><tbody>
+    <tr><td>Which designs exploit DLP?</td><td><b>Vector Machines + GPUs</b> only. NOT VLIW (ILP), NOT Multithreading (TLP).</td></tr>
+    <tr><td>What must be duplicated for multithreading?</td><td><b>Register File</b> only. NOT I-Cache, Instruction Register, or Arithmetic Units.</td></tr>
+    <tr><td>Which MT approach reduces "horizontal waste"?</td><td><b>SMT</b> only. Coarse/fine-grained reduce <i>vertical</i> waste (stall cycles).</td></tr>
+    <tr><td>Memory ops in GPU vs Vector</td><td>Vector = 1 instr (unit/stride/gather-scatter). GPU = always scatter-gather but <i>coalesced</i> when possible.</td></tr>
+    </tbody></table>
+    <p><b>🔑 Horizontal vs vertical waste</b>:<br>
+    • <b>Vertical waste</b> = entire cycle is idle (stall). Fine/coarse MT fill this.<br>
+    • <b>Horizontal waste</b> = some slots in a multi-issue cycle unused. Only SMT fills this (by issuing from other threads to unused slots).</p>
+
+    <h3>🧩 VIPT Aliasing diagrams (sp24 P1.1)</h3>
+    <p>Know which setup <i>can</i> alias in a <b>virtually-addressed</b> cache:</p>
+    <table><thead><tr><th>Setup</th><th>Alias?</th><th>Why</th></tr></thead><tbody>
+    <tr><td><b>A</b>: distinct VAs → distinct PAs → distinct cache lines</td><td>❌ No alias</td><td>Everything distinct, cache just has different entries</td></tr>
+    <tr><td><b>B</b>: distinct VAs → <b>SAME PA</b> → two cache lines for same data</td><td>✅ <b>ALIAS</b></td><td>Same physical data stored under different virtual tags — writes to one do not update the other</td></tr>
+    <tr><td><b>C</b>: one VA → multiple PAs</td><td>🚫 Impossible</td><td>A VA cannot map to multiple PAs in a single address space</td></tr>
+    </tbody></table>
+
+    <h3>⚡ VA vs PA cache setup (sp24 P1.2)</h3>
+    <table><thead><tr><th>Setup</th><th>Order</th><th>Cache type</th><th>TLB addressing</th><th>Context switch</th></tr></thead><tbody>
+    <tr><td><b>A</b></td><td>CPU → Cache → TLB → Mem</td><td>VA cache</td><td>VA-addressed TLB</td><td>Needs ASID or cache flush</td></tr>
+    <tr><td><b>B</b></td><td>CPU → TLB → Cache → Mem</td><td>PA cache</td><td>VA input, PA output</td><td>No flush needed</td></tr>
+    </tbody></table>
+    <p><b>Key: VA cache is faster (cache hit skips TLB)</b> but has aliasing and context-switch issues. Aliasing is <i>possible in Setup A, NOT in Setup B</i>.</p>
+
+    <h3>📐 VIPT worked example — sp24 P1.3 (Intel Skylake)</h3>
+    <p><b>Setup</b>: 32 KB VIPT L1D, 64 B line, 4 KB page. Find minimum associativity for no aliasing.</p>
+    <p>offset = log₂(64) = <b>6</b> · page_offset = log₂(4096) = <b>12</b> · max index bits = 12 − 6 = <b>6</b> · max #sets = <b>64</b><br>
+    <span class="fml">32 KB = 64 · ways · 64 B → ways = 32768 / (64 · 64) = 32768 / 4096 = <b>8 ways</b></span></p>
+    <p><b>Answer</b>: 8-way set-assoc (or higher) has NO aliasing. 2-way and 4-way would need more sets → more index bits → aliasing possible.</p>
+
+    <h3>🔄 OoO Cycle Tracking (sp24 P3.1 style — 12 pts)</h3>
+    <p><b>Typical question</b>: given code + ROB + rename table + free list, fill in PRd, LPRd, PR1, PR2, and dispatch/issue/complete/commit cycles.</p>
+    <p><b>Rename rules</b>:<br>
+    • <b>PRd</b> = pop next entry from free list (new physical register for destination)<br>
+    • <b>LPRd</b> = the <i>old</i> mapping of the destination in the rename table (freed on commit)<br>
+    • <b>PR1, PR2</b> = current mapping of source registers (looked up in rename table at dispatch time)</p>
+    <p><b>Cycle rules</b>:<br>
+    • Dispatch: in-order, 1 per cycle (or <i>dispatch width</i>)<br>
+    • Issue: max(dispatch + 1, src operand ready cycle)<br>
+    • Complete: issue + FU latency<br>
+    • Commit: max(complete + 1, older instr committed)<br>
+    • L1 data cache assumed 1-cycle hit in this machine<br>
+    • Loads may bypass: issue when load in same cycle as writeback of dependency</p>
+
+    <h3>✅ OoO T/F (sp24 P3.2)</h3>
+    <table><thead><tr><th>Statement</th><th>Answer</th></tr></thead><tbody>
+    <tr><td>#ROB entries = #physical registers</td><td><b>FALSE</b> (usually #PRF > #ROB)</td></tr>
+    <tr><td>A dispatched instruction is always in the ROB</td><td><b>TRUE</b></td></tr>
+    <tr><td>Fetch buffer only contains correct-path instructions</td><td><b>FALSE</b> (may hold speculative/wrong-path)</td></tr>
+    <tr><td>A phys reg is freed when the instruction that wrote it retires</td><td><b>FALSE</b> — it is freed when the <i>next</i> instruction that <i>overwrites</i> the same architectural register retires. Until then, the old value is still the current one and must be kept.</td></tr>
+    </tbody></table>
+
+    <h3>🔮 4-entry BHT trace (sp24 P4.1)</h3>
+    <p><b>Setup</b>: 4-entry BHT indexed by <code>PC[3:2]</code>, 2-bit bimodal counters initialized to <b>10</b> (weakly taken). MSB = prediction. Counter += 1 on taken, −= 1 on not-taken.</p>
+    <table><thead><tr><th>Counter</th><th>Prediction</th><th>Meaning</th></tr></thead><tbody>
+    <tr><td>11</td><td>T</td><td>Strongly Taken</td></tr>
+    <tr><td>10</td><td>T</td><td>Weakly Taken (init)</td></tr>
+    <tr><td>01</td><td>NT</td><td>Weakly Not-Taken</td></tr>
+    <tr><td>00</td><td>NT</td><td>Strongly Not-Taken</td></tr>
+    </tbody></table>
+    <p><b>Aliasing problem</b>: PC[3:2] gives only 4 buckets for 5 branches. If two branches alias to the same counter, they thrash.<br>
+    <b>Fix</b>: better hash — use non-consecutive bits like <code>(PC[4]|PC[3], PC[2])</code> or enlarge to 8 entries with <code>PC[4:2]</code>.</p>
+
+    <h3>🎰 Coin-flip correlated branches (sp24 P4.2) — subtle!</h3>
+    <p><b>Code</b>:<br>
+    <code>while(1) {  // A: always taken</code><br>
+    <code>&nbsp;&nbsp;r1 = rand();</code><br>
+    <code>&nbsp;&nbsp;r2 = rand();</code><br>
+    <code>&nbsp;&nbsp;if (r1%2==0) {...}  // B: 50% random</code><br>
+    <code>&nbsp;&nbsp;if (r2%2==0) {...}  // C: 50% random</code><br>
+    <code>&nbsp;&nbsp;if (r1%2==1) {...}  // D: OPPOSITE of B</code><br>
+    <code>}</code></p>
+    <p><b>🔑 Key insight</b>: D is <i>perfectly anti-correlated</i> with B (same r1, opposite test). B and D are NOT independent — local history of D looks random, but <i>global</i> history (knowing B) lets you predict D with 100% accuracy.</p>
+    <table><thead><tr><th>Branch</th><th>Best w/ local history</th><th>Best w/ global history</th></tr></thead><tbody>
+    <tr><td>A</td><td>100% (always T)</td><td>100%</td></tr>
+    <tr><td>B</td><td>50% (random)</td><td>50%</td></tr>
+    <tr><td>C</td><td>50% (random)</td><td>50%</td></tr>
+    <tr><td>D</td><td>50% (appears random locally)</td><td><b>100%</b> (B predicts D!)</td></tr>
+    </tbody></table>
+    <p><b>Answer</b>: Scheme X (global history) with 2-bit GHR + 1-bit counter wins on steady-state accuracy. The extra GHR bit captures B\'s outcome, which determines D.</p>
+
+    <h2>📝 Loop-carried dependency (sp25 P1.b.i)</h2>
+    <p><code>for i=1..N: A[i] = A[i-1] + i</code> ← 这是 loop-carried dependency。向量机<b>跑不了</b>，因为每次迭代都需要上次的结果 (递归依赖)。向量机靠 DLP，这题违反了 "迭代独立" 前提，所以严重 underutilized。修法：如果能改写成 prefix sum 就 OK (用 tree reduction)。</p>
+
+    ${LECTURES.map(l => `
+      <div class="cheat-card">
+        <h3>${l.id} · ${l.title} <span class="zh">${l.zh}</span> — <em>${l.pill}</em></h3>
+        <table><thead><tr><th style="width:25%">term</th><th>meaning</th></tr></thead><tbody>
+          ${l.cheat.defs.map(([k,v]) => `<tr><td><b>${k}</b></td><td>${v}</td></tr>`).join('')}
+        </tbody></table>
+        <div style="margin-top:3pt;"><b>Formulas / rules:</b><br>${l.cheat.formulas.map(f => `<span class="fml">${f}</span>`).join(' &nbsp; ')}</div>
+        <div style="margin-top:2pt;"><b>Traps:</b> ${l.cheat.gotchas.join(' · ')}</div>
+      </div>
+    `).join('')}
+
+    <h2>⚡ Cross-topic formulas</h2>
+    <table><thead><tr><th>Topic</th><th>Formula</th><th>When</th></tr></thead><tbody>
+      <tr><td>Amdahl</td><td class="fml">S = 1/((1−f) + f/V)</td><td>Fraction f of work speeds up by V</td></tr>
+      <tr><td>Iron law</td><td class="fml">Time = I × CPI × T_c</td><td>Inst count × CPI × clock period</td></tr>
+      <tr><td>IPC ↔ CPI</td><td class="fml">IPC = 1/CPI</td><td>Convert freely</td></tr>
+      <tr><td>Latency hiding</td><td class="fml">T_needed ≥ L·w/IPC</td><td>Threads needed to fill issue-width w</td></tr>
+      <tr><td>GPU peak</td><td class="fml">FLOP/s = SM·cores/SM·2·f</td><td>FMA = 2 ops per core</td></tr>
+      <tr><td>Effective BW</td><td class="fml">BW_eff = BW_peak × coalesce</td><td>Global memory GPU</td></tr>
+    </tbody></table>
+
+    <h2>🧠 MESI state transition table (must memorize)</h2>
+    <table><thead><tr><th>State</th><th>CPU Read</th><th>CPU Write</th><th>Snoop BusRd</th><th>Snoop BusRdX</th></tr></thead><tbody>
+      <tr><td><b>M</b></td><td>hit, no bus</td><td>hit, no bus</td><td>→ S, flush data</td><td>→ I, flush</td></tr>
+      <tr><td><b>E</b></td><td>hit, no bus</td><td>→ M, silent</td><td>→ S</td><td>→ I</td></tr>
+      <tr><td><b>S</b></td><td>hit, no bus</td><td>BusUpgr/RdX → M</td><td>stay S</td><td>→ I</td></tr>
+      <tr><td><b>I</b></td><td>BusRd → E or S</td><td>BusRdX → M</td><td>stay I</td><td>stay I</td></tr>
+    </tbody></table>
+    <p style="font-size:7pt;margin-top:2pt;"><b>MOESI</b>: add <b>O</b> (dirty shared) — on other\'s BusRd, M→O, keep dirty, supply data. On eviction, writeback to memory.</p>
+
+    <h2>🚦 Memory consistency quick-ref</h2>
+    <table><thead><tr><th>Model</th><th>Reorders allowed</th><th>Fence</th><th>Example</th></tr></thead><tbody>
+      <tr><td><b>SC</b></td><td>none</td><td>—</td><td>Naïve multi-core</td></tr>
+      <tr><td><b>TSO</b></td><td>W→R only</td><td>mfence</td><td>x86</td></tr>
+      <tr><td><b>Relaxed</b></td><td>W→R, W→W, R→R, R→W</td><td>release/acquire/full</td><td>ARM, POWER, RISC-V</td></tr>
+    </tbody></table>
+
+    <h2>🎛 Vector ISA cheat (RISC-V V)</h2>
+    <table><thead><tr><th>Instr</th><th>Meaning</th></tr></thead><tbody>
+      <tr><td class="fml">vsetvli rd, rs1, e32,m1</td><td>rd = VLR = min(rs1, MVL); sets SEW=32b, LMUL=1</td></tr>
+      <tr><td class="fml">vle32.v vd, (rs1)</td><td>unit-stride load VLR elements</td></tr>
+      <tr><td class="fml">vlse32.v vd, (rs1), rs2</td><td>strided load (stride rs2 bytes)</td></tr>
+      <tr><td class="fml">vluxei32.v vd, (rs1), vs2</td><td>indexed (gather) load</td></tr>
+      <tr><td class="fml">vadd.vv vd, vs1, vs2</td><td>element-wise add</td></tr>
+      <tr><td class="fml">vfmacc.vv vd, vs1, vs2</td><td>fused multiply-add (accumulate)</td></tr>
+      <tr><td class="fml">vmerge.vvm vd, vs1, vs2, v0</td><td>masked merge (if/else under v0 mask)</td></tr>
+      <tr><td class="fml">vredsum.vs vd, vs1, vs2</td><td>reduction sum → scalar in vd[0]</td></tr>
+    </tbody></table>
+
+    <h2>🟧 GPU memory hierarchy</h2>
+    <table><thead><tr><th>Level</th><th>Scope</th><th>Size</th><th>Latency</th><th>Notes</th></tr></thead><tbody>
+      <tr><td>Registers</td><td>per thread</td><td>~255 × 4B</td><td>0 cyc</td><td>Tight — too many → less occupancy</td></tr>
+      <tr><td>Shared mem</td><td>per block</td><td>48–164 KB</td><td>~1 cyc</td><td>SW-managed scratchpad</td></tr>
+      <tr><td>L1/L2</td><td>per SM / chip</td><td>KB–MB</td><td>10–200 cyc</td><td>HW cache, spills</td></tr>
+      <tr><td>Global (HBM)</td><td>whole GPU</td><td>GB</td><td>400+ cyc</td><td>Coalesced = 1 txn, else 32×</td></tr>
+    </tbody></table>
+
+    <h2>🧮 Multithreading comparison</h2>
+    <table><thead><tr><th></th><th>Coarse</th><th>Fine</th><th>SMT</th></tr></thead><tbody>
+      <tr><td>Switch on</td><td>long stall</td><td>every cycle</td><td>within cycle</td></tr>
+      <tr><td>1-thread perf</td><td>preserved</td><td>÷N</td><td>~preserved</td></tr>
+      <tr><td>Throughput</td><td>low</td><td>high</td><td>highest</td></tr>
+      <tr><td>Impl cost</td><td>low</td><td>medium</td><td>high</td></tr>
+      <tr><td>Needs OoO core</td><td>no</td><td>no</td><td>yes</td></tr>
+    </tbody></table>
+
+    <h2>⚠️ Top exam traps</h2>
+    <ul style="list-style:disc;padding-left:12pt;">
+      <li><b>VLIW:</b> one cache miss → whole bundle stalls. No binary compat.</li>
+      <li><b>Vector:</b> strip-mine <i>remainder first</i>. Chaining ≠ fusion.</li>
+      <li><b>SMT:</b> not always a win — FU port contention, cache footprint.</li>
+      <li><b>GPU:</b> branch on <i>warp-uniform</i> values. Coalesce global loads.</li>
+      <li><b>MESI:</b> silent E→M upgrade is the save vs MSI. False sharing = pad 64 B.</li>
+      <li><b>x86 is TSO</b>, not SC — mfence for ordering across W→R.</li>
+    </ul>
+  `;
+}
+
+// ══════════════════════════════ CHAT ══════════════════════════════
+const chatLog = document.getElementById('chat-log');
+const chatInput = document.getElementById('chat-input');
+const btnSend = document.getElementById('btn-send');
+const btnVoice = document.getElementById('btn-voice');
+
+function addMsg(role, text) {
+  const el = document.createElement('div');
+  el.className = 'chat-msg ' + (role === 'user' ? 'text-right' : '');
+  el.innerHTML = role === 'user'
+    ? `<div class="inline-block bg-purple-500/20 border border-purple-400/30 rounded-lg px-3 py-2 text-left max-w-[90%]">${escapeHtml(text)}</div>`
+    : `<div class="bg-[#ffffff] border border-[#e2e4ea] rounded-lg px-3 py-2 max-w-full whitespace-pre-wrap">${escapeHtml(text)}</div>`;
+  chatLog.appendChild(el);
+  chatLog.scrollTop = chatLog.scrollHeight;
+  return el;
+}
+function escapeHtml(s) { return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+async function send() {
+  const text = chatInput.value.trim();
+  if (!text) return;
+  addMsg('user', text);
+  chatInput.value = '';
+  const thinking = addMsg('bot', '…thinking (openclaw local, ~3–5s)');
+  const lec = LECTURES.find(x => x.id === active);
+  const ctx = `You are tutoring a student for UC Berkeley CS152 Midterm 2. Currently viewing ${lec.id} ${lec.title} (${lec.zh}), topic: ${lec.pill}. Assume the student is a beginner. Answer briefly (under 200 words), technical but clear. If the concept is complex, end with one line of 中文总结. Student question: ${text}`;
+  try {
+    const r = await fetch('/chat', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({message: ctx}) });
+    const j = await r.json();
+    thinking.querySelector('div').textContent = j.text || '(empty)';
+  } catch (e) {
+    thinking.querySelector('div').textContent = '(chat error: ' + e.message + ')';
+  }
+}
+btnSend.onclick = send;
+chatInput.addEventListener('keydown', e => { if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault(); send(); } });
+
+// ══════════════════════════════ VOICE (continuous) ══════════════════════════════
+// Use Chrome. Firefox has no Web Speech API; Safari's impl is buggy.
+let recog = null;
+let recording = false;
+let voiceLang = 'zh-CN';      // start in Chinese since it's your native language
+let finalTranscript = '';
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+if (SR) {
+  recog = new SR();
+  recog.continuous = true;    // keep listening until user stops
+  recog.interimResults = true; // show live transcription
+  recog.lang = voiceLang;
+  recog.onresult = e => {
+    let interim = '';
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      const t = e.results[i][0].transcript;
+      if (e.results[i].isFinal) finalTranscript += t + ' ';
+      else interim += t;
+    }
+    chatInput.value = (finalTranscript + interim).trim();
+  };
+  recog.onend = () => {
+    // If we're still in recording mode, Chrome sometimes cuts us off on silence.
+    // Auto-restart to give an effectively unlimited session.
+    if (recording) {
+      try { recog.start(); } catch (e) { recording = false; btnVoice.textContent = '🎤'; }
+    } else {
+      btnVoice.textContent = '🎤';
+    }
+  };
+  recog.onerror = ev => {
+    if (ev.error === 'not-allowed' || ev.error === 'service-not-allowed') {
+      alert('Microphone permission denied. Allow mic for 127.0.0.1:8765 in Chrome settings.');
+      recording = false; btnVoice.textContent = '🎤';
+    }
+    // 'no-speech' and 'aborted' are benign — onend will restart if needed
+  };
+}
+
+function toggleVoice() {
+  if (!recog) {
+    alert('Voice input needs Chrome. Firefox has no Web Speech API, Safari is unreliable.\n\nTip: you can also type in Chinese — the chat understands 中文.');
+    return;
+  }
+  if (recording) {
+    recording = false;
+    try { recog.stop(); } catch (e) {}
+    btnVoice.textContent = '🎤';
+    return;
+  }
+  // start fresh
+  finalTranscript = chatInput.value ? chatInput.value + ' ' : '';
+  recording = true;
+  recog.lang = voiceLang;
+  btnVoice.textContent = '🔴 ' + (voiceLang === 'zh-CN' ? '中' : 'EN');
+  try { recog.start(); } catch (e) { recording = false; btnVoice.textContent = '🎤'; }
+}
+
+btnVoice.onclick = toggleVoice;
+// long-press voice button → switch language
+btnVoice.addEventListener('contextmenu', e => {
+  e.preventDefault();
+  voiceLang = voiceLang === 'zh-CN' ? 'en-US' : 'zh-CN';
+  btnVoice.textContent = '🎤 ' + (voiceLang === 'zh-CN' ? '中' : 'EN');
+  if (recording) { try { recog.stop(); } catch(e){} }
+});
+
+// ══════════════════════════════ KEYBOARD ══════════════════════════════
+document.addEventListener('keydown', e => {
+  if (document.activeElement.tagName === 'TEXTAREA' || document.activeElement.tagName === 'INPUT') return;
+  const idx = LECTURES.findIndex(l => l.id === active);
+  if (e.key === 'ArrowRight' || e.key === 'l') { if (idx < LECTURES.length - 1) { active = LECTURES[idx+1].id; render(); window.scrollTo({top:0}); } }
+  else if (e.key === 'ArrowLeft' || e.key === 'h') { if (idx > 0) { active = LECTURES[idx-1].id; render(); window.scrollTo({top:0}); } }
+  else if (e.key === 'c') { chatInput.focus(); e.preventDefault(); }
+  else if (e.key === 'v') { btnVoice.click(); }
+  else if (e.key >= '1' && e.key <= '9') { const i=parseInt(e.key)-1; if (i<LECTURES.length){ active = LECTURES[i].id; render(); window.scrollTo({top:0}); } }
+  else if (e.key === '0') { if (LECTURES.length>=10){ active = LECTURES[9].id; render(); window.scrollTo({top:0}); } }
+  else if (e.key === 'p' && (e.metaKey || e.ctrlKey)) { /* let print pass */ }
+  else if (e.key === '?') { document.getElementById('btn-cheat').click(); }
+});
+
+// ══════════════════════════════ CHEAT MODAL ══════════════════════════════
+const modal = document.getElementById('cheat-modal');
+document.getElementById('btn-cheat').onclick = () => { renderCheat(); modal.classList.remove('hidden'); };
+document.getElementById('cheat-close').onclick = () => modal.classList.add('hidden');
+
+// ══════════════════════════════ COUNTDOWN ══════════════════════════════
+const examTime = new Date('2026-04-14T19:00:00-07:00');
+function updateCountdown() {
+  const now = new Date();
+  const diff = examTime - now;
+  const cd = document.getElementById('countdown');
+  if (diff <= 0) { cd.textContent = 'Exam in progress — good luck ✨'; return; }
+  const h = Math.floor(diff / 3.6e6), m = Math.floor((diff % 3.6e6) / 6e4);
+  cd.textContent = `Tue Apr 14 · exam in ${h}h ${m}m · scope L10–L14`;
+}
+setInterval(updateCountdown, 30000); updateCountdown();
+
+// ══════════════════════════════ INIT ══════════════════════════════
+if (window.mermaid) mermaid.initialize({ startOnLoad: false, theme: 'default', themeVariables: { primaryColor: '#f5f3ff', primaryTextColor: '#1a1a1f', primaryBorderColor: '#c084fc', lineColor: '#6b7280', fontFamily: 'system-ui' } });
+render();
+</script>
+</body>
+</html>
