@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CC Session Board — Abby Li</title>
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@300;400&display=swap" rel="stylesheet">
+    <script src="scripts.js"></script>
+    <style>
+        .demo-box { background: #1a1a2e; color: #e0e0e0; border-radius: 10px; padding: 20px; margin: 16px 0; font-family: 'Inconsolata', monospace; font-size: 13px; line-height: 1.5; overflow-x: auto; }
+        .demo-box .cyan { color: #58a6ff; }
+        .demo-box .yellow { color: #fbbf24; }
+        .demo-box .green { color: #34d399; }
+        .demo-box .dim { color: #6b7280; }
+        .demo-box .rev { background: #58a6ff; color: #0d1117; padding: 0 4px; }
+        .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; margin: 16px 0; }
+        .feature-item { padding: 14px; border: 1px solid var(--border-color, #e2e4ea); border-radius: 8px; }
+        .feature-item h4 { margin: 0 0 4px; font-size: .95em; }
+        .feature-item p { margin: 0; font-size: .85em; opacity: .8; }
+        .code-link { display: inline-block; margin: 4px 8px 4px 0; padding: 6px 14px; border-radius: 6px; font-size: .85em; font-weight: 600; text-decoration: none; }
+        .code-link.primary { background: #7c3aed; color: white; }
+        .code-link.secondary { background: var(--card-bg, #f3f4f6); border: 1px solid var(--border-color, #e2e4ea); color: inherit; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="projects.html">Projects</a>
+        <a href="coursework.html">Coursework</a>
+        <a href="heatmaps.html">Heatmaps</a>
+        <a href="messages.html">Messages</a>
+        <button class="theme-switch" onclick="toggleTheme()">🌙 Dark Mode</button>
+    </nav>
+
+    <main class="retro-terminal">
+        <div class="terminal-header">
+            <div class="terminal-title">Abby:~/Projects/cc-session-board$ cat README.md</div>
+        </div>
+
+        <h1>Claude Code Session Board 📋</h1>
+        <p class="prompt">A curses-based TUI for browsing, searching, and resuming past Claude Code conversation sessions.</p>
+
+        <div style="margin:12px 0;">
+            <a href="projects/cc-session-board/session_board.py" class="code-link primary">📄 session_board.py</a>
+            <a href="projects/cc-session-board/gen_title.py" class="code-link secondary">📄 gen_title.py</a>
+            <a href="projects/cc-session-board/README.md" class="code-link secondary">📋 README</a>
+        </div>
+
+        <h2>> Demo</h2>
+        <div class="demo-box">
+<span class="dim">  Claude Code Session Board</span>
+<span class="dim">  Sort: lines ↓  │  Filter: _</span>
+<span class="dim">──────────────────────────────────────────────────────────</span>
+<span class="rev"> 1199  ~/Desktop         Build 152 study site + todo board   Apr 14 </span>
+<span class="dim"> 847   ~/Desktop/151b    FPGA project checkpoint 2 debug      Apr  8 </span>
+<span class="dim"> 623   ~/Desktop         Avicena interview prep               Apr 16 </span>
+<span class="dim"> 412   ~/Desktop/161     Secure file sharing proj2            Apr  3 </span>
+<span class="dim"> 298   ~                 OpenClaw RPi setup + Telegram bot     Apr  6 </span>
+<span class="dim"> 156   ~/Desktop         Organize chat sessions               Apr 14 </span>
+<span class="dim"> 89    ~/Developer       Focus fish script                    Mar 28 </span>
+<span class="dim">──────────────────────────────────────────────────────────</span>
+<span class="dim">  ↑↓ navigate  │  l sort lines  │  d sort date  │  / filter  │  ↵ resume</span>
+        </div>
+
+        <h2>> Features</h2>
+        <div class="feature-grid">
+            <div class="feature-item">
+                <h4>🔍 Ranked by Activity</h4>
+                <p>Sessions sorted by line count (most activity = most important). Toggle to date sort with `d`.</p>
+            </div>
+            <div class="feature-item">
+                <h4>🏷️ Auto-Generated Titles</h4>
+                <p>Extracts first user message as session title. Background reindex keeps titles fresh.</p>
+            </div>
+            <div class="feature-item">
+                <h4>⚡ Fuzzy Search</h4>
+                <p>Press `/` to filter by title or project path. Instant results as you type.</p>
+            </div>
+            <div class="feature-item">
+                <h4>↵ One-Key Resume</h4>
+                <p>Press Enter on any session to resume it in Claude Code with full context.</p>
+            </div>
+            <div class="feature-item">
+                <h4>📂 Project Path Display</h4>
+                <p>Shows which directory each session was in — quickly find project-specific conversations.</p>
+            </div>
+            <div class="feature-item">
+                <h4>📦 Zero Dependencies</h4>
+                <p>Pure Python stdlib. ~370 lines. Scans ~/.claude/projects/ JSONL files.</p>
+            </div>
+        </div>
+
+        <h2>> How It Works</h2>
+        <pre><code>~/.claude/projects/           ← Claude Code stores sessions here
+  -Users-abby-Desktop/
+    cc0b9d59-...jsonl           ← each file = one conversation
+    77c1679f-...jsonl
+  -Users-abby-Desktop-151b/
+    4ba2cfac-...jsonl
+
+session_board.py scans these, extracts titles, caches in titles.json,
+renders a curses TUI for browsing and resuming.</code></pre>
+
+        <h2>> Tech Stack</h2>
+        <p class="prompt">Python 3 · curses · json · pathlib · subprocess · Claude Code CLI</p>
+
+        <div class="view-more" style="margin-top:24px;">
+            <a href="projects.html" class="view-more-link">cd ../</a>
+        </div>
+    </main>
+
+    <footer>
+        <div class="visitor-counter"><p>Views: <span id="visitorCount">0</span></p></div>
+        <p>Copyright © 2026 Abby Li <span class="cursor-blink">_</span></p>
+    </footer>
+</body>
+</html>

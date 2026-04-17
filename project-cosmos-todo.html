@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosmos Todo Board — Abby Li</title>
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@300;400&display=swap" rel="stylesheet">
+    <script src="scripts.js"></script>
+    <style>
+        .demo-box { background: #1a1a2e; color: #e0e0e0; border-radius: 10px; padding: 20px; margin: 16px 0; font-family: 'Inconsolata', monospace; font-size: 14px; line-height: 1.6; overflow-x: auto; }
+        .demo-box .cyan { color: #58a6ff; }
+        .demo-box .yellow { color: #fbbf24; }
+        .demo-box .green { color: #34d399; }
+        .demo-box .pink { color: #f0abfc; }
+        .demo-box .dim { color: #6b7280; }
+        .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; margin: 16px 0; }
+        .feature-item { padding: 14px; border: 1px solid var(--border-color, #e2e4ea); border-radius: 8px; }
+        .feature-item h4 { margin: 0 0 4px; font-size: .95em; }
+        .feature-item p { margin: 0; font-size: .85em; opacity: .8; }
+        .code-link { display: inline-block; margin: 4px 8px 4px 0; padding: 6px 14px; border-radius: 6px; font-size: .85em; font-weight: 600; text-decoration: none; }
+        .code-link.primary { background: #7c3aed; color: white; }
+        .code-link.secondary { background: var(--card-bg, #f3f4f6); border: 1px solid var(--border-color, #e2e4ea); color: inherit; }
+        [data-theme="dark"] .feature-item { border-color: #333; }
+        [data-theme="dark"] .code-link.secondary { background: #1e1e2e; border-color: #333; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="projects.html">Projects</a>
+        <a href="coursework.html">Coursework</a>
+        <a href="heatmaps.html">Heatmaps</a>
+        <a href="messages.html">Messages</a>
+        <button class="theme-switch" onclick="toggleTheme()">🌙 Dark Mode</button>
+    </nav>
+
+    <main class="retro-terminal">
+        <div class="terminal-header">
+            <div class="terminal-title">Abby:~/Projects/cosmos-todo$ cat README.md</div>
+        </div>
+
+        <h1>Cosmos Todo Board ✦</h1>
+        <p class="prompt">A terminal-based kanban TUI for task management with RPi sync and Telegram notifications.</p>
+
+        <div style="margin:12px 0;">
+            <a href="projects/cosmos-todo/todo.py" class="code-link primary">📄 View Source (todo.py)</a>
+            <a href="projects/cosmos-todo/study.py" class="code-link secondary">📄 Study CLI (study.py)</a>
+            <a href="projects/cosmos-todo/README.md" class="code-link secondary">📋 README</a>
+        </div>
+
+        <h2>> Demo</h2>
+        <div class="demo-box">
+<span class="pink">          ✦  COSMOS TODO BOARD  ✦   Wed Apr 16  14:30</span>
+<span class="dim">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>
+ <span class="cyan">○ TODO  [4]</span>            <span class="yellow">◐ IN PROGRESS  [2]</span>      <span class="green">● DONE  [3]</span>
+<span class="cyan">──────────────────</span>  <span class="yellow">──────────────────</span>  <span class="green">──────────────────</span>
+<span class="cyan">○ #6</span> review 152 mt2    <span class="yellow">◐ #8</span> work on 151 proj   <span class="green">● #13</span> fix car paint
+   <span class="dim">•academic</span>             <span class="dim">•academic</span>             <span class="dim">•life</span>
+<span class="cyan">○ #7</span> finish 161 proj   <span class="yellow">◐ #9</span> prepare interview
+   <span class="dim">•academic</span>             <span class="dim">•job</span>              <span class="green">● #14</span> reply LinkedIn
+<span class="cyan">○ #10</span> reply Handshake                           <span class="dim">•job</span>
+   <span class="dim">•job</span>
+<span class="cyan">○ #12</span> apply internship                       <span class="green">● #15</span> USCIS letter
+   <span class="dim">•job</span>                                        <span class="dim">•life</span>
+<span class="dim">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span>
+<span class="dim">j/k move · space cycle · a add · 1-4 tab · p push · q quit</span>
+        </div>
+
+        <h2>> Features</h2>
+        <div class="feature-grid">
+            <div class="feature-item">
+                <h4>🖥️ Curses TUI</h4>
+                <p>Full terminal UI with keyboard navigation, tag filtering, and real-time updates. No mouse needed.</p>
+            </div>
+            <div class="feature-item">
+                <h4>📡 RPi Sync</h4>
+                <p>Push/pull tasks to Raspberry Pi via rsync over SSH. Access your board from any device on LAN.</p>
+            </div>
+            <div class="feature-item">
+                <h4>📱 Telegram</h4>
+                <p>Send your board to Telegram via OpenClaw agent on RPi5. Get your tasks on your phone.</p>
+            </div>
+            <div class="feature-item">
+                <h4>🏷️ Tag System</h4>
+                <p>life / academic / job tags with color coding. Filter by pressing 1-4 in TUI.</p>
+            </div>
+            <div class="feature-item">
+                <h4>⌨️ CLI Mode</h4>
+                <p><code>todo add "task" -t job</code>, <code>todo done 5</code>, <code>todo board</code> — scriptable from any shell.</p>
+            </div>
+            <div class="feature-item">
+                <h4>📦 Zero Dependencies</h4>
+                <p>Pure Python stdlib. 620 lines. JSON storage. Works on any system with Python 3.</p>
+            </div>
+        </div>
+
+        <h2>> Architecture</h2>
+        <pre><code>┌──────────────────┐     rsync      ┌──────────────────┐
+│  MacBook Air      │ ───────────── │  Raspberry Pi 5   │
+│  ~/.todo/tasks.json│              │  ~/.todo/tasks.json│
+│  todo (TUI/CLI)   │              │  openclaw agent    │
+└──────────────────┘               │  Telegram bot      │
+                                   └──────────────────┘
+</code></pre>
+
+        <h2>> Also: Study CLI</h2>
+        <p class="prompt">A companion tool for generating interactive study sites from course material.</p>
+        <pre><code>study init 152      # scaffold ~/Desktop/coursework/152/{raw,site}/
+study serve 152     # local HTTP server + OpenClaw LLM chat proxy
+                    # → http://127.0.0.1:8765/ with POST /chat</code></pre>
+
+        <h2>> Tech Stack</h2>
+        <p class="prompt">Python 3 · curses · argparse · JSON · subprocess · rsync · SSH · OpenClaw</p>
+
+        <div class="view-more" style="margin-top:24px;">
+            <a href="projects.html" class="view-more-link">cd ../</a>
+        </div>
+    </main>
+
+    <footer>
+        <div class="visitor-counter"><p>Views: <span id="visitorCount">0</span></p></div>
+        <p>Copyright © 2026 Abby Li <span class="cursor-blink">_</span></p>
+    </footer>
+</body>
+</html>
