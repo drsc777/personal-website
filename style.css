@@ -293,6 +293,13 @@ nav a.active {
     background-color: var(--terminal-header-bg);
 }
 
+/* Desktop: reserve space for the fixed left nav so it never overlaps content */
+@media (min-width: 768px) {
+    body {
+        padding-left: 160px;
+    }
+}
+
 /* Hero section */
 .hero-section {
     text-align: left;
